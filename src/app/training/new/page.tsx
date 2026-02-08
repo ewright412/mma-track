@@ -215,7 +215,7 @@ export default function NewTrainingSessionPage() {
             {techniques.length === 0 ? (
               <div className="text-center py-8 text-white/40">
                 <p>No techniques added yet</p>
-                <p className="text-sm mt-1">Click "Add" to track specific techniques</p>
+                <p className="text-sm mt-1">Click &quot;Add&quot; to track specific techniques</p>
               </div>
             ) : (
               <div className="space-y-3">
