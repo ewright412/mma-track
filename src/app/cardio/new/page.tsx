@@ -7,6 +7,9 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { CARDIO_TYPES, CARDIO_TEMPLATES, CARDIO_DURATION_PRESETS } from '@/lib/constants/cardio';
 import { createCardioLog } from '@/lib/supabase/cardioQueries';
+import { checkAndAwardBadges } from '@/lib/supabase/badgeQueries';
+import { BADGE_MAP } from '@/lib/constants/badges';
+import { supabase } from '@/lib/supabase/client';
 import { CreateCardioLogInput, CardioType, CardioTemplate } from '@/lib/types/cardio';
 import { Zap, Play } from 'lucide-react';
 
@@ -14,6 +17,7 @@ export default function NewCardioLogPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [badgeToast, setBadgeToast] = useState<string | null>(null);
 
   // Form state
   const [sessionDate, setSessionDate] = useState(() => {
@@ -64,6 +68,20 @@ export default function NewCardioLogPage() {
       }
 
       if (data) {
+        // Check badges in background
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (authUser) {
+          const newBadges = await checkAndAwardBadges(authUser.id);
+          if (newBadges.length > 0) {
+            const name = BADGE_MAP[newBadges[0]]?.name || newBadges[0];
+            setBadgeToast(name);
+            setTimeout(() => {
+              setBadgeToast(null);
+              router.push('/cardio');
+            }, 2500);
+            return;
+          }
+        }
         router.push('/cardio');
       }
     } catch (err) {
@@ -253,6 +271,14 @@ export default function NewCardioLogPage() {
           </div>
         </form>
       </div>
+
+      {/* Badge Toast */}
+      {badgeToast && (
+        <div className="fixed bottom-6 right-6 bg-[#f59e0b] text-black px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 animate-pulse">
+          <span className="text-lg">🏆</span>
+          <span className="text-sm font-medium">Achievement Unlocked: {badgeToast}!</span>
+        </div>
+      )}
     </div>
   );
 }

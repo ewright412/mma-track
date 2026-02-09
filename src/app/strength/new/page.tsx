@@ -12,6 +12,8 @@ import {
 } from '@/lib/constants/exercises';
 import { createStrengthLog, checkAndUpdatePR } from '@/lib/supabase/strength-queries';
 import { getWorkoutTemplates, createWorkoutTemplate } from '@/lib/supabase/strength-queries';
+import { checkAndAwardBadges } from '@/lib/supabase/badgeQueries';
+import { BADGE_MAP } from '@/lib/constants/badges';
 import { WorkoutTemplate } from '@/lib/types/strength';
 import { StrengthSet } from '@/lib/types/strength';
 
@@ -33,6 +35,7 @@ export default function NewStrengthLogPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [prResults, setPrResults] = useState<Array<{ exercise: string; newValue: number; previousValue?: number }>>([]);
+  const [badgeToast, setBadgeToast] = useState<string | null>(null);
 
   useEffect(() => {
     loadTemplates();
@@ -225,6 +228,15 @@ export default function NewStrengthLogPage() {
           }),
         });
       }
+
+      // Check badges in background
+      checkAndAwardBadges(user.id).then((newBadges) => {
+        if (newBadges.length > 0) {
+          const name = BADGE_MAP[newBadges[0]]?.name || newBadges[0];
+          setBadgeToast(name);
+          setTimeout(() => setBadgeToast(null), 4000);
+        }
+      });
 
       if (newPRs.length > 0) {
         setPrResults(newPRs);
@@ -488,6 +500,14 @@ export default function NewStrengthLogPage() {
           </div>
         </form>
       </div>
+
+      {/* Badge Toast */}
+      {badgeToast && (
+        <div className="fixed bottom-6 right-6 bg-[#f59e0b] text-black px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 animate-pulse">
+          <span className="text-lg">🏆</span>
+          <span className="text-sm font-medium">Achievement Unlocked: {badgeToast}!</span>
+        </div>
+      )}
     </div>
   );
 }

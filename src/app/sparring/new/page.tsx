@@ -7,6 +7,9 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { OPPONENT_SKILL_LEVELS, RATING_COLORS, getRatingColor } from '@/lib/constants/sparring';
 import { createSparringSession } from '@/lib/supabase/sparringQueries';
+import { checkAndAwardBadges } from '@/lib/supabase/badgeQueries';
+import { BADGE_MAP } from '@/lib/constants/badges';
+import { supabase } from '@/lib/supabase/client';
 import { CreateSparringSessionInput, OpponentSkillLevel } from '@/lib/types/sparring';
 import { Plus, Minus } from 'lucide-react';
 
@@ -30,6 +33,7 @@ export default function NewSparringSessionPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [badgeToast, setBadgeToast] = useState<string | null>(null);
 
   const [sessionDate, setSessionDate] = useState(() => {
     const today = new Date();
@@ -121,6 +125,20 @@ export default function NewSparringSessionPage() {
       }
 
       if (data) {
+        // Check badges in background
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (authUser) {
+          const newBadges = await checkAndAwardBadges(authUser.id);
+          if (newBadges.length > 0) {
+            const name = BADGE_MAP[newBadges[0]]?.name || newBadges[0];
+            setBadgeToast(name);
+            setTimeout(() => {
+              setBadgeToast(null);
+              router.push('/sparring');
+            }, 2500);
+            return;
+          }
+        }
         router.push('/sparring');
       }
     } catch (err) {
@@ -328,6 +346,14 @@ export default function NewSparringSessionPage() {
           </div>
         </form>
       </div>
+
+      {/* Badge Toast */}
+      {badgeToast && (
+        <div className="fixed bottom-6 right-6 bg-[#f59e0b] text-black px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 animate-pulse">
+          <span className="text-lg">🏆</span>
+          <span className="text-sm font-medium">Achievement Unlocked: {badgeToast}!</span>
+        </div>
+      )}
     </div>
   );
 }

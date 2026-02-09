@@ -6,6 +6,9 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { MMA_DISCIPLINES, DURATION_PRESETS, getIntensityColor } from '@/lib/constants/disciplines';
 import { createTrainingSession } from '@/lib/supabase/queries';
+import { checkAndAwardBadges } from '@/lib/supabase/badgeQueries';
+import { BADGE_MAP } from '@/lib/constants/badges';
+import { supabase } from '@/lib/supabase/client';
 import { MMADiscipline } from '@/lib/types/training';
 import { useRouter } from 'next/navigation';
 
@@ -59,6 +62,16 @@ export function QuickLogModal({ isOpen, onClose, onSaved }: QuickLogModalProps) 
       if (error) {
         alert('Error saving session: ' + error.message);
       } else {
+        // Check badges in background
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (authUser) {
+          checkAndAwardBadges(authUser.id).then((newBadges) => {
+            if (newBadges.length > 0) {
+              const name = BADGE_MAP[newBadges[0]]?.name || newBadges[0];
+              alert(`🏆 Achievement Unlocked: ${name}!`);
+            }
+          });
+        }
         onSaved?.();
         handleReset();
         onClose();

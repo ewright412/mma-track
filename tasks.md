@@ -18,52 +18,52 @@
 ---
 
 ## Prompt 1: Remaining Bug Fixes
-**Status: NOT STARTED**
-- [ ] Action buttons single-line (not two-line stacked)
-- [ ] Strength volume chart color → red #ef4444
-- [ ] Body fat moved out of main profile cards
-- [ ] Build passes
+**Status: COMPLETE ✅**
+- [x] Action buttons single-line (not two-line stacked)
+- [x] Strength volume chart color → red #ef4444
+- [x] Body fat moved out of main profile cards
+- [x] Build passes
 
 ## Prompt 2: Profile Expansion
-**Status: NOT STARTED**
-- [ ] Display Name, Weight Class, Home Gym, Stance, Training Since, Bio fields
-- [ ] Store in Supabase user metadata
-- [ ] Show display_name + weight class badge on profile
-- [ ] Stats summary row (Sessions, Hours, Streak, PRs)
-- [ ] Build passes
+**Status: COMPLETE ✅**
+- [x] Display Name, Weight Class, Home Gym, Stance, Training Since, Bio fields
+- [x] Store in Supabase user metadata
+- [x] Show display_name + weight class badge on profile
+- [x] Stats summary row (Sessions, Hours, Streak, PRs)
+- [x] Build passes
 
 ## Prompt 3: Goals Functionality
-**Status: NOT STARTED**
-- [ ] Database migration for target_value, target_unit, current_value, target_date
-- [ ] Updated goal creation form with all fields
-- [ ] GoalCard with progress bar, percentage, days remaining
-- [ ] "Update Progress" inline input
-- [ ] Weight goals auto-fill from body_metrics
-- [ ] Goals onboarding: custom goal input + colored category badges
-- [ ] Build passes
+**Status: COMPLETE ✅**
+- [x] Database migration for target_value, target_unit, current_value, target_date
+- [x] Updated goal creation form with all fields
+- [x] GoalCard with progress bar, percentage, days remaining
+- [x] "Update Progress" inline input
+- [x] Weight goals auto-fill from body_metrics
+- [x] Goals onboarding: custom goal input + colored category badges
+- [x] Build passes
 
 ## Prompt 4: Notebook — Database + Queries
-**Status: NOT STARTED**
-- [ ] Migration: notes + note_tags tables with RLS
-- [ ] TypeScript types (notebook.ts)
-- [ ] Query functions (notebookQueries.ts)
-- [ ] Build passes
+**Status: COMPLETE ✅**
+- [x] Migration: notes + note_tags tables with RLS
+- [x] TypeScript types (notebook.ts)
+- [x] Query functions (notebookQueries.ts)
+- [x] Build passes
 
 ## Prompt 5: Notebook — UI + Pages
-**Status: NOT STARTED**
-- [ ] Notebook list page (/notebook)
-- [ ] Note editor (new + edit/[id])
-- [ ] Search + filters
-- [ ] Added to sidebar + mobile nav
-- [ ] Build passes
+**Status: COMPLETE ✅**
+- [x] Notebook list page (/notebook)
+- [x] Note editor (new + edit/[id])
+- [x] Search + filters
+- [x] Added to sidebar + mobile nav
+- [x] Build passes
 
 ## Prompt 6: Notebook — Integration + Techniques
-**Status: NOT STARTED**
-- [ ] Notes section in TrainingSessionCard
-- [ ] Post-session "What did you learn?" prompt
-- [ ] Note option in QuickLogFAB
-- [ ] Technique Library tab with grouped tags
-- [ ] Build passes
+**Status: COMPLETE ✅**
+- [x] Notes section in TrainingSessionCard
+- [x] Post-session "What did you learn?" prompt
+- [x] Note option in QuickLogFAB
+- [x] Technique Library tab with grouped tags
+- [x] Build passes
 
 ## Prompt 7: Fighter Profile + Achievements
 **Status: NOT STARTED**

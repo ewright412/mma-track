@@ -27,6 +27,7 @@ import { GoalProgressIndicator } from '@/components/metrics/GoalProgressIndicato
 import { CompetitionCountdown } from '@/components/dashboard/CompetitionCountdown';
 import { TrainingLoadCard } from '@/components/dashboard/TrainingLoadCard';
 import { TodaysPlanCard } from '@/components/dashboard/TodaysPlanCard';
+import { WeeklySummaryCard } from '@/components/dashboard/WeeklySummaryCard';
 
 // Lazy load heavy chart components for better initial load performance
 const DisciplineBreakdownChart = dynamic(
@@ -114,9 +115,40 @@ export default function DashboardPage() {
     0
   );
 
+  // Compute week date range for share card
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  const weekStart = new Date(today);
+  weekStart.setDate(today.getDate() + diffToMonday);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 6);
+  const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const weekLabel = `${fmt(weekStart)} – ${fmt(weekEnd)}`;
+
+  // Unique disciplines trained this week
+  const weekDisciplines = [...new Set(data.sessionsThisWeek.map((s) => s.discipline))];
+
+  // Best PR this week (if any)
+  const bestPR = data.recentPRs.length > 0
+    ? { exercise: data.recentPRs[0].exercise_name, value: data.recentPRs[0].value }
+    : null;
+
   return (
     <div className="min-h-screen bg-[#0f0f13] p-4">
       <div className="max-w-7xl mx-auto">
+        {/* Share Week button */}
+        <div className="flex justify-end mb-3">
+          <WeeklySummaryCard
+            weekLabel={weekLabel}
+            sessionsCount={thisWeekCount}
+            totalMinutes={thisWeekMinutes}
+            disciplines={weekDisciplines}
+            streak={data.trainingStats?.currentStreak || 0}
+            bestPR={bestPR}
+          />
+        </div>
+
         {/* Quick Actions */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
           <button

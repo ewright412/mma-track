@@ -7,6 +7,9 @@ import { Input } from '@/components/ui/Input';
 import { MMA_DISCIPLINES, DISCIPLINE_HEX_COLORS, DURATION_PRESETS, getIntensityColor } from '@/lib/constants/disciplines';
 import { createTrainingSession } from '@/lib/supabase/queries';
 import { createNote } from '@/lib/supabase/notebookQueries';
+import { checkAndAwardBadges } from '@/lib/supabase/badgeQueries';
+import { BADGE_MAP } from '@/lib/constants/badges';
+import { supabase } from '@/lib/supabase/client';
 import { CreateTrainingSessionInput, MMADiscipline } from '@/lib/types/training';
 import { X, Plus, ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -38,6 +41,7 @@ export default function NewTrainingSessionPage() {
   const [showLearnPrompt, setShowLearnPrompt] = useState(false);
   const [learnContent, setLearnContent] = useState('');
   const [savingNote, setSavingNote] = useState(false);
+  const [badgeToast, setBadgeToast] = useState<string | null>(null);
 
   const handleAddTechnique = () => {
     const newTechnique: Technique = {
@@ -90,6 +94,18 @@ export default function NewTrainingSessionPage() {
         setSavedSessionId(data.id);
         setShowLearnPrompt(true);
         setIsSubmitting(false);
+
+        // Check badges in background
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (authUser) {
+          checkAndAwardBadges(authUser.id).then((newBadges) => {
+            if (newBadges.length > 0) {
+              const name = BADGE_MAP[newBadges[0]]?.name || newBadges[0];
+              setBadgeToast(name);
+              setTimeout(() => setBadgeToast(null), 4000);
+            }
+          });
+        }
       }
     } catch (err) {
       setError('An unexpected error occurred');
@@ -402,6 +418,14 @@ export default function NewTrainingSessionPage() {
           </div>
         )}
       </div>
+
+      {/* Badge Toast */}
+      {badgeToast && (
+        <div className="fixed bottom-6 right-6 bg-[#f59e0b] text-black px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 animate-pulse">
+          <span className="text-lg">🏆</span>
+          <span className="text-sm font-medium">Achievement Unlocked: {badgeToast}!</span>
+        </div>
+      )}
     </div>
   );
 }

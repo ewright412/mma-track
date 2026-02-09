@@ -41,11 +41,16 @@ import {
   Flame,
   Trophy,
   Check,
+  Lock,
 } from 'lucide-react';
 import { getTrainingSessions, getTrainingStats } from '@/lib/supabase/queries';
 import { getCardioLogs } from '@/lib/supabase/cardioQueries';
 import { getStrengthLogs } from '@/lib/supabase/strength-queries';
 import { getGoals } from '@/lib/supabase/goalsQueries';
+import { getUserBadges, UserBadge } from '@/lib/supabase/badgeQueries';
+import { BADGE_DEFINITIONS, BADGE_MAP } from '@/lib/constants/badges';
+import { MMA_DISCIPLINES, DISCIPLINE_HEX_COLORS } from '@/lib/constants/disciplines';
+import { MMADiscipline } from '@/lib/types/training';
 import {
   exportTrainingSessions,
   exportCardioLogs,
@@ -148,6 +153,8 @@ export default function ProfilePage() {
   const [toast, setToast] = useState<string | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileStats, setProfileStats] = useState<ProfileStats | null>(null);
+  const [badges, setBadges] = useState<UserBadge[]>([]);
+  const [userDisciplines, setUserDisciplines] = useState<MMADiscipline[]>([]);
 
   // Form state
   const [formData, setFormData] = useState<CreateBodyMetricInput>({
@@ -162,6 +169,7 @@ export default function ProfilePage() {
     loadBodyMetrics();
     loadCompetitions();
     loadProfileStats();
+    loadBadges();
     const settings = getReminderSettings();
     setReminderEnabled(settings.enabled);
     setReminderTime(settings.time);
@@ -211,6 +219,28 @@ export default function ProfilePage() {
     if (user?.email) return user.email.charAt(0).toUpperCase();
     return 'U';
   };
+
+  const getTrainingDuration = () => {
+    if (!profile.trainingSince) return null;
+    const start = new Date(profile.trainingSince);
+    const now = new Date();
+    let years = now.getFullYear() - start.getFullYear();
+    let months = now.getMonth() - start.getMonth();
+    if (months < 0) { years--; months += 12; }
+    const parts: string[] = [];
+    if (years > 0) parts.push(`${years} year${years !== 1 ? 's' : ''}`);
+    if (months > 0) parts.push(`${months} month${months !== 1 ? 's' : ''}`);
+    if (parts.length === 0) parts.push('< 1 month');
+    return parts.join(', ');
+  };
+
+  const getPrimaryDiscipline = (): MMADiscipline | null => {
+    if (userDisciplines.length === 0) return null;
+    return userDisciplines[0];
+  };
+
+  const primaryDiscipline = getPrimaryDiscipline();
+  const avatarBorderColor = primaryDiscipline ? DISCIPLINE_HEX_COLORS[primaryDiscipline] : '#ef4444';
 
   const loadUserData = async () => {
     const {
@@ -275,6 +305,28 @@ export default function ProfilePage() {
       }
     } catch (err) {
       console.error('Error loading profile stats:', err);
+    }
+  };
+
+  const loadBadges = async () => {
+    try {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) return;
+
+      const { data } = await getUserBadges(authUser.id);
+      if (data) setBadges(data);
+
+      // Load user disciplines from sessions
+      const { data: sessions } = await supabase
+        .from('training_sessions')
+        .select('discipline')
+        .eq('user_id', authUser.id);
+      if (sessions) {
+        const disciplines = [...new Set(sessions.map((s) => s.discipline as MMADiscipline))];
+        setUserDisciplines(disciplines);
+      }
+    } catch (err) {
+      console.error('Error loading badges:', err);
     }
   };
 
@@ -483,26 +535,49 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-6">
-      {/* Fighter ID Card */}
+      {/* Fighter Profile Card */}
       <Card className="p-6">
-        <div className="flex items-start justify-between mb-4">
+        <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
-            {/* Avatar */}
-            <div className="w-16 h-16 rounded-full bg-[#ef4444]/20 border-2 border-[#ef4444]/40 flex items-center justify-center flex-shrink-0">
-              <span className="text-xl font-bold text-[#ef4444]">{getInitials()}</span>
+            {/* Avatar - 96px with primary discipline border */}
+            <div
+              className="w-24 h-24 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{
+                backgroundColor: `${avatarBorderColor}20`,
+                border: `2px solid ${avatarBorderColor}`,
+              }}
+            >
+              <span className="text-2xl font-bold" style={{ color: avatarBorderColor }}>
+                {getInitials()}
+              </span>
             </div>
-            <div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-white">
+                {profile.displayName || user?.email?.split('@')[0] || 'Fighter'}
+              </h2>
               <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-xl font-bold text-white">
-                  {profile.displayName || user?.email?.split('@')[0] || 'Fighter'}
-                </h2>
                 {profile.weightClass && (
-                  <span className="text-xs font-medium text-[#f59e0b] bg-[#f59e0b]/10 px-2 py-0.5 rounded">
+                  <span className="text-xs font-medium text-[#f59e0b] bg-[#f59e0b]/10 px-2.5 py-1 rounded-md">
                     {profile.weightClass}
                   </span>
                 )}
+                {profile.stance && (
+                  <span className="text-xs font-medium text-[#3b82f6] bg-[#3b82f6]/10 px-2.5 py-1 rounded-md">
+                    {profile.stance}
+                  </span>
+                )}
               </div>
-              <p className="text-sm text-gray-400">{user?.email}</p>
+              {profile.homeGym && (
+                <p className="text-sm text-gray-400 flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5" />
+                  {profile.homeGym}
+                </p>
+              )}
+              {profile.trainingSince && (
+                <p className="text-sm text-gray-500">
+                  Training for {getTrainingDuration()}
+                </p>
+              )}
             </div>
           </div>
           {!editingProfile && (
@@ -515,8 +590,27 @@ export default function ProfilePage() {
           )}
         </div>
 
+        {/* Discipline Chips */}
+        {userDisciplines.length > 0 && !editingProfile && (
+          <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-white/[0.08]">
+            {userDisciplines.map((d) => (
+              <span
+                key={d}
+                className="text-xs font-medium px-2.5 py-1 rounded-md"
+                style={{
+                  backgroundColor: `${DISCIPLINE_HEX_COLORS[d]}15`,
+                  color: DISCIPLINE_HEX_COLORS[d],
+                  border: `1px solid ${DISCIPLINE_HEX_COLORS[d]}30`,
+                }}
+              >
+                {d}
+              </span>
+            ))}
+          </div>
+        )}
+
         {/* Stats Summary Row */}
-        <div className="grid grid-cols-4 gap-3 py-4 border-t border-white/[0.08]">
+        <div className="grid grid-cols-4 gap-3 py-4 mt-4 border-t border-white/[0.08]">
           <div className="text-center">
             <Activity className="w-4 h-4 mx-auto mb-1 text-[#ef4444]" />
             <div className="text-lg font-bold text-white">{profileStats?.totalSessions ?? 0}</div>
@@ -624,32 +718,12 @@ export default function ProfilePage() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-white/[0.08]">
-            {profile.homeGym && (
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-gray-500" />
-                <span className="text-sm text-gray-300">{profile.homeGym}</span>
-              </div>
-            )}
-            {profile.stance && (
-              <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-gray-500" />
-                <span className="text-sm text-gray-300">{profile.stance}</span>
-              </div>
-            )}
-            {profile.trainingSince && (
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-gray-500" />
-                <span className="text-sm text-gray-300">Since {new Date(profile.trainingSince).getFullYear()}</span>
-              </div>
-            )}
+          <>
             {profile.bio && (
-              <div className="col-span-full">
-                <p className="text-sm text-gray-400">{profile.bio}</p>
-              </div>
+              <p className="text-sm text-gray-400 pt-3 border-t border-white/[0.08]">{profile.bio}</p>
             )}
-            {!profile.homeGym && !profile.stance && !profile.trainingSince && !profile.bio && (
-              <div className="col-span-full">
+            {!profile.displayName && !profile.homeGym && !profile.stance && !profile.trainingSince && !profile.bio && (
+              <div className="pt-3 border-t border-white/[0.08]">
                 <button
                   onClick={() => setEditingProfile(true)}
                   className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
@@ -658,8 +732,58 @@ export default function ProfilePage() {
                 </button>
               </div>
             )}
-          </div>
+          </>
         )}
+      </Card>
+
+      {/* Achievements */}
+      <Card className="p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <Trophy className="w-5 h-5 text-[#f59e0b]" />
+          <h2 className="text-lg font-semibold text-white">Achievements</h2>
+          <span className="text-xs text-gray-500 ml-auto">
+            {badges.length}/{BADGE_DEFINITIONS.length}
+          </span>
+        </div>
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+          {BADGE_DEFINITIONS.map((badge) => {
+            const earned = badges.find((b) => b.badge_key === badge.key);
+            const Icon = badge.icon;
+            return (
+              <div
+                key={badge.key}
+                className={`flex flex-col items-center text-center p-3 rounded-lg border transition-all duration-150 ${
+                  earned
+                    ? 'border-white/[0.08] bg-white/5'
+                    : 'border-white/[0.04] bg-white/[0.02] opacity-40'
+                }`}
+              >
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
+                  style={{
+                    backgroundColor: earned ? `${badge.color}20` : 'rgba(255,255,255,0.05)',
+                  }}
+                >
+                  {earned ? (
+                    <Icon className="w-5 h-5" style={{ color: badge.color }} />
+                  ) : (
+                    <Lock className="w-4 h-4 text-gray-600" />
+                  )}
+                </div>
+                <span className={`text-xs font-medium leading-tight ${earned ? 'text-white' : 'text-gray-600'}`}>
+                  {badge.name}
+                </span>
+                {earned ? (
+                  <span className="text-[10px] text-gray-500 mt-0.5">
+                    {new Date(earned.earned_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  </span>
+                ) : (
+                  <span className="text-[10px] text-gray-600 mt-0.5">{badge.description}</span>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </Card>
 
       {/* Competitions */}
