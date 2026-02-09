@@ -19,6 +19,7 @@ import {
   Scale,
   Clock,
   Flame,
+  Lightbulb,
 } from 'lucide-react';
 import { getDashboardData, DashboardData } from '@/lib/supabase/dashboardQueries';
 import { TrainingInsights } from '@/components/charts/TrainingInsights';
@@ -109,59 +110,46 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-[#0f0f13] p-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-gray-400">Your MMA training command center</p>
-        </div>
-
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <Button
-            variant="secondary"
-            className="h-20 flex-col gap-2"
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          <button
             onClick={() => router.push('/training/new')}
+            className="flex items-center gap-3 p-3 bg-[#1a1a24] border-l-4 border-l-[#ef4444] border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
           >
-            <Target className="w-6 h-6" />
-            <span className="text-sm">Log Training</span>
-          </Button>
-          <Button
-            variant="secondary"
-            className="h-20 flex-col gap-2"
+            <Target className="w-5 h-5 text-[#ef4444]" />
+            <span className="text-sm font-medium text-white">Log Training</span>
+          </button>
+          <button
             onClick={() => router.push('/strength/new')}
+            className="flex items-center gap-3 p-3 bg-[#1a1a24] border-l-4 border-l-[#3b82f6] border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
           >
-            <Dumbbell className="w-6 h-6" />
-            <span className="text-sm">Log Workout</span>
-          </Button>
-          <Button
-            variant="secondary"
-            className="h-20 flex-col gap-2"
+            <Dumbbell className="w-5 h-5 text-[#3b82f6]" />
+            <span className="text-sm font-medium text-white">Log Workout</span>
+          </button>
+          <button
             onClick={() => router.push('/sparring/new')}
+            className="flex items-center gap-3 p-3 bg-[#1a1a24] border-l-4 border-l-[#f59e0b] border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
           >
-            <Activity className="w-6 h-6" />
-            <span className="text-sm">Log Sparring</span>
-          </Button>
-          <Button
-            variant="secondary"
-            className="h-20 flex-col gap-2"
+            <Activity className="w-5 h-5 text-[#f59e0b]" />
+            <span className="text-sm font-medium text-white">Log Sparring</span>
+          </button>
+          <button
             onClick={() => router.push('/cardio/new')}
+            className="flex items-center gap-3 p-3 bg-[#1a1a24] border-l-4 border-l-[#22c55e] border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
           >
-            <Heart className="w-6 h-6" />
-            <span className="text-sm">Log Cardio</span>
-          </Button>
+            <Heart className="w-5 h-5 text-[#22c55e]" />
+            <span className="text-sm font-medium text-white">Log Cardio</span>
+          </button>
         </div>
 
         {/* Key Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {/* Sessions This Week */}
           <Card className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Calendar className="w-4 h-4 text-blue-400" />
-              <span className="text-xs text-gray-400">This Week</span>
-            </div>
+            <Calendar className="w-5 h-5 text-blue-400 mb-2" />
             <div className="text-2xl font-bold text-white">{thisWeekCount}</div>
-            <div className="text-xs text-gray-500">
-              {thisWeekCount === 1 ? 'session' : 'sessions'}
+            <div className="text-sm text-gray-400">
+              {thisWeekCount === 1 ? 'session' : 'sessions'} this week
               {lastWeekCount > 0 && (
                 <span
                   className={
@@ -180,33 +168,26 @@ export default function DashboardPage() {
 
           {/* Training Time */}
           <Card className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Clock className="w-4 h-4 text-purple-400" />
-              <span className="text-xs text-gray-400">Training Time</span>
-            </div>
+            <Clock className="w-5 h-5 text-purple-400 mb-2" />
             <div className="text-2xl font-bold text-white">
               {thisWeekMinutes >= 60
                 ? `${Math.floor(thisWeekMinutes / 60)}h ${thisWeekMinutes % 60}m`
                 : `${thisWeekMinutes}m`}
             </div>
-            <div className="text-xs text-gray-500">this week</div>
+            <div className="text-sm text-gray-400">training this week</div>
           </Card>
 
           {/* Streak */}
           <Card className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Flame className="w-4 h-4 text-orange-400" />
-              <span className="text-xs text-gray-400">Streak</span>
-            </div>
+            <Flame className="w-5 h-5 text-orange-400 mb-2" />
             <div className="text-2xl font-bold text-white">
               {data.trainingStats?.currentStreak || 0}
             </div>
-            <div className="text-xs text-gray-500">
-              {(data.trainingStats?.currentStreak || 0) === 1 ? 'day' : 'days'}
+            <div className="text-sm text-gray-400">
+              {(data.trainingStats?.currentStreak || 0) === 1 ? 'day' : 'days'} streak
               {data.trainingStats && data.trainingStats.longestStreak > 0 && (
-                <span className="text-gray-600">
-                  {' '}
-                  (best: {data.trainingStats.longestStreak})
+                <span className="text-gray-500">
+                  {' '}(best: {data.trainingStats.longestStreak})
                 </span>
               )}
             </div>
@@ -214,31 +195,38 @@ export default function DashboardPage() {
 
           {/* PRs This Month */}
           <Card className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Award className="w-4 h-4 text-yellow-400" />
-              <span className="text-xs text-gray-400">PRs (30d)</span>
-            </div>
+            <Award className="w-5 h-5 text-yellow-400 mb-2" />
             <div className="text-2xl font-bold text-white">
               {data.recentPRs.length}
             </div>
-            <div className="text-xs text-gray-500">
+            <div className="text-sm text-gray-400">
               {data.recentPRs.length > 0 ? (
                 <span className="text-yellow-400 truncate block">
                   Latest: {data.recentPRs[0].exercise_name}
                 </span>
               ) : (
-                'personal records'
+                data.recentPRs.length === 1 ? 'personal record' : 'personal records'
               )}
             </div>
           </Card>
         </div>
 
         {/* Training Insights */}
-        {data.insights.length > 0 && (
-          <div className="mb-6">
+        <div className="mb-6">
+          {data.insights.length > 1 ? (
             <TrainingInsights insights={data.insights} />
-          </div>
-        )}
+          ) : (
+            <Card className="p-6 border-dashed">
+              <div className="flex items-center gap-3 mb-2">
+                <Lightbulb className="w-5 h-5 text-yellow-400" />
+                <h2 className="text-lg font-semibold text-white">Areas to Focus</h2>
+              </div>
+              <p className="text-sm text-gray-400">
+                Train more this week to unlock personalized insights.
+              </p>
+            </Card>
+          )}
+        </div>
 
         {/* Training Overview + Discipline Breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">

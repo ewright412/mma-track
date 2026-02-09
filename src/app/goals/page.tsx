@@ -98,10 +98,10 @@ export default function GoalsPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-white">Goals</h1>
+        <div className="h-8 w-48 bg-white/5 rounded animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />)}
         </div>
-        <p className="text-white/60">Loading...</p>
       </div>
     );
   }
@@ -109,44 +109,38 @@ export default function GoalsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 className="text-3xl font-bold text-white">Goals</h1>
+      <div className="flex items-center justify-between">
+        <p className="text-white/60">Set targets and track your progress</p>
         <Link href="/goals/new">
-          <Button variant="primary" className="bg-blue-500 hover:bg-blue-600">
-            <Plus className="w-5 h-5 mr-2" />
+          <Button className="px-4 py-2 text-sm font-medium">
+            <Plus className="w-4 h-4 mr-2" />
             Create Goal
           </Button>
         </Link>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-2">
-            <Target className="w-8 h-8 text-blue-400" />
-          </div>
-          <div className="text-3xl font-bold text-white mb-1">{stats?.activeGoals || 0}</div>
-          <div className="text-sm text-white/60">Active Goals</div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <Card className="p-4">
+          <Target className="w-5 h-5 text-[#3b82f6] mb-2" />
+          <div className="text-2xl font-bold text-white">{stats?.activeGoals || 0}</div>
+          <div className="text-sm text-gray-400">active {(stats?.activeGoals || 0) === 1 ? 'goal' : 'goals'}</div>
         </Card>
 
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-2">
-            <CheckCircle2 className="w-8 h-8 text-green-400" />
-          </div>
-          <div className="text-3xl font-bold text-white mb-1">
+        <Card className="p-4">
+          <CheckCircle2 className="w-5 h-5 text-[#22c55e] mb-2" />
+          <div className="text-2xl font-bold text-white">
             {stats?.goalsCompletedThisMonth || 0}
           </div>
-          <div className="text-sm text-white/60">Completed This Month</div>
+          <div className="text-sm text-gray-400">completed this month</div>
         </Card>
 
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-2">
-            <AlertCircle className="w-8 h-8 text-orange-400" />
-          </div>
-          <div className="text-3xl font-bold text-white mb-1">
+        <Card className="p-4">
+          <AlertCircle className="w-5 h-5 text-[#f59e0b] mb-2" />
+          <div className="text-2xl font-bold text-white">
             {stats?.upcomingDeadlines || 0}
           </div>
-          <div className="text-sm text-white/60">Upcoming Deadlines (30d)</div>
+          <div className="text-sm text-gray-400">upcoming {(stats?.upcomingDeadlines || 0) === 1 ? 'deadline' : 'deadlines'} (30d)</div>
         </Card>
       </div>
 

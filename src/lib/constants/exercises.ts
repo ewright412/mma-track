@@ -290,6 +290,6 @@ export const MUSCLE_GROUP_COLORS: Record<MuscleGroup, string> = {
   shoulders: '#f59e0b',  // amber
   legs: '#22c55e',       // green
   arms: '#a855f7',       // purple
-  core: '#ec4899',       // pink
+  core: '#f97316',       // orange
   full_body: '#6366f1',  // indigo
 };

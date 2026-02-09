@@ -18,7 +18,7 @@ import {
   SparringTrendData,
   FocusArea,
 } from '@/lib/types/sparring';
-import { Plus, Target, TrendingUp, Users, AlertCircle } from 'lucide-react';
+import { Plus, Target, Users } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { RATING_COLORS } from '@/lib/constants/sparring';
 
@@ -90,25 +90,18 @@ export default function SparringPage() {
     alert('Edit functionality coming soon!');
   };
 
-  const getPriorityColor = (priority: 'high' | 'medium' | 'low') => {
-    switch (priority) {
-      case 'high':
-        return 'border-accent bg-accent/10';
-      case 'medium':
-        return 'border-warning bg-warning/10';
-      case 'low':
-        return 'border-success bg-success/10';
-    }
+  const getRatingStyle = (area: FocusArea) => {
+    const rating = area.averageRating;
+    if (rating >= 7) return { border: 'border-l-[#22c55e]', label: 'Strong', labelColor: 'text-[#22c55e]' };
+    if (rating >= 4) return { border: 'border-l-[#f59e0b]', label: 'Developing', labelColor: 'text-[#f59e0b]' };
+    return { border: 'border-l-[#ef4444]', label: 'Needs Work', labelColor: 'text-[#ef4444]' };
   };
 
-  const getPriorityIcon = (priority: 'high' | 'medium' | 'low') => {
-    switch (priority) {
-      case 'high':
-        return <AlertCircle className="w-5 h-5 text-accent" />;
-      case 'medium':
-        return <Target className="w-5 h-5 text-warning" />;
-      case 'low':
-        return <TrendingUp className="w-5 h-5 text-success" />;
+  const getTrendLabel = (trend: 'improving' | 'declining' | 'stable') => {
+    switch (trend) {
+      case 'improving': return { text: 'Improved', icon: '↑', color: 'text-[#22c55e]' };
+      case 'declining': return { text: 'Declining', icon: '↓', color: 'text-[#ef4444]' };
+      case 'stable': return { text: 'Stable', icon: '→', color: 'text-gray-400' };
     }
   };
 
@@ -116,64 +109,81 @@ export default function SparringPage() {
     <div className="min-h-screen bg-background p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Sparring Log</h1>
-            <p className="text-white/60">Track and analyze your sparring performance</p>
-          </div>
-          <Button onClick={() => router.push('/sparring/new')}>
-            <Plus className="w-5 h-5 mr-2" />
-            Log Sparring Session
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-white/60">Track and analyze your sparring performance</p>
+          <Button onClick={() => router.push('/sparring/new')} className="px-4 py-2 text-sm font-medium">
+            <Plus className="w-4 h-4 mr-2" />
+            Log Session
           </Button>
         </div>
 
         {/* Stats Cards */}
         {stats && stats.totalSessions > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-accent/20 rounded-lg">
-                  <Users className="w-5 h-5 text-accent" />
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm">Total Sessions</p>
-                  <p className="text-2xl font-bold text-white">{stats.totalSessions}</p>
-                </div>
-              </div>
-            </Card>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+              <Card className="p-4">
+                <Users className="w-5 h-5 text-[#ef4444] mb-2" />
+                <p className="text-2xl font-bold text-white">{stats.totalSessions}</p>
+                <p className="text-sm text-gray-400">total {stats.totalSessions === 1 ? 'session' : 'sessions'}</p>
+              </Card>
 
-            <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-accent-blue/20 rounded-lg">
-                  <Target className="w-5 h-5 text-accent-blue" />
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm">Total Rounds</p>
-                  <p className="text-2xl font-bold text-white">{stats.totalRounds}</p>
-                </div>
-              </div>
-            </Card>
+              <Card className="p-4">
+                <Target className="w-5 h-5 text-[#3b82f6] mb-2" />
+                <p className="text-2xl font-bold text-white">{stats.totalRounds}</p>
+                <p className="text-sm text-gray-400">total {stats.totalRounds === 1 ? 'round' : 'rounds'}</p>
+              </Card>
 
-            <Card className="p-4">
-              <div>
-                <p className="text-white/60 text-xs mb-2">Avg Striking</p>
-                <div className="flex gap-2 text-sm">
-                  <span className="text-accent font-bold">Off: {stats.averageRatings.striking_offense}</span>
-                  <span className="text-accent-blue font-bold">Def: {stats.averageRatings.striking_defense}</span>
+              {/* Striking Offense */}
+              <Card className="p-4">
+                <p className="text-sm text-gray-400 mb-2">Striking Offense</p>
+                <p className="text-2xl font-bold text-white">{stats.averageRatings.striking_offense}/10</p>
+                <div className="mt-2 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-[#ef4444]"
+                    style={{ width: `${stats.averageRatings.striking_offense * 10}%` }}
+                  />
                 </div>
-              </div>
-            </Card>
+              </Card>
 
-            <Card className="p-4">
-              <div>
-                <p className="text-white/60 text-xs mb-2">Avg Grappling</p>
-                <div className="flex gap-2 text-sm">
-                  <span className="text-warning font-bold">TD: {stats.averageRatings.takedowns}</span>
-                  <span className="text-success font-bold">GG: {stats.averageRatings.ground_game}</span>
+              {/* Striking Defense */}
+              <Card className="p-4">
+                <p className="text-sm text-gray-400 mb-2">Striking Defense</p>
+                <p className="text-2xl font-bold text-white">{stats.averageRatings.striking_defense}/10</p>
+                <div className="mt-2 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-[#3b82f6]"
+                    style={{ width: `${stats.averageRatings.striking_defense * 10}%` }}
+                  />
                 </div>
-              </div>
-            </Card>
-          </div>
+              </Card>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              {/* Takedowns */}
+              <Card className="p-4">
+                <p className="text-sm text-gray-400 mb-2">Takedowns</p>
+                <p className="text-2xl font-bold text-white">{stats.averageRatings.takedowns}/10</p>
+                <div className="mt-2 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-[#f59e0b]"
+                    style={{ width: `${stats.averageRatings.takedowns * 10}%` }}
+                  />
+                </div>
+              </Card>
+
+              {/* Ground Game */}
+              <Card className="p-4">
+                <p className="text-sm text-gray-400 mb-2">Ground Game</p>
+                <p className="text-2xl font-bold text-white">{stats.averageRatings.ground_game}/10</p>
+                <div className="mt-2 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-[#22c55e]"
+                    style={{ width: `${stats.averageRatings.ground_game * 10}%` }}
+                  />
+                </div>
+              </Card>
+            </div>
+          </>
         )}
 
         {/* Focus Areas */}
@@ -181,25 +191,30 @@ export default function SparringPage() {
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-white mb-4">Focus Areas</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {focusAreas.slice(0, 4).map((area) => (
-                <Card
-                  key={area.category}
-                  className={`p-4 ${getPriorityColor(area.priority)}`}
-                >
-                  <div className="flex items-start gap-3">
-                    {getPriorityIcon(area.priority)}
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-white mb-1">{area.categoryLabel}</h3>
-                      <p className="text-sm text-white/80">{area.message}</p>
-                      {area.trend !== 'stable' && (
-                        <p className="text-xs text-white/60 mt-1">
-                          Trend: {area.trend === 'improving' ? '📈 Improving' : '📉 Declining'}
-                        </p>
-                      )}
+              {focusAreas.slice(0, 4).map((area) => {
+                const ratingStyle = getRatingStyle(area);
+                const trendInfo = getTrendLabel(area.trend);
+                return (
+                  <Card
+                    key={area.category}
+                    className={`p-4 border-l-4 ${ratingStyle.border}`}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold text-white">{area.categoryLabel}</h3>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded ${ratingStyle.labelColor} bg-white/5`}>
+                        {ratingStyle.label}
+                      </span>
                     </div>
-                  </div>
-                </Card>
-              ))}
+                    <p className="text-sm text-white/70 mb-2">{area.message}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-semibold text-white">{area.averageRating}/10</span>
+                      <span className={`text-xs ${trendInfo.color}`}>
+                        {trendInfo.icon} {trendInfo.text}
+                      </span>
+                    </div>
+                  </Card>
+                );
+              })}
             </div>
           </div>
         )}

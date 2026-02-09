@@ -106,107 +106,69 @@ export default function CardioPage() {
     <div className="min-h-screen bg-background p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Cardio Tracking</h1>
-            <p className="text-white/60">Track and analyze your conditioning work</p>
-          </div>
-          <Button onClick={() => router.push('/cardio/new')}>
-            <Plus className="w-5 h-5 mr-2" />
-            Log Cardio Session
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-white/60">Track and analyze your conditioning work</p>
+          <Button onClick={() => router.push('/cardio/new')} className="px-4 py-2 text-sm font-medium">
+            <Plus className="w-4 h-4 mr-2" />
+            Log Session
           </Button>
         </div>
 
         {/* Weekly Summary */}
         {weeklySummary && weeklySummary.totalMinutes > 0 && (
-          <Card className="p-6 mb-6 bg-gradient-to-br from-accent/10 to-accent-blue/10 border-accent/20">
-            <h2 className="text-xl font-semibold text-white mb-4">This Week</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card className="p-6 mb-6">
+            <h2 className="text-lg font-semibold text-white mb-4">This Week</h2>
+            <div className={`grid gap-4 ${weeklySummary.avgHeartRate > 0 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1 sm:grid-cols-3'}`}>
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Clock className="w-4 h-4 text-accent-blue" />
-                  <p className="text-xs text-white/60">Total Time</p>
-                </div>
+                <Clock className="w-5 h-5 text-[#3b82f6] mb-2" />
                 <p className="text-2xl font-bold text-white">{weeklySummary.totalMinutes} min</p>
+                <p className="text-sm text-gray-400">total time</p>
               </div>
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Flame className="w-4 h-4 text-orange-400" />
-                  <p className="text-xs text-white/60">Calories</p>
-                </div>
+                <Flame className="w-5 h-5 text-[#f59e0b] mb-2" />
                 <p className="text-2xl font-bold text-white">{weeklySummary.totalCalories}</p>
+                <p className="text-sm text-gray-400">calories</p>
               </div>
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Route className="w-4 h-4 text-green-400" />
-                  <p className="text-xs text-white/60">Distance</p>
-                </div>
+                <Route className="w-5 h-5 text-[#22c55e] mb-2" />
                 <p className="text-2xl font-bold text-white">
                   {weeklySummary.totalDistance.toFixed(1)} km
                 </p>
+                <p className="text-sm text-gray-400">distance</p>
               </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Heart className="w-4 h-4 text-red-400" />
-                  <p className="text-xs text-white/60">Avg HR</p>
+              {weeklySummary.avgHeartRate > 0 && (
+                <div>
+                  <Heart className="w-5 h-5 text-[#ef4444] mb-2" />
+                  <p className="text-2xl font-bold text-white">{weeklySummary.avgHeartRate} bpm</p>
+                  <p className="text-sm text-gray-400">avg heart rate</p>
                 </div>
-                <p className="text-2xl font-bold text-white">
-                  {weeklySummary.avgHeartRate > 0 ? `${weeklySummary.avgHeartRate} bpm` : 'N/A'}
-                </p>
-              </div>
+              )}
             </div>
           </Card>
         )}
 
-        {/* Overall Stats Cards */}
-        {stats && stats.totalSessions > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        {/* All-Time Stats (only show when no weekly summary, or as supplementary) */}
+        {stats && stats.totalSessions > 0 && (!weeklySummary || weeklySummary.totalMinutes === 0) && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-accent-blue/20 rounded-lg">
-                  <Activity className="w-5 h-5 text-accent-blue" />
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm">Total Sessions</p>
-                  <p className="text-2xl font-bold text-white">{stats.totalSessions}</p>
-                </div>
-              </div>
+              <Activity className="w-5 h-5 text-[#3b82f6] mb-2" />
+              <p className="text-2xl font-bold text-white">{stats.totalSessions}</p>
+              <p className="text-sm text-gray-400">total {stats.totalSessions === 1 ? 'session' : 'sessions'}</p>
             </Card>
-
             <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-purple-500/20 rounded-lg">
-                  <Clock className="w-5 h-5 text-purple-400" />
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm">Total Minutes</p>
-                  <p className="text-2xl font-bold text-white">{stats.totalMinutes}</p>
-                </div>
-              </div>
+              <Clock className="w-5 h-5 text-purple-400 mb-2" />
+              <p className="text-2xl font-bold text-white">{stats.totalMinutes}</p>
+              <p className="text-sm text-gray-400">total minutes</p>
             </Card>
-
             <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-green-500/20 rounded-lg">
-                  <Route className="w-5 h-5 text-green-400" />
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm">Total Distance</p>
-                  <p className="text-2xl font-bold text-white">{stats.totalDistance.toFixed(1)} km</p>
-                </div>
-              </div>
+              <Route className="w-5 h-5 text-[#22c55e] mb-2" />
+              <p className="text-2xl font-bold text-white">{stats.totalDistance.toFixed(1)} km</p>
+              <p className="text-sm text-gray-400">total distance</p>
             </Card>
-
             <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-orange-500/20 rounded-lg">
-                  <Flame className="w-5 h-5 text-orange-400" />
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm">Total Calories</p>
-                  <p className="text-2xl font-bold text-white">{stats.totalCalories}</p>
-                </div>
-              </div>
+              <Flame className="w-5 h-5 text-[#f59e0b] mb-2" />
+              <p className="text-2xl font-bold text-white">{stats.totalCalories}</p>
+              <p className="text-sm text-gray-400">total calories</p>
             </Card>
           </div>
         )}

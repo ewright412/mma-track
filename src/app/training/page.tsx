@@ -97,66 +97,39 @@ export default function TrainingPage() {
     <div className="min-h-screen bg-background p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Training Log</h1>
-            <p className="text-white/60">Track and review your training sessions</p>
-          </div>
-          <Button onClick={() => router.push('/training/new')}>
-            <Plus className="w-5 h-5 mr-2" />
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-white/60">Track and review your training sessions</p>
+          <Button onClick={() => router.push('/training/new')} className="px-4 py-2 text-sm font-medium">
+            <Plus className="w-4 h-4 mr-2" />
             Log Session
           </Button>
         </div>
 
         {/* Stats Cards */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-accent/20 rounded-lg">
-                  <TrendingUp className="w-5 h-5 text-accent" />
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm">Total Sessions</p>
-                  <p className="text-2xl font-bold text-white">{stats.totalSessions}</p>
-                </div>
-              </div>
+              <TrendingUp className="w-5 h-5 text-[#ef4444] mb-2" />
+              <p className="text-2xl font-bold text-white">{stats.totalSessions}</p>
+              <p className="text-sm text-gray-400">total {stats.totalSessions === 1 ? 'session' : 'sessions'}</p>
             </Card>
 
             <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-accent-blue/20 rounded-lg">
-                  <Clock className="w-5 h-5 text-accent-blue" />
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm">Total Time</p>
-                  <p className="text-2xl font-bold text-white">{Math.floor(stats.totalMinutes / 60)}h</p>
-                </div>
-              </div>
+              <Clock className="w-5 h-5 text-[#3b82f6] mb-2" />
+              <p className="text-2xl font-bold text-white">{Math.floor(stats.totalMinutes / 60)}h</p>
+              <p className="text-sm text-gray-400">total time</p>
             </Card>
 
             <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-warning/20 rounded-lg">
-                  <Flame className="w-5 h-5 text-warning" />
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm">Avg Intensity</p>
-                  <p className="text-2xl font-bold text-white">{stats.averageIntensity}/10</p>
-                </div>
-              </div>
+              <Flame className="w-5 h-5 text-[#f59e0b] mb-2" />
+              <p className="text-2xl font-bold text-white">{stats.averageIntensity}/10</p>
+              <p className="text-sm text-gray-400">avg intensity</p>
             </Card>
 
             <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-success/20 rounded-lg">
-                  <Flame className="w-5 h-5 text-success" />
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm">Current Streak</p>
-                  <p className="text-2xl font-bold text-white">{stats.currentStreak} days</p>
-                </div>
-              </div>
+              <Flame className="w-5 h-5 text-[#22c55e] mb-2" />
+              <p className="text-2xl font-bold text-white">{stats.currentStreak}</p>
+              <p className="text-sm text-gray-400">{stats.currentStreak === 1 ? 'day' : 'days'} streak</p>
             </Card>
           </div>
         )}

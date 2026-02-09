@@ -29,6 +29,9 @@ import {
   Download,
   Bell,
   BellOff,
+  Edit2,
+  MapPin,
+  Shield,
 } from 'lucide-react';
 import { getTrainingSessions } from '@/lib/supabase/queries';
 import { getCardioLogs } from '@/lib/supabase/cardioQueries';
@@ -48,6 +51,45 @@ import {
   getNotificationPermission,
 } from '@/lib/utils/notifications';
 
+interface FighterProfile {
+  displayName: string;
+  weightClass: string;
+  homeGym: string;
+  stance: string;
+  trainingSince: string;
+  bio: string;
+}
+
+const WEIGHT_CLASSES = [
+  '', 'Strawweight', 'Flyweight', 'Bantamweight', 'Featherweight',
+  'Lightweight', 'Welterweight', 'Middleweight', 'Light Heavyweight', 'Heavyweight',
+];
+
+const STANCES = ['', 'Orthodox', 'Southpaw', 'Switch'];
+
+const DEFAULT_PROFILE: FighterProfile = {
+  displayName: '',
+  weightClass: '',
+  homeGym: '',
+  stance: '',
+  trainingSince: '',
+  bio: '',
+};
+
+function loadProfile(): FighterProfile {
+  if (typeof window === 'undefined') return DEFAULT_PROFILE;
+  try {
+    const stored = localStorage.getItem('mma_fighter_profile');
+    return stored ? { ...DEFAULT_PROFILE, ...JSON.parse(stored) } : DEFAULT_PROFILE;
+  } catch {
+    return DEFAULT_PROFILE;
+  }
+}
+
+function saveProfile(profile: FighterProfile) {
+  localStorage.setItem('mma_fighter_profile', JSON.stringify(profile));
+}
+
 export default function ProfilePage() {
   const [user, setUser] = useState<{ email?: string } | null>(null);
   const [metrics, setMetrics] = useState<BodyMetric[]>([]);
@@ -59,6 +101,9 @@ export default function ProfilePage() {
   const [exporting, setExporting] = useState<string | null>(null);
   const [reminderEnabled, setReminderEnabled] = useState(false);
   const [reminderTime, setReminderTime] = useState('19:00');
+  const [profile, setProfile] = useState<FighterProfile>(DEFAULT_PROFILE);
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileDraft, setProfileDraft] = useState<FighterProfile>(DEFAULT_PROFILE);
 
   // Form state
   const [formData, setFormData] = useState<CreateBodyMetricInput>({
@@ -74,7 +119,29 @@ export default function ProfilePage() {
     const settings = getReminderSettings();
     setReminderEnabled(settings.enabled);
     setReminderTime(settings.time);
+    const loaded = loadProfile();
+    setProfile(loaded);
+    setProfileDraft(loaded);
   }, []);
+
+  const handleSaveProfile = () => {
+    saveProfile(profileDraft);
+    setProfile(profileDraft);
+    setEditingProfile(false);
+  };
+
+  const handleCancelProfile = () => {
+    setProfileDraft(profile);
+    setEditingProfile(false);
+  };
+
+  const getInitials = () => {
+    if (profile.displayName) {
+      return profile.displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    }
+    if (user?.email) return user.email.charAt(0).toUpperCase();
+    return 'U';
+  };
 
   const loadUserData = async () => {
     const {
@@ -239,95 +306,202 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-white">Profile & Body Metrics</h1>
+        <div className="h-8 w-48 bg-white/5 rounded animate-pulse" />
+        <div className="h-48 bg-[#1a1a24] rounded-lg animate-pulse" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />)}
         </div>
-        <p className="text-white/60">Loading...</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 className="text-3xl font-bold text-white">Profile & Body Metrics</h1>
+      {/* Fighter ID Card */}
+      <Card className="p-6">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-4">
+            {/* Avatar */}
+            <div className="w-16 h-16 rounded-full bg-[#ef4444]/20 border-2 border-[#ef4444]/40 flex items-center justify-center flex-shrink-0">
+              <span className="text-xl font-bold text-[#ef4444]">{getInitials()}</span>
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-white">
+                {profile.displayName || user?.email?.split('@')[0] || 'Fighter'}
+              </h2>
+              <p className="text-sm text-gray-400">{user?.email}</p>
+              {profile.weightClass && (
+                <span className="inline-block mt-1 text-xs font-medium text-[#f59e0b] bg-[#f59e0b]/10 px-2 py-0.5 rounded">
+                  {profile.weightClass}
+                </span>
+              )}
+            </div>
+          </div>
+          {!editingProfile && (
+            <button
+              onClick={() => setEditingProfile(true)}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <Edit2 className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {editingProfile ? (
+          <div className="space-y-4 pt-4 border-t border-white/[0.08]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">Display Name</label>
+                <input
+                  type="text"
+                  value={profileDraft.displayName}
+                  onChange={e => setProfileDraft({ ...profileDraft, displayName: e.target.value })}
+                  placeholder="Your name"
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">Weight Class</label>
+                <select
+                  value={profileDraft.weightClass}
+                  onChange={e => setProfileDraft({ ...profileDraft, weightClass: e.target.value })}
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                >
+                  {WEIGHT_CLASSES.map(wc => (
+                    <option key={wc} value={wc}>{wc || 'Select...'}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">Home Gym</label>
+                <input
+                  type="text"
+                  value={profileDraft.homeGym}
+                  onChange={e => setProfileDraft({ ...profileDraft, homeGym: e.target.value })}
+                  placeholder="Your gym"
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">Stance</label>
+                <select
+                  value={profileDraft.stance}
+                  onChange={e => setProfileDraft({ ...profileDraft, stance: e.target.value })}
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                >
+                  {STANCES.map(s => (
+                    <option key={s} value={s}>{s || 'Select...'}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">Training Since</label>
+                <input
+                  type="date"
+                  value={profileDraft.trainingSince}
+                  onChange={e => setProfileDraft({ ...profileDraft, trainingSince: e.target.value })}
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm text-gray-400 mb-1">Bio</label>
+              <textarea
+                value={profileDraft.bio}
+                onChange={e => setProfileDraft({ ...profileDraft, bio: e.target.value })}
+                rows={3}
+                placeholder="A few words about yourself..."
+                className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+              />
+            </div>
+            <div className="flex gap-3">
+              <Button onClick={handleSaveProfile} className="px-4 py-2 text-sm font-medium">
+                Save
+              </Button>
+              <Button variant="ghost" onClick={handleCancelProfile} className="px-4 py-2 text-sm font-medium">
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-white/[0.08]">
+            {profile.homeGym && (
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-gray-500" />
+                <span className="text-sm text-gray-300">{profile.homeGym}</span>
+              </div>
+            )}
+            {profile.stance && (
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-gray-500" />
+                <span className="text-sm text-gray-300">{profile.stance}</span>
+              </div>
+            )}
+            {profile.trainingSince && (
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-gray-500" />
+                <span className="text-sm text-gray-300">Since {new Date(profile.trainingSince).getFullYear()}</span>
+              </div>
+            )}
+            {profile.bio && (
+              <div className="col-span-full">
+                <p className="text-sm text-gray-400">{profile.bio}</p>
+              </div>
+            )}
+            {!profile.homeGym && !profile.stance && !profile.trainingSince && !profile.bio && (
+              <div className="col-span-full">
+                <button
+                  onClick={() => setEditingProfile(true)}
+                  className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+                >
+                  Click the edit icon to fill out your fighter profile
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </Card>
+
+      {/* Body Metrics Stats */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-white">Body Metrics</h2>
         <Button
-          variant="primary"
           onClick={() => setShowAddModal(true)}
-          className="bg-blue-500 hover:bg-blue-600"
+          className="px-4 py-2 text-sm font-medium"
         >
-          <Plus className="w-5 h-5 mr-2" />
-          Log Body Metric
+          <Plus className="w-4 h-4 mr-2" />
+          Log Metric
         </Button>
       </div>
 
-      {/* User Profile Section */}
-      <Card className="p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <User className="w-6 h-6 text-blue-400" />
-          <h2 className="text-xl font-semibold text-white">Profile</h2>
-        </div>
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 text-white/80">
-            <span className="text-white/60">Email:</span>
-            <span>{user?.email || 'Not available'}</span>
-          </div>
-        </div>
-      </Card>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-2">
-            <Scale className="w-8 h-8 text-blue-400" />
-          </div>
-          <div className="text-3xl font-bold text-white mb-1">
-            {stats?.currentWeight ? `${stats.currentWeight} lbs` : 'N/A'}
-          </div>
-          <div className="text-sm text-white/60">Current Weight</div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-2">
-            {getTrendIcon()}
-          </div>
-          <div className="text-3xl font-bold text-white mb-1">{getTrendText()}</div>
-          <div className="text-sm text-white/60">7-Day Trend</div>
-          {stats?.weightChange7Days && (
-            <div className="text-sm text-white/60 mt-1">
-              {stats.weightChange7Days > 0 ? '+' : ''}
-              {stats.weightChange7Days.toFixed(1)} lbs
-            </div>
-          )}
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-2">
-            <Scale className="w-8 h-8 text-green-400" />
-          </div>
-          <div className="text-3xl font-bold text-white mb-1">
-            {stats?.currentWeight ? `${stats.currentWeight} lbs` : '---'}
-          </div>
-          <div className="text-sm text-white/60">Goal Weight</div>
-          {stats?.currentWeight && (
-            <div className="text-xs text-white/40 mt-1">Set in goals</div>
-          )}
-        </Card>
-      </div>
-
-      {/* Body Fat (optional, only if logged) */}
-      {stats?.latestBodyFat && (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <Percent className="w-5 h-5 text-white/40" />
-            <div>
-              <span className="text-sm text-white/60">Body Fat: </span>
-              <span className="text-sm font-medium text-white">{stats.latestBodyFat}%</span>
-            </div>
+          <Scale className="w-5 h-5 text-[#3b82f6] mb-2" />
+          <div className="text-2xl font-bold text-white">
+            {stats?.currentWeight ? `${stats.currentWeight}` : '—'}
+          </div>
+          <div className="text-sm text-gray-400">{stats?.currentWeight ? 'lbs current' : 'no weight logged'}</div>
+        </Card>
+
+        <Card className="p-4">
+          {getTrendIcon() || <Minus className="w-5 h-5 text-gray-400 mb-2" />}
+          <div className="text-2xl font-bold text-white mt-2">{getTrendText()}</div>
+          <div className="text-sm text-gray-400">
+            7-day trend
+            {stats?.weightChange7Days != null && (
+              <span> ({stats.weightChange7Days > 0 ? '+' : ''}{stats.weightChange7Days.toFixed(1)} lbs)</span>
+            )}
           </div>
         </Card>
-      )}
+
+        {stats?.latestBodyFat && (
+          <Card className="p-4">
+            <Percent className="w-5 h-5 text-[#f59e0b] mb-2" />
+            <div className="text-2xl font-bold text-white">{stats.latestBodyFat}%</div>
+            <div className="text-sm text-gray-400">body fat</div>
+          </Card>
+        )}
+      </div>
 
       {/* Weight Trend Chart */}
       {trendData.length > 0 && <WeightTrendChart data={trendData} />}

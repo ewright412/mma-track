@@ -108,53 +108,66 @@ export function TrainingHeatMap() {
         <div className="h-48 bg-white/5 rounded animate-pulse" />
       ) : (
         <>
-          <div className="overflow-x-auto">
-            <div className="inline-block min-w-full">
+          <div className="w-full overflow-x-auto">
+            <div className="w-full">
               {/* Weekday labels */}
-              <div className="flex mb-2">
-                <div className="w-8" />
-                {weekdays.map((day) => (
-                  <div key={day} className="w-3 text-[10px] text-white/40 text-center mr-1">
-                    {day[0]}
+              <div className="grid mb-1" style={{ gridTemplateColumns: `2rem repeat(${weeks.length}, 1fr)` }}>
+                <div />
+                {/* empty header cells */}
+              </div>
+
+              {/* Heat map grid - rows are days of week, columns are weeks */}
+              <div className="space-y-1">
+                {weekdays.map((dayName, dayIndex) => (
+                  <div
+                    key={dayName}
+                    className="flex items-center gap-1"
+                  >
+                    <div className="w-8 text-xs text-white/40 flex-shrink-0">{dayName[0]}</div>
+                    <div className="flex-1 grid gap-1" style={{ gridTemplateColumns: `repeat(${weeks.length}, 1fr)` }}>
+                      {weeks.map((week, weekIndex) => {
+                        const day = week[dayIndex];
+                        return (
+                          <div
+                            key={`${weekIndex}-${dayIndex}`}
+                            className={`aspect-square rounded-sm transition-all cursor-pointer ${
+                              day && day.count >= 0 ? getIntensityClass(day.count) : 'bg-transparent'
+                            } ${
+                              selectedDay?.date === day?.date && day?.count >= 0
+                                ? 'ring-2 ring-accent'
+                                : ''
+                            }`}
+                            style={{ minHeight: '14px' }}
+                            onMouseEnter={() => day && day.count >= 0 && setSelectedDay(day)}
+                            onMouseLeave={() => setSelectedDay(null)}
+                            title={
+                              day && day.count >= 0
+                                ? `${formatDate(day.displayDate)}: ${day.count} session${
+                                    day.count !== 1 ? 's' : ''
+                                  }`
+                                : ''
+                            }
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
                 ))}
               </div>
 
-              {/* Heat map grid */}
-              <div className="space-y-1">
-                {weeks.map((week, weekIndex) => (
-                  <div key={weekIndex} className="flex items-center">
-                    {/* Week label (show month for first week of month) */}
-                    <div className="w-8 text-xs text-white/40">
-                      {week[0] && week[0].count >= 0 && week[0].displayDate.getDate() <= 7
-                        ? week[0].displayDate.toLocaleDateString('en-US', { month: 'short' })
-                        : ''}
-                    </div>
-
-                    {/* Days */}
-                    {week.map((day, dayIndex) => (
-                      <div
-                        key={`${weekIndex}-${dayIndex}`}
-                        className={`w-3 h-3 rounded-sm mr-1 transition-all cursor-pointer ${
-                          day.count >= 0 ? getIntensityClass(day.count) : 'bg-transparent'
-                        } ${
-                          selectedDay?.date === day.date && day.count >= 0
-                            ? 'ring-2 ring-accent'
-                            : ''
-                        }`}
-                        onMouseEnter={() => day.count >= 0 && setSelectedDay(day)}
-                        onMouseLeave={() => setSelectedDay(null)}
-                        title={
-                          day.count >= 0
-                            ? `${formatDate(day.displayDate)}: ${day.count} session${
-                                day.count !== 1 ? 's' : ''
-                              }`
-                            : ''
-                        }
-                      />
-                    ))}
-                  </div>
-                ))}
+              {/* Month labels below */}
+              <div className="flex items-center mt-2" style={{ paddingLeft: '2.25rem' }}>
+                <div className="flex-1 grid gap-1" style={{ gridTemplateColumns: `repeat(${weeks.length}, 1fr)` }}>
+                  {weeks.map((week, weekIndex) => {
+                    const firstValidDay = week.find(d => d.count >= 0);
+                    const showMonth = firstValidDay && firstValidDay.displayDate.getDate() <= 7;
+                    return (
+                      <div key={weekIndex} className="text-xs text-white/40">
+                        {showMonth ? firstValidDay.displayDate.toLocaleDateString('en-US', { month: 'short' }) : ''}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
