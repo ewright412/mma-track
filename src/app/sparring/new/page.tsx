@@ -5,8 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
-import { Card } from '@/components/ui/Card';
-import { OPPONENT_SKILL_LEVELS, getRatingColor } from '@/lib/constants/sparring';
+import { OPPONENT_SKILL_LEVELS, RATING_COLORS, getRatingColor } from '@/lib/constants/sparring';
 import { createSparringSession } from '@/lib/supabase/sparringQueries';
 import { CreateSparringSessionInput, OpponentSkillLevel } from '@/lib/types/sparring';
 import { Plus, Minus } from 'lucide-react';
@@ -20,12 +19,18 @@ interface RoundRating {
   notes: string;
 }
 
+const RATING_FIELDS = [
+  { key: 'striking_offense' as const, label: 'Striking Off', color: RATING_COLORS.striking_offense },
+  { key: 'striking_defense' as const, label: 'Striking Def', color: RATING_COLORS.striking_defense },
+  { key: 'takedowns' as const, label: 'Takedowns', color: RATING_COLORS.takedowns },
+  { key: 'ground_game' as const, label: 'Ground Game', color: RATING_COLORS.ground_game },
+];
+
 export default function NewSparringSessionPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Form state
   const [sessionDate, setSessionDate] = useState(() => {
     const today = new Date();
     return today.toISOString().split('T')[0];
@@ -45,7 +50,6 @@ export default function NewSparringSessionPage() {
     const validated = Math.max(1, Math.min(20, newTotal));
     setTotalRounds(validated);
 
-    // Adjust rounds array
     const currentLength = rounds.length;
     if (validated > currentLength) {
       const newRounds = [...rounds];
@@ -126,20 +130,19 @@ export default function NewSparringSessionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6">
+    <div className="min-h-screen bg-[#0f0f13] p-4 md:p-6">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-white mb-2">Log Sparring Session</h1>
-          <p className="text-white/60">Track your sparring performance with detailed round-by-round ratings</p>
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-white mb-1">Log Sparring Session</h1>
+          <p className="text-gray-500 text-sm">Rate your performance round by round</p>
         </div>
 
         <form onSubmit={handleSubmit}>
           {/* Session Details */}
-          <Card className="p-6 mb-6">
-            <h2 className="text-xl font-semibold text-white mb-4">Session Details</h2>
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-white border-b border-white/5 pb-2 mb-4">Session Details</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Date */}
               <Input
                 type="date"
                 label="Session Date"
@@ -147,8 +150,6 @@ export default function NewSparringSessionPage() {
                 onChange={(e) => setSessionDate(e.target.value)}
                 required
               />
-
-              {/* Opponent Skill Level */}
               <Select
                 label="Opponent Skill Level"
                 value={opponentSkillLevel}
@@ -160,19 +161,18 @@ export default function NewSparringSessionPage() {
 
             {/* Total Rounds */}
             <div className="mt-4">
-              <label className="block text-sm font-medium text-white/80 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-1.5">
                 Total Rounds
               </label>
               <div className="flex items-center gap-3">
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="sm"
                   onClick={() => handleTotalRoundsChange(totalRounds - 1)}
                   disabled={totalRounds <= 1}
+                  className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white disabled:opacity-30 transition-colors"
                 >
                   <Minus className="w-4 h-4" />
-                </Button>
+                </button>
                 <Input
                   type="number"
                   value={totalRounds}
@@ -182,202 +182,138 @@ export default function NewSparringSessionPage() {
                   className="w-20 text-center"
                   required
                 />
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="sm"
                   onClick={() => handleTotalRoundsChange(totalRounds + 1)}
                   disabled={totalRounds >= 20}
+                  className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white disabled:opacity-30 transition-colors"
                 >
                   <Plus className="w-4 h-4" />
-                </Button>
-                <span className="text-white/60 text-sm">rounds</span>
+                </button>
+                <span className="text-gray-500 text-sm">rounds</span>
               </div>
             </div>
-          </Card>
+          </div>
 
           {/* Round Ratings */}
-          <Card className="p-6 mb-6">
-            <h2 className="text-xl font-semibold text-white mb-2">Round-by-Round Ratings</h2>
-            <p className="text-sm text-white/60 mb-4">Rate your performance in each category (1-10)</p>
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-white border-b border-white/5 pb-2 mb-4">Round Ratings</h2>
 
-            <div className="space-y-6">
+            <div className="space-y-4">
               {rounds.map((round) => (
-                <div key={round.round_number} className="bg-background border border-border rounded-lg p-4">
-                  <h3 className="text-lg font-medium text-white mb-4">Round {round.round_number}</h3>
+                <div key={round.round_number} className="bg-[#1a1a24] border border-white/10 rounded-lg p-4">
+                  <h3 className="text-sm font-semibold text-white mb-3">Round {round.round_number}</h3>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    {/* Striking Offense */}
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <label className="text-sm font-medium text-white/80">
-                          Striking Offense
-                        </label>
-                        <span
-                          className="text-sm font-bold px-2 py-1 rounded"
-                          style={{ color: getRatingColor(round.striking_offense) }}
-                        >
-                          {round.striking_offense}/10
-                        </span>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
+                    {RATING_FIELDS.map(({ key, label, color }) => (
+                      <div key={key}>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="text-xs font-medium text-gray-400">
+                            {label}
+                          </label>
+                          <span
+                            className="text-xs font-bold px-1.5 py-0.5 rounded"
+                            style={{ color, backgroundColor: `${color}20` }}
+                          >
+                            {round[key]}/10
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min="1"
+                          max="10"
+                          value={round[key]}
+                          onChange={(e) =>
+                            handleRatingChange(round.round_number, key, Number(e.target.value))
+                          }
+                          className="w-full h-1.5 rounded-lg appearance-none cursor-pointer"
+                          style={{
+                            background: `linear-gradient(to right, ${color}40, ${color})`,
+                          }}
+                        />
                       </div>
-                      <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={round.striking_offense}
-                        onChange={(e) =>
-                          handleRatingChange(round.round_number, 'striking_offense', Number(e.target.value))
-                        }
-                        className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gradient-to-r from-red-500 to-green-500"
-                      />
-                    </div>
-
-                    {/* Striking Defense */}
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <label className="text-sm font-medium text-white/80">
-                          Striking Defense
-                        </label>
-                        <span
-                          className="text-sm font-bold px-2 py-1 rounded"
-                          style={{ color: getRatingColor(round.striking_defense) }}
-                        >
-                          {round.striking_defense}/10
-                        </span>
-                      </div>
-                      <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={round.striking_defense}
-                        onChange={(e) =>
-                          handleRatingChange(round.round_number, 'striking_defense', Number(e.target.value))
-                        }
-                        className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gradient-to-r from-red-500 to-green-500"
-                      />
-                    </div>
-
-                    {/* Takedowns */}
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <label className="text-sm font-medium text-white/80">
-                          Takedowns
-                        </label>
-                        <span
-                          className="text-sm font-bold px-2 py-1 rounded"
-                          style={{ color: getRatingColor(round.takedowns) }}
-                        >
-                          {round.takedowns}/10
-                        </span>
-                      </div>
-                      <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={round.takedowns}
-                        onChange={(e) =>
-                          handleRatingChange(round.round_number, 'takedowns', Number(e.target.value))
-                        }
-                        className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gradient-to-r from-red-500 to-green-500"
-                      />
-                    </div>
-
-                    {/* Ground Game */}
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <label className="text-sm font-medium text-white/80">
-                          Ground Game
-                        </label>
-                        <span
-                          className="text-sm font-bold px-2 py-1 rounded"
-                          style={{ color: getRatingColor(round.ground_game) }}
-                        >
-                          {round.ground_game}/10
-                        </span>
-                      </div>
-                      <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={round.ground_game}
-                        onChange={(e) =>
-                          handleRatingChange(round.round_number, 'ground_game', Number(e.target.value))
-                        }
-                        className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gradient-to-r from-red-500 to-green-500"
-                      />
-                    </div>
+                    ))}
                   </div>
 
-                  {/* Round Notes */}
-                  <Input
-                    placeholder="Notes for this round (optional)"
-                    value={round.notes}
-                    onChange={(e) => handleRoundNotesChange(round.round_number, e.target.value)}
-                  />
+                  <div className="mt-3">
+                    <input
+                      type="text"
+                      placeholder="Round notes (optional)"
+                      value={round.notes}
+                      onChange={(e) => handleRoundNotesChange(round.round_number, e.target.value)}
+                      className="w-full px-3 py-2 bg-[#0f0f13] border border-white/10 rounded-lg text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors"
+                    />
+                  </div>
                 </div>
               ))}
             </div>
-          </Card>
+          </div>
 
           {/* Reflection */}
-          <Card className="p-6 mb-6">
-            <h2 className="text-xl font-semibold text-white mb-4">Reflection</h2>
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-white border-b border-white/5 pb-2 mb-4">Reflection</h2>
 
             <div className="space-y-4">
               {/* What Went Well */}
               <div>
-                <label className="block text-sm font-medium text-success mb-1.5">
-                  What Went Well?
+                <label className="block text-sm font-medium text-green-400 mb-1.5">
+                  What Went Well
                 </label>
-                <textarea
-                  value={whatWentWell}
-                  onChange={(e) => setWhatWentWell(e.target.value)}
-                  placeholder="What did you do well in this session?"
-                  rows={3}
-                  className="w-full bg-background border border-border rounded-input px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-success transition-default resize-none"
-                />
+                <div className="relative">
+                  <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-green-500 rounded-full" />
+                  <textarea
+                    value={whatWentWell}
+                    onChange={(e) => setWhatWentWell(e.target.value)}
+                    placeholder="What did you do well?"
+                    rows={3}
+                    className="w-full pl-4 pr-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-green-500/50 focus:ring-1 focus:ring-green-500/20 transition-colors resize-none"
+                  />
+                </div>
               </div>
 
               {/* What to Improve */}
               <div>
-                <label className="block text-sm font-medium text-warning mb-1.5">
-                  What to Improve?
+                <label className="block text-sm font-medium text-amber-400 mb-1.5">
+                  What to Improve
                 </label>
-                <textarea
-                  value={whatToImprove}
-                  onChange={(e) => setWhatToImprove(e.target.value)}
-                  placeholder="What areas need more work?"
-                  rows={3}
-                  className="w-full bg-background border border-border rounded-input px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-warning transition-default resize-none"
-                />
+                <div className="relative">
+                  <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-amber-500 rounded-full" />
+                  <textarea
+                    value={whatToImprove}
+                    onChange={(e) => setWhatToImprove(e.target.value)}
+                    placeholder="What areas need more work?"
+                    rows={3}
+                    className="w-full pl-4 pr-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 transition-colors resize-none"
+                  />
+                </div>
               </div>
 
               {/* General Notes */}
               <div>
-                <label className="block text-sm font-medium text-white/80 mb-1.5">
+                <label className="block text-sm font-medium text-gray-300 mb-1.5">
                   General Notes
                 </label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Any other observations about the session?"
+                  placeholder="Any other observations?"
                   rows={2}
-                  className="w-full bg-background border border-border rounded-input px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-accent transition-default resize-none"
+                  className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
                 />
               </div>
             </div>
-          </Card>
+          </div>
 
-          {/* Error Message */}
+          {/* Error */}
           {error && (
-            <div className="mb-4 p-4 bg-red-500/10 border border-red-500 rounded-lg text-red-500">
-              {error}
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+              <p className="text-red-400 text-sm">{error}</p>
             </div>
           )}
 
-          {/* Submit Buttons */}
-          <div className="flex gap-3">
-            <Button type="submit" disabled={isSubmitting} className="flex-1">
+          {/* Submit */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto sm:min-w-[200px] py-3">
               {isSubmitting ? 'Saving...' : 'Save Sparring Session'}
             </Button>
             <Button
@@ -385,6 +321,7 @@ export default function NewSparringSessionPage() {
               variant="ghost"
               onClick={() => router.push('/sparring')}
               disabled={isSubmitting}
+              className="w-full sm:w-auto py-3"
             >
               Cancel
             </Button>

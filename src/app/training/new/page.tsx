@@ -4,11 +4,9 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Select } from '@/components/ui/Select';
-import { Card } from '@/components/ui/Card';
-import { MMA_DISCIPLINES, DURATION_PRESETS, getIntensityColor } from '@/lib/constants/disciplines';
+import { MMA_DISCIPLINES, DISCIPLINE_HEX_COLORS, DURATION_PRESETS, getIntensityColor } from '@/lib/constants/disciplines';
 import { createTrainingSession } from '@/lib/supabase/queries';
-import { CreateTrainingSessionInput } from '@/lib/types/training';
+import { CreateTrainingSessionInput, MMADiscipline } from '@/lib/types/training';
 import { X, Plus } from 'lucide-react';
 
 interface Technique {
@@ -27,7 +25,7 @@ export default function NewTrainingSessionPage() {
     const today = new Date();
     return today.toISOString().split('T')[0];
   });
-  const [discipline, setDiscipline] = useState(MMA_DISCIPLINES[0]);
+  const [discipline, setDiscipline] = useState<MMADiscipline>(MMA_DISCIPLINES[0]);
   const [durationMinutes, setDurationMinutes] = useState(60);
   const [intensity, setIntensity] = useState(5);
   const [notes, setNotes] = useState('');
@@ -82,7 +80,6 @@ export default function NewTrainingSessionPage() {
       }
 
       if (data) {
-        // Success - redirect to training history
         router.push('/training');
       }
     } catch (err) {
@@ -91,50 +88,78 @@ export default function NewTrainingSessionPage() {
     }
   };
 
+  const getIntensityLabel = (val: number): string => {
+    if (val <= 3) return 'Easy';
+    if (val <= 6) return 'Moderate';
+    if (val <= 9) return 'Hard';
+    return 'Max';
+  };
+
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6">
+    <div className="min-h-screen bg-[#0f0f13] p-4 md:p-6">
       <div className="max-w-3xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-white mb-2">Log Training Session</h1>
-          <p className="text-white/60">Track your training progress across all disciplines</p>
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-white mb-1">Log Training Session</h1>
+          <p className="text-gray-500 text-sm">Track your progress across all disciplines</p>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <Card className="p-6 mb-6">
-            {/* Date */}
-            <div className="mb-4">
-              <Input
-                type="date"
-                label="Session Date"
-                value={sessionDate}
-                onChange={(e) => setSessionDate(e.target.value)}
-                required
-              />
-            </div>
+          {/* Session Info */}
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-white border-b border-white/5 pb-2 mb-4">Session Info</h2>
+            <Input
+              type="date"
+              label="Session Date"
+              value={sessionDate}
+              onChange={(e) => setSessionDate(e.target.value)}
+              required
+            />
+          </div>
 
-            {/* Discipline */}
-            <div className="mb-4">
-              <Select
-                label="Discipline"
-                value={discipline}
-                onChange={(value) => setDiscipline(value as typeof MMA_DISCIPLINES[number])}
-                options={MMA_DISCIPLINES.map((d) => ({ value: d, label: d }))}
-                required
-              />
+          {/* Discipline */}
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-white border-b border-white/5 pb-2 mb-4">Discipline</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {MMA_DISCIPLINES.map((d) => {
+                const color = DISCIPLINE_HEX_COLORS[d];
+                const isSelected = discipline === d;
+                return (
+                  <button
+                    key={d}
+                    type="button"
+                    onClick={() => setDiscipline(d)}
+                    className={`relative p-3 rounded-lg text-sm font-medium transition-all text-left ${
+                      isSelected
+                        ? 'text-white'
+                        : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
+                    }`}
+                    style={isSelected ? {
+                      backgroundColor: `${color}20`,
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      borderColor: color,
+                      color: color,
+                    } : undefined}
+                  >
+                    <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ backgroundColor: color }} />
+                    {d}
+                  </button>
+                );
+              })}
             </div>
 
             {/* BJJ Gi/No-Gi Toggle */}
             {discipline === 'Brazilian Jiu-Jitsu' && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-white/80 mb-2">Type</label>
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-300 mb-1.5">Type</label>
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => setBjjType('gi')}
-                    className={`flex-1 py-2 rounded-button text-sm font-medium transition-default ${
+                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                       bjjType === 'gi'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-card border border-border text-white/80 hover:bg-white/5'
+                        ? 'bg-red-500/20 border border-red-500 text-red-400'
+                        : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
                     }`}
                   >
                     Gi
@@ -142,10 +167,10 @@ export default function NewTrainingSessionPage() {
                   <button
                     type="button"
                     onClick={() => setBjjType('nogi')}
-                    className={`flex-1 py-2 rounded-button text-sm font-medium transition-default ${
+                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                       bjjType === 'nogi'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-card border border-border text-white/80 hover:bg-white/5'
+                        ? 'bg-red-500/20 border border-red-500 text-red-400'
+                        : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
                     }`}
                   >
                     No-Gi
@@ -153,108 +178,112 @@ export default function NewTrainingSessionPage() {
                 </div>
               </div>
             )}
+          </div>
 
-            {/* Duration */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-white/80 mb-2">
-                Duration (minutes)
-              </label>
-              <div className="flex gap-2 mb-2">
-                {DURATION_PRESETS.map((preset) => (
-                  <button
-                    key={preset}
-                    type="button"
-                    onClick={() => setDurationMinutes(preset)}
-                    className={`px-3 py-1.5 rounded-button text-sm font-medium transition-default ${
-                      durationMinutes === preset
-                        ? 'bg-accent text-white'
-                        : 'bg-card border border-border text-white/80 hover:bg-white/5'
-                    }`}
-                  >
-                    {preset}
-                  </button>
-                ))}
-              </div>
-              <Input
-                type="number"
-                value={durationMinutes}
-                onChange={(e) => setDurationMinutes(Number(e.target.value))}
-                min={1}
-                max={300}
-                required
-              />
-            </div>
-
-            {/* Intensity */}
-            <div className="mb-4">
-              <div className="flex justify-between items-center mb-2">
-                <label className="block text-sm font-medium text-white/80">
-                  Intensity
-                </label>
-                <span
-                  className="text-lg font-bold px-3 py-1 rounded-md"
-                  style={{ color: getIntensityColor(intensity) }}
+          {/* Duration */}
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-white border-b border-white/5 pb-2 mb-4">Duration</h2>
+            <div className="flex gap-2 mb-3 flex-wrap">
+              {DURATION_PRESETS.map((preset) => (
+                <button
+                  key={preset}
+                  type="button"
+                  onClick={() => setDurationMinutes(preset)}
+                  className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                    durationMinutes === preset
+                      ? 'bg-red-500/20 border border-red-500 text-red-400 font-medium'
+                      : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
+                  }`}
                 >
-                  {intensity}/10
-                </span>
-              </div>
-              <input
-                type="range"
-                min="1"
-                max="10"
-                value={intensity}
-                onChange={(e) => setIntensity(Number(e.target.value))}
-                className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+                  {preset} min
+                </button>
+              ))}
+            </div>
+            <Input
+              type="number"
+              value={durationMinutes}
+              onChange={(e) => setDurationMinutes(Number(e.target.value))}
+              min={1}
+              max={300}
+              required
+            />
+          </div>
+
+          {/* Intensity */}
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-white border-b border-white/5 pb-2 mb-4">Intensity</h2>
+            <div className="flex items-center gap-4 mb-3">
+              <span
+                className="text-3xl font-bold tabular-nums"
+                style={{ color: getIntensityColor(intensity) }}
+              >
+                {intensity}
+              </span>
+              <span
+                className="text-sm font-medium px-2 py-0.5 rounded"
                 style={{
-                  background: `linear-gradient(to right, rgb(34, 197, 94), rgb(234, 179, 8), rgb(239, 68, 68))`,
+                  color: getIntensityColor(intensity),
+                  backgroundColor: `${getIntensityColor(intensity)}20`,
                 }}
-              />
-              <div className="flex justify-between text-xs text-white/40 mt-1">
-                <span>Light</span>
-                <span>Moderate</span>
-                <span>Maximum</span>
-              </div>
+              >
+                {getIntensityLabel(intensity)}
+              </span>
             </div>
-
-            {/* Session Notes */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-white/80 mb-1.5">
-                Session Notes
-              </label>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="How did the session go? Any observations..."
-                rows={3}
-                className="w-full bg-background border border-border rounded-input px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-accent transition-default resize-none"
-              />
+            <input
+              type="range"
+              min="1"
+              max="10"
+              value={intensity}
+              onChange={(e) => setIntensity(Number(e.target.value))}
+              className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, #22c55e, #22c55e 22%, #f59e0b 33%, #f59e0b 55%, #ef4444 66%, #ef4444 88%, #991b1b 100%)`,
+              }}
+            />
+            <div className="flex justify-between text-xs text-gray-500 mt-1.5">
+              <span>Light</span>
+              <span>Moderate</span>
+              <span>Hard</span>
+              <span>Max</span>
             </div>
-          </Card>
+          </div>
 
-          {/* Techniques Section */}
-          <Card className="p-6 mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <div>
-                <h2 className="text-xl font-semibold text-white">Techniques Practiced</h2>
-                <p className="text-sm text-white/60">What specific techniques did you work on?</p>
-              </div>
-              <Button type="button" onClick={handleAddTechnique} variant="secondary" size="sm">
-                <Plus className="w-4 h-4 mr-1" />
+          {/* Session Notes */}
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-white border-b border-white/5 pb-2 mb-4">Notes</h2>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="How did the session go?"
+              rows={3}
+              className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
+            />
+          </div>
+
+          {/* Techniques */}
+          <div className="mb-8">
+            <div className="flex justify-between items-center border-b border-white/5 pb-2 mb-4">
+              <h2 className="text-lg font-semibold text-white">Techniques</h2>
+              <button
+                type="button"
+                onClick={handleAddTechnique}
+                className="flex items-center gap-1 text-sm text-red-400 hover:text-red-300 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
                 Add
-              </Button>
+              </button>
             </div>
 
             {techniques.length === 0 ? (
-              <div className="text-center py-8 text-white/40">
-                <p>No techniques added yet</p>
-                <p className="text-sm mt-1">Click &quot;Add&quot; to track specific techniques</p>
+              <div className="text-center py-6 text-gray-500">
+                <p className="text-sm">Click &quot;Add&quot; to track specific techniques</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {techniques.map((technique) => (
                   <div
                     key={technique.id}
-                    className="bg-background border border-border rounded-lg p-3"
+                    className="bg-[#1a1a24] border border-white/10 rounded-lg p-3"
                   >
                     <div className="flex gap-2 mb-2">
                       <Input
@@ -268,9 +297,9 @@ export default function NewTrainingSessionPage() {
                       <button
                         type="button"
                         onClick={() => handleRemoveTechnique(technique.id)}
-                        className="p-2 text-white/60 hover:text-red-500 transition-default"
+                        className="p-2 text-gray-500 hover:text-red-400 transition-colors"
                       >
-                        <X className="w-5 h-5" />
+                        <X className="w-4 h-4" />
                       </button>
                     </div>
                     <Input
@@ -282,18 +311,18 @@ export default function NewTrainingSessionPage() {
                 ))}
               </div>
             )}
-          </Card>
+          </div>
 
-          {/* Error Message */}
+          {/* Error */}
           {error && (
-            <div className="mb-4 p-4 bg-red-500/10 border border-red-500 rounded-lg text-red-500">
-              {error}
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+              <p className="text-red-400 text-sm">{error}</p>
             </div>
           )}
 
-          {/* Submit Buttons */}
-          <div className="flex gap-3">
-            <Button type="submit" disabled={isSubmitting} className="flex-1">
+          {/* Submit */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto sm:min-w-[200px] py-3">
               {isSubmitting ? 'Saving...' : 'Save Session'}
             </Button>
             <Button
@@ -301,6 +330,7 @@ export default function NewTrainingSessionPage() {
               variant="ghost"
               onClick={() => router.push('/training')}
               disabled={isSubmitting}
+              className="w-full sm:w-auto py-3"
             >
               Cancel
             </Button>
