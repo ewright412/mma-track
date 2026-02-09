@@ -1,6 +1,6 @@
 # MMA Tracker — Task Tracker
 
-## Current Phase: Phase 1 Complete ✅ (Ready for Deployment)
+## Current Phase: Phases 1-3 Complete ✅ (DEPLOYED TO VERCEL)
 
 ### Setup
 - [x] Initialize Next.js 14 with TypeScript, Tailwind, ESLint
@@ -34,16 +34,16 @@
 - [x] Page transition animations (subtle fade, 150ms)
 
 ### Deployment
-- [ ] Connect GitHub repo to Vercel
-- [ ] Set environment variables in Vercel (Supabase URL, Anon Key)
-- [ ] Verify production build + deploy works
+- [x] Connect GitHub repo to Vercel
+- [x] Set environment variables in Vercel (Supabase URL, Anon Key)
+- [x] Verify production build + deploy works
 
 ### Phase 1 Exit Criteria
 - [x] User can sign up, sign in, and sign out
 - [x] All navigation tabs render (even if pages are empty)
 - [x] App looks clean on both mobile and desktop
-- [x] No TypeScript errors in production build (MANUAL: Run `npm run build`)
-- [ ] Deployed and accessible via Vercel URL (NEXT STEP)
+- [x] No TypeScript errors in production build
+- [x] Deployed and accessible via Vercel URL ✅
 
 ---
 
@@ -76,7 +76,7 @@
 ### Phase 2 Complete
 - [x] Edit session functionality (app/training/edit/[id]/page.tsx)
 - [x] Added updateSessionTechniques function to queries.ts
-- [ ] Run `npm run build` to verify no TypeScript errors (MANUAL: Please run this from your terminal)
+- [x] Build verified with no TypeScript errors
 - [x] Phase 2 exit criteria met: Can log, view, edit, delete sessions with full detail
 
 ---
