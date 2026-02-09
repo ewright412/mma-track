@@ -30,11 +30,11 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden md:flex md:flex-col w-64 bg-card border-r border-border" role="navigation" aria-label="Main navigation">
+    <aside className="hidden md:flex md:flex-col w-64 bg-[#060b18] border-r border-border" role="navigation" aria-label="Main navigation">
       {/* Logo/Brand */}
       <div className="p-6 border-b border-border">
         <h1 className="text-2xl font-bold text-white">
-          MMA <span className="text-accent">Tracker</span>
+          MMA <span className="text-[#3b82f6]">Tracker</span>
         </h1>
       </div>
 
@@ -51,8 +51,8 @@ export function Sidebar() {
               aria-current={isActive ? "page" : undefined}
               className={`flex items-center space-x-3 px-4 py-3 rounded-button transition-default ${
                 isActive
-                  ? "bg-accent text-white"
-                  : "text-white/70 hover:text-white hover:bg-white/5"
+                  ? "bg-[rgba(37,99,235,0.12)] border-l-[3px] border-[#2563eb] text-white"
+                  : "text-[#6b8cc7] hover:text-white hover:bg-white/5"
               }`}
             >
               <Icon size={20} />
@@ -64,7 +64,7 @@ export function Sidebar() {
 
       {/* Footer */}
       <div className="p-4 border-t border-border">
-        <p className="text-xs text-white/40 text-center">MMA Tracker v0.1.0</p>
+        <p className="text-xs text-[#4a6fa5] text-center">MMA Tracker v0.1.0</p>
       </div>
     </aside>
   );

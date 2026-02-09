@@ -25,7 +25,7 @@ export const GOAL_CATEGORY_LABELS: Record<GoalCategory, string> = {
 export const GOAL_CATEGORY_COLORS: Record<GoalCategory, string> = {
   weight: 'bg-blue-500',
   cardio: 'bg-green-500',
-  strength: 'bg-red-500',
+  strength: 'bg-orange-500',
   skill: 'bg-purple-500',
   other: 'bg-gray-500',
 };
@@ -34,7 +34,7 @@ export const GOAL_CATEGORY_COLORS: Record<GoalCategory, string> = {
 export const GOAL_CATEGORY_TEXT_COLORS: Record<GoalCategory, string> = {
   weight: 'text-blue-100',
   cardio: 'text-green-100',
-  strength: 'text-red-100',
+  strength: 'text-orange-100',
   skill: 'text-purple-100',
   other: 'text-gray-100',
 };
@@ -134,10 +134,11 @@ export const GOAL_EXAMPLES: Record<GoalCategory, string[]> = {
 
 /**
  * Calculate progress percentage for a goal
+ * Handles both "gain" goals (target > start) and "loss" goals (target < start)
  * @param currentValue - Current value
  * @param targetValue - Target value
  * @param startValue - Optional starting value (defaults to 0)
- * @returns Progress percentage (0-100+)
+ * @returns Progress percentage (0-100, capped)
  */
 export function calculateGoalProgress(
   currentValue: number | null | undefined,
@@ -150,8 +151,10 @@ export function calculateGoalProgress(
   const range = targetValue - startValue;
   if (range === 0) return 100; // Already at target
 
+  // For loss goals (target < start), range is negative so formula still works:
+  // e.g. start=188, current=185, target=180: (185-188)/(180-188) = -3/-8 = 0.375 = 37.5%
   const progress = ((currentValue - startValue) / range) * 100;
-  return Math.round(Math.max(0, progress)); // Don't go below 0
+  return Math.round(Math.min(100, Math.max(0, progress)));
 }
 
 /**

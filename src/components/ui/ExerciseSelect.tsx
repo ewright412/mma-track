@@ -82,7 +82,7 @@ export function ExerciseSelect({ value, onChange, required }: ExerciseSelectProp
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full bg-[#1a1a24] border rounded-input px-3 py-2 text-left flex items-center justify-between transition-default ${
+          className={`w-full bg-[#0a1225] border rounded-input px-3 py-2 text-left flex items-center justify-between transition-default ${
             isOpen
               ? 'border-white/30 ring-2 ring-accent'
               : 'border-white/[0.08] hover:border-white/20'
@@ -99,7 +99,7 @@ export function ExerciseSelect({ value, onChange, required }: ExerciseSelectProp
         </button>
 
         {isOpen && (
-          <div className="absolute z-50 w-full mt-1 bg-[#1a1a24] border border-white/[0.12] rounded-lg shadow-xl max-h-80 flex flex-col">
+          <div className="absolute z-50 w-full mt-1 bg-[#0a1225] border border-white/[0.12] rounded-lg shadow-xl max-h-80 flex flex-col">
             {/* Search input */}
             <div className="p-2 border-b border-white/[0.08]">
               <div className="relative">

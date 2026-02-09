@@ -49,7 +49,13 @@ export function GoalCard({
   const categoryTextClass = GOAL_CATEGORY_TEXT_COLORS[goal.category];
   const categoryLabel = GOAL_CATEGORY_LABELS[goal.category];
 
-  const progress = calculateGoalProgress(goal.current_value, goal.target_value, 0);
+  // Detect "loss" goals: target is lower than current value (user wants to decrease)
+  // For loss goals, we can't determine the starting value from a single current_value,
+  // so show 0% when current > target (not yet reached) and 100% when current <= target (reached)
+  const isLossGoal = goal.target_value != null && goal.current_value != null && goal.target_value < goal.current_value;
+  const progress = isLossGoal
+    ? 0
+    : Math.min(100, calculateGoalProgress(goal.current_value, goal.target_value, 0));
   const daysRemaining = calculateDaysRemaining(goal.target_date);
   const urgency = getGoalUrgency(daysRemaining);
   const daysRemainingText = formatDaysRemaining(daysRemaining);

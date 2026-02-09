@@ -67,7 +67,7 @@ export function Select({
           onClick={() => !disabled && setIsOpen(!isOpen)}
           onKeyDown={handleKeyDown}
           disabled={disabled}
-          className={`w-full bg-[#1a1a24] border rounded-input px-3 py-2 text-left flex items-center justify-between transition-default ${
+          className={`w-full bg-[#0a1225] border rounded-input px-3 py-2 text-left flex items-center justify-between transition-default ${
             error
               ? 'border-red-500'
               : isOpen
@@ -86,7 +86,7 @@ export function Select({
         </button>
 
         {isOpen && (
-          <div className="absolute z-50 w-full mt-1 bg-[#1a1a24] border border-white/[0.12] rounded-lg shadow-xl max-h-60 overflow-y-auto">
+          <div className="absolute z-50 w-full mt-1 bg-[#0a1225] border border-white/[0.12] rounded-lg shadow-xl max-h-60 overflow-y-auto">
             {options.map((option) => {
               const isSelected = option.value === value;
               return (

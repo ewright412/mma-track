@@ -191,7 +191,7 @@ export function ScheduleEntryModal({
             onChange={e => setNotes(e.target.value)}
             placeholder="e.g. Focus on takedown defense"
             rows={2}
-            className="w-full bg-[#1a1a24] border border-white/[0.08] rounded-input px-3 py-2 text-white placeholder-white/40 transition-default focus:outline-none focus:border-white/30 focus:ring-2 focus:ring-accent text-sm"
+            className="w-full bg-[#0a1225] border border-white/[0.08] rounded-input px-3 py-2 text-white placeholder-white/40 transition-default focus:outline-none focus:border-white/30 focus:ring-2 focus:ring-accent text-sm"
           />
         </div>
 

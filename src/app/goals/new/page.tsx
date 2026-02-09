@@ -14,20 +14,22 @@ import {
 } from '@/lib/constants/goals';
 import { Select } from '@/components/ui/Select';
 import { Target, Calendar, TrendingUp, Type, FileText, Tag, Hash } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function NewGoalPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialCategory = (searchParams.get('category') as GoalCategory) || 'other';
   const [saving, setSaving] = useState(false);
   const [latestWeight, setLatestWeight] = useState<number | null>(null);
   const hasFetchedWeight = useRef(false);
   const [formData, setFormData] = useState<CreateGoalInput>({
     title: '',
     description: '',
-    category: 'other',
+    category: GOAL_CATEGORIES.includes(initialCategory) ? initialCategory : 'other',
     target_value: undefined,
     current_value: undefined,
-    unit: '',
+    unit: initialCategory === 'weight' ? 'lbs' : '',
     target_date: '',
   });
 
@@ -38,9 +40,13 @@ export default function NewGoalPage() {
     getBodyMetrics({ limit: 1 }).then(({ data }) => {
       if (data && data.length > 0) {
         setLatestWeight(data[0].weight);
+        // Auto-fill current value if category is weight from URL param
+        if (initialCategory === 'weight') {
+          setFormData(prev => ({ ...prev, current_value: data[0].weight }));
+        }
       }
     });
-  }, []);
+  }, [initialCategory]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

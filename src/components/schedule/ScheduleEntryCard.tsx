@@ -47,7 +47,7 @@ export function ScheduleEntryCard({ entry, showAdherence = false, onClick }: Sch
       <button
         type="button"
         onClick={onClick}
-        className="w-full text-left p-3 bg-[#1a1a24] border border-white/[0.08] rounded-lg border-l-4 hover:brightness-110 transition-all duration-150"
+        className="w-full text-left p-3 bg-[#0a1225] border border-white/[0.08] rounded-lg border-l-4 hover:brightness-110 transition-all duration-150"
         style={{ borderLeftColor: '#4b5563' }}
       >
         <div className="flex items-center gap-2">
@@ -69,7 +69,7 @@ export function ScheduleEntryCard({ entry, showAdherence = false, onClick }: Sch
     <button
       type="button"
       onClick={onClick}
-      className="w-full text-left p-3 bg-[#1a1a24] border border-white/[0.08] rounded-lg border-l-4 hover:brightness-110 transition-all duration-150"
+      className="w-full text-left p-3 bg-[#0a1225] border border-white/[0.08] rounded-lg border-l-4 hover:brightness-110 transition-all duration-150"
       style={{ borderLeftColor: color }}
     >
       <div className="flex items-center justify-between">

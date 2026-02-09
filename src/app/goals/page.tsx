@@ -100,7 +100,7 @@ export default function GoalsPage() {
       <div className="space-y-6">
         <div className="h-8 w-48 bg-white/5 rounded animate-pulse" />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />)}
+          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#0a1225] rounded-lg animate-pulse" />)}
         </div>
       </div>
     );

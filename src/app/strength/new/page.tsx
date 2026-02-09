@@ -256,10 +256,10 @@ export default function NewStrengthLogPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f13] p-4 md:p-6">
+    <div className="min-h-screen bg-[#060b18] p-4 md:p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
-          <Dumbbell className="w-7 h-7 text-red-500" />
+          <Dumbbell className="w-7 h-7 text-[#3b82f6]" />
           <div>
             <h1 className="text-2xl font-bold text-white">Log Workout</h1>
             <p className="text-gray-500 text-sm">Track your strength training</p>
@@ -326,7 +326,7 @@ export default function NewStrengthLogPage() {
             <h2 className="text-lg font-semibold text-white border-b border-white/5 pb-2 mb-4">Exercises</h2>
             <div className="space-y-4">
               {exercises.map((exercise, exerciseIndex) => (
-                <div key={exercise.id} className="bg-[#1a1a24] border border-white/10 rounded-lg p-4">
+                <div key={exercise.id} className="bg-[#0a1225] border border-white/10 rounded-lg p-4">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1 mr-3">
                       <label className="block text-sm font-medium text-gray-300 mb-1.5">
@@ -439,7 +439,7 @@ export default function NewStrengthLogPage() {
           <div>
             <h2 className="text-lg font-semibold text-white border-b border-white/5 pb-2 mb-4">Notes</h2>
             <textarea
-              className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-[#0a1225] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/20 transition-colors resize-none"
               rows={3}
               value={notes}
               onChange={e => setNotes(e.target.value)}
@@ -455,7 +455,7 @@ export default function NewStrengthLogPage() {
                 id="saveAsTemplate"
                 checked={saveAsTemplate}
                 onChange={e => setSaveAsTemplate(e.target.checked)}
-                className="w-4 h-4 rounded border-white/10 bg-[#1a1a24] text-red-500 focus:ring-red-500/20 focus:ring-offset-[#0f0f13]"
+                className="w-4 h-4 rounded border-white/10 bg-[#0a1225] text-red-500 focus:ring-[#2563eb]/20 focus:ring-offset-[#060b18]"
               />
               <label htmlFor="saveAsTemplate" className="text-sm font-medium text-gray-300">
                 Save as Template
@@ -473,7 +473,7 @@ export default function NewStrengthLogPage() {
           </div>
 
           {/* Total Volume Bar + Submit */}
-          <div className="bg-[#1a1a24] border border-white/10 rounded-lg p-4">
+          <div className="bg-[#0a1225] border border-white/10 rounded-lg p-4">
             {exercises.length > 0 && (
               <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/5">
                 <span className="text-sm text-gray-400">Total Volume</span>

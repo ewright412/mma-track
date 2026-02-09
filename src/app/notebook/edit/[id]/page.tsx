@@ -187,7 +187,7 @@ export default function EditNotePage({ params }: { params: { id: string } }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0f0f13] p-4 md:p-6">
+      <div className="min-h-screen bg-[#060b18] p-4 md:p-6">
         <div className="max-w-3xl mx-auto">
           <Card className="p-6 h-96 animate-pulse">
             <div className="h-full bg-white/5 rounded" />
@@ -199,7 +199,7 @@ export default function EditNotePage({ params }: { params: { id: string } }) {
 
   if (error && !content) {
     return (
-      <div className="min-h-screen bg-[#0f0f13] p-4 md:p-6">
+      <div className="min-h-screen bg-[#060b18] p-4 md:p-6">
         <div className="max-w-3xl mx-auto">
           <Card className="p-6 text-center">
             <p className="text-red-500 mb-4">{error}</p>
@@ -211,7 +211,7 @@ export default function EditNotePage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f13] p-4 md:p-6">
+    <div className="min-h-screen bg-[#060b18] p-4 md:p-6">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -249,7 +249,7 @@ export default function EditNotePage({ params }: { params: { id: string } }) {
                 className={`p-3 rounded-lg text-sm font-medium transition-all text-left ${
                   discipline === 'none'
                     ? 'bg-white/10 border border-white/30 text-white'
-                    : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
+                    : 'bg-[#0a1225] border border-white/10 text-gray-400 hover:text-white'
                 }`}
               >
                 None
@@ -265,7 +265,7 @@ export default function EditNotePage({ params }: { params: { id: string } }) {
                     className={`p-3 rounded-lg text-sm font-medium transition-all text-left ${
                       isSelected
                         ? 'text-white'
-                        : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
+                        : 'bg-[#0a1225] border border-white/10 text-gray-400 hover:text-white'
                     }`}
                     style={isSelected ? {
                       backgroundColor: `${color}20`,
@@ -294,7 +294,7 @@ export default function EditNotePage({ params }: { params: { id: string } }) {
                 autoGrow();
               }}
               placeholder="What did you work on today?"
-              className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-[#0a1225] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/20 transition-colors resize-none"
               style={{ minHeight: '200px' }}
             />
           </div>
@@ -331,10 +331,10 @@ export default function EditNotePage({ params }: { params: { id: string } }) {
                 }}
                 onFocus={() => setShowTagSuggestions(true)}
                 onKeyDown={handleTagKeyDown}
-                className="w-full bg-[#1a1a24] border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors"
+                className="w-full bg-[#0a1225] border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/20 transition-colors"
               />
               {showTagSuggestions && tagInput && filteredSuggestions.length > 0 && (
-                <div className="absolute z-50 w-full mt-1 bg-[#1a1a24] border border-white/[0.12] rounded-lg shadow-xl max-h-40 overflow-y-auto">
+                <div className="absolute z-50 w-full mt-1 bg-[#0a1225] border border-white/[0.12] rounded-lg shadow-xl max-h-40 overflow-y-auto">
                   {filteredSuggestions.map((suggestion) => (
                     <button
                       key={suggestion}
@@ -394,7 +394,7 @@ export default function EditNotePage({ params }: { params: { id: string } }) {
         {/* Delete Confirmation Modal */}
         {showDeleteConfirm && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-            <div className="bg-[#1a1a24] border border-white/10 rounded-lg p-6 max-w-sm mx-4 w-full">
+            <div className="bg-[#0a1225] border border-white/10 rounded-lg p-6 max-w-sm mx-4 w-full">
               <h3 className="text-lg font-semibold text-white mb-2">Delete Note</h3>
               <p className="text-gray-400 text-sm mb-6">
                 Are you sure you want to delete this note? This action cannot be undone.

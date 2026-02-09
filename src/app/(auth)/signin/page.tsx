@@ -86,7 +86,7 @@ export default function SignInPage() {
           <div className="flex items-center justify-end">
             <Link
               href="/forgot-password"
-              className="text-sm text-gray-400 hover:text-red-400 transition-colors"
+              className="text-sm text-gray-400 hover:text-[#3b82f6] transition-colors"
             >
               Forgot password?
             </Link>
@@ -108,7 +108,7 @@ export default function SignInPage() {
             Don&apos;t have an account?{' '}
             <Link
               href="/signup"
-              className="text-red-500 hover:text-red-400 transition-colors"
+              className="text-[#3b82f6] hover:text-[#60a5fa] transition-colors"
             >
               Sign up
             </Link>

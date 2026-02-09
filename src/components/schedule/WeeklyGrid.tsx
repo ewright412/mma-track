@@ -111,7 +111,7 @@ export function WeeklyGrid({
                     ? 'bg-accent text-white'
                     : isToday
                     ? 'bg-accent/20 text-accent'
-                    : 'bg-[#1a1a24] text-white/60 hover:text-white/80'
+                    : 'bg-[#0a1225] text-white/60 hover:text-white/80'
                 }`}
               >
                 {label}

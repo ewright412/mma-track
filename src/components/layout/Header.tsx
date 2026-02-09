@@ -31,7 +31,7 @@ export function Header() {
   };
 
   return (
-    <header className="bg-card border-b border-border px-4 py-4 md:px-6">
+    <header className="bg-[#060b18] border-b border-border px-4 py-4 md:px-6">
       <div className="flex items-center justify-between">
         {/* Left: Mobile Menu + Page Title */}
         <div className="flex items-center space-x-4">
@@ -47,7 +47,7 @@ export function Header() {
         <div className="flex items-center space-x-4">
           <button
             onClick={() => setShowQuickLog(true)}
-            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-[#ef4444] text-white text-sm font-medium rounded-md hover:bg-[#dc2626] transition-all duration-150"
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-[#2563eb] text-white text-sm font-medium rounded-md hover:bg-[#1d4ed8] transition-all duration-150"
           >
             <Plus size={16} />
             Quick Log

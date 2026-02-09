@@ -15,15 +15,15 @@ import { Card } from '@/components/ui/Card';
 import { MUSCLE_GROUP_LABELS, MuscleGroup } from '@/lib/constants/exercises';
 import { StrengthLog } from '@/lib/types/strength';
 
-// Volume chart-specific palette: red primary, no orange/pink
+// Volume chart-specific palette: brand-consistent, no teal/cyan
 const VOLUME_CHART_COLORS: Record<MuscleGroup, string> = {
   chest: '#ef4444',
   back: '#3b82f6',
-  shoulders: '#f59e0b',
   legs: '#22c55e',
-  arms: '#a855f7',
-  core: '#14b8a6',
-  full_body: '#6366f1',
+  shoulders: '#f59e0b',
+  arms: '#8b5cf6',
+  core: '#f97316',
+  full_body: '#6b7280',
 };
 
 interface VolumeChartProps {

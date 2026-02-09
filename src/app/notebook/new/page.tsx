@@ -147,7 +147,7 @@ export default function NewNotePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f0f13] p-4 md:p-6">
+    <div className="min-h-screen bg-[#060b18] p-4 md:p-6">
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white mb-1">New Note</h1>
@@ -175,7 +175,7 @@ export default function NewNotePage() {
                 className={`p-3 rounded-lg text-sm font-medium transition-all text-left ${
                   discipline === 'none'
                     ? 'bg-white/10 border border-white/30 text-white'
-                    : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
+                    : 'bg-[#0a1225] border border-white/10 text-gray-400 hover:text-white'
                 }`}
               >
                 None
@@ -191,7 +191,7 @@ export default function NewNotePage() {
                     className={`p-3 rounded-lg text-sm font-medium transition-all text-left ${
                       isSelected
                         ? 'text-white'
-                        : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
+                        : 'bg-[#0a1225] border border-white/10 text-gray-400 hover:text-white'
                     }`}
                     style={isSelected ? {
                       backgroundColor: `${color}20`,
@@ -220,7 +220,7 @@ export default function NewNotePage() {
                 autoGrow();
               }}
               placeholder="What did you work on today?"
-              className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-[#0a1225] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/20 transition-colors resize-none"
               style={{ minHeight: '200px' }}
             />
           </div>
@@ -257,10 +257,10 @@ export default function NewNotePage() {
                 }}
                 onFocus={() => setShowTagSuggestions(true)}
                 onKeyDown={handleTagKeyDown}
-                className="w-full bg-[#1a1a24] border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors"
+                className="w-full bg-[#0a1225] border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/20 transition-colors"
               />
               {showTagSuggestions && tagInput && filteredSuggestions.length > 0 && (
-                <div className="absolute z-50 w-full mt-1 bg-[#1a1a24] border border-white/[0.12] rounded-lg shadow-xl max-h-40 overflow-y-auto">
+                <div className="absolute z-50 w-full mt-1 bg-[#0a1225] border border-white/[0.12] rounded-lg shadow-xl max-h-40 overflow-y-auto">
                   {filteredSuggestions.map((suggestion) => (
                     <button
                       key={suggestion}

@@ -9,11 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#0f0f13",
-        card: "#1a1a24",
-        border: "rgba(255, 255, 255, 0.08)",
+        background: "#060b18",
+        card: "#0a1225",
+        "card-elevated": "#0f1d36",
+        border: "rgba(100, 140, 255, 0.08)",
         accent: {
-          DEFAULT: "#ef4444",
+          DEFAULT: "#2563eb",
           red: "#ef4444",
           blue: "#3b82f6",
         },

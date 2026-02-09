@@ -144,34 +144,31 @@ export default function SchedulePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0f0f13] p-4">
+      <div className="min-h-screen bg-[#060b18] p-4">
         <div className="max-w-7xl mx-auto">
           <div className="h-8 w-48 bg-white/5 rounded animate-pulse mb-6" />
           <div className="grid grid-cols-3 gap-3 mb-6">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />
+              <div key={i} className="h-24 bg-[#0a1225] rounded-lg animate-pulse" />
             ))}
           </div>
           <div className="hidden md:grid md:grid-cols-7 gap-2">
             {[...Array(7)].map((_, i) => (
-              <div key={i} className="h-48 bg-[#1a1a24] rounded-lg animate-pulse" />
+              <div key={i} className="h-48 bg-[#0a1225] rounded-lg animate-pulse" />
             ))}
           </div>
-          <div className="md:hidden h-48 bg-[#1a1a24] rounded-lg animate-pulse" />
+          <div className="md:hidden h-48 bg-[#0a1225] rounded-lg animate-pulse" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f13] p-4">
+    <div className="min-h-screen bg-[#060b18] p-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <CalendarDays className="w-6 h-6 text-accent" />
-            <h1 className="text-2xl font-bold text-white">Training Schedule</h1>
-          </div>
+          <div />
           {templates.length > 0 && (
             <TemplateSwitcher
               templates={templates}

@@ -525,9 +525,9 @@ export default function ProfilePage() {
     return (
       <div className="space-y-6">
         <div className="h-8 w-48 bg-white/5 rounded animate-pulse" />
-        <div className="h-48 bg-[#1a1a24] rounded-lg animate-pulse" />
+        <div className="h-48 bg-[#0a1225] rounded-lg animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />)}
+          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#0a1225] rounded-lg animate-pulse" />)}
         </div>
       </div>
     );
@@ -623,8 +623,12 @@ export default function ProfilePage() {
           </div>
           <div className="text-center">
             <Flame className="w-4 h-4 mx-auto mb-1 text-[#f59e0b]" />
-            <div className="text-lg font-bold text-white">{profileStats?.currentStreak ?? 0}d</div>
-            <div className="text-xs text-gray-500">Streak</div>
+            <div className="text-lg font-bold text-white">{profileStats?.currentStreak ?? 0}</div>
+            <div className="text-xs text-gray-500">
+              {(profileStats?.currentStreak ?? 0) === 0
+                ? 'Streak'
+                : `Day${(profileStats?.currentStreak ?? 0) !== 1 ? 's' : ''} Streak`}
+            </div>
           </div>
           <div className="text-center">
             <Trophy className="w-4 h-4 mx-auto mb-1 text-[#22c55e]" />
@@ -643,7 +647,7 @@ export default function ProfilePage() {
                   value={profileDraft.displayName}
                   onChange={e => setProfileDraft({ ...profileDraft, displayName: e.target.value })}
                   placeholder="Your fighter name"
-                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
                 />
               </div>
               <div>
@@ -662,7 +666,7 @@ export default function ProfilePage() {
                   value={profileDraft.homeGym}
                   onChange={e => setProfileDraft({ ...profileDraft, homeGym: e.target.value })}
                   placeholder="e.g., 10th Planet Austin"
-                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
                 />
               </div>
               <div>
@@ -680,7 +684,7 @@ export default function ProfilePage() {
                   type="date"
                   value={profileDraft.trainingSince}
                   onChange={e => setProfileDraft({ ...profileDraft, trainingSince: e.target.value })}
-                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
                 />
               </div>
               <div>
@@ -692,7 +696,7 @@ export default function ProfilePage() {
                   onChange={e => setProfileDraft({ ...profileDraft, goalWeight: e.target.value ? parseFloat(e.target.value) : undefined })}
                   onFocus={e => e.target.select()}
                   placeholder="Target weight"
-                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
                 />
               </div>
             </div>
@@ -704,7 +708,7 @@ export default function ProfilePage() {
                 rows={3}
                 maxLength={200}
                 placeholder="Tell us about your martial arts journey"
-                className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
               />
               <div className="text-xs text-gray-500 mt-1 text-right">{profileDraft.bio.length}/200</div>
             </div>
@@ -866,7 +870,7 @@ export default function ProfilePage() {
                   value={compForm.name}
                   onChange={(e) => setCompForm({ ...compForm, name: e.target.value })}
                   placeholder="e.g. First Amateur Fight"
-                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
                   required
                 />
               </div>
@@ -876,7 +880,7 @@ export default function ProfilePage() {
                   type="date"
                   value={compForm.competition_date}
                   onChange={(e) => setCompForm({ ...compForm, competition_date: e.target.value })}
-                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
                   required
                 />
               </div>
@@ -885,7 +889,7 @@ export default function ProfilePage() {
                 <select
                   value={compForm.weight_class}
                   onChange={(e) => setCompForm({ ...compForm, weight_class: e.target.value })}
-                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
                 >
                   {WEIGHT_CLASSES.map(wc => (
                     <option key={wc} value={wc}>{wc || 'Select...'}</option>
@@ -900,7 +904,7 @@ export default function ProfilePage() {
                   value={compForm.target_weight || ''}
                   onChange={(e) => setCompForm({ ...compForm, target_weight: e.target.value ? parseFloat(e.target.value) : undefined })}
                   onFocus={(e) => e.target.select()}
-                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
                   placeholder="Optional"
                 />
               </div>
@@ -964,12 +968,12 @@ export default function ProfilePage() {
           ) : (
             <>
               <div className="text-2xl font-bold text-white">{'\u2014'}</div>
-              <button
-                onClick={() => setEditingProfile(true)}
+              <a
+                href="/goals/new?category=weight"
                 className="text-sm text-[#3b82f6] hover:text-[#60a5fa] transition-colors"
               >
                 Set a weight goal
-              </button>
+              </a>
             </>
           )}
         </Card>
