@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { Select } from '@/components/ui/Select';
 import { BodyMetricCard } from '@/components/metrics/BodyMetricCard';
 import { WeightTrendChart } from '@/components/metrics/WeightTrendChart';
 import { BodyMetric, CreateBodyMetricInput } from '@/lib/types/metrics';
@@ -24,6 +25,7 @@ import {
   Plus,
   X,
   Calendar,
+  Target,
   Percent,
   StickyNote,
   Download,
@@ -34,8 +36,13 @@ import {
   Shield,
   Swords,
   Trash2,
+  Activity,
+  Clock,
+  Flame,
+  Trophy,
+  Check,
 } from 'lucide-react';
-import { getTrainingSessions } from '@/lib/supabase/queries';
+import { getTrainingSessions, getTrainingStats } from '@/lib/supabase/queries';
 import { getCardioLogs } from '@/lib/supabase/cardioQueries';
 import { getStrengthLogs } from '@/lib/supabase/strength-queries';
 import { getGoals } from '@/lib/supabase/goalsQueries';
@@ -66,6 +73,14 @@ interface FighterProfile {
   stance: string;
   trainingSince: string;
   bio: string;
+  goalWeight?: number;
+}
+
+interface ProfileStats {
+  totalSessions: number;
+  totalHours: number;
+  currentStreak: number;
+  totalPRs: number;
 }
 
 const WEIGHT_CLASSES = [
@@ -74,6 +89,24 @@ const WEIGHT_CLASSES = [
 ];
 
 const STANCES = ['', 'Orthodox', 'Southpaw', 'Switch'];
+
+const WEIGHT_CLASS_OPTIONS = [
+  { value: 'Strawweight 115', label: 'Strawweight (115 lbs)' },
+  { value: 'Flyweight 125', label: 'Flyweight (125 lbs)' },
+  { value: 'Bantamweight 135', label: 'Bantamweight (135 lbs)' },
+  { value: 'Featherweight 145', label: 'Featherweight (145 lbs)' },
+  { value: 'Lightweight 155', label: 'Lightweight (155 lbs)' },
+  { value: 'Welterweight 170', label: 'Welterweight (170 lbs)' },
+  { value: 'Middleweight 185', label: 'Middleweight (185 lbs)' },
+  { value: 'Light Heavyweight 205', label: 'Light Heavyweight (205 lbs)' },
+  { value: 'Heavyweight 265', label: 'Heavyweight (265 lbs)' },
+];
+
+const STANCE_OPTIONS = [
+  { value: 'Orthodox', label: 'Orthodox' },
+  { value: 'Southpaw', label: 'Southpaw' },
+  { value: 'Switch', label: 'Switch' },
+];
 
 const DEFAULT_PROFILE: FighterProfile = {
   displayName: '',
@@ -84,25 +117,16 @@ const DEFAULT_PROFILE: FighterProfile = {
   bio: '',
 };
 
-function loadProfile(): FighterProfile {
-  if (typeof window === 'undefined') return DEFAULT_PROFILE;
-  try {
-    const stored = localStorage.getItem('mma_fighter_profile');
-    return stored ? { ...DEFAULT_PROFILE, ...JSON.parse(stored) } : DEFAULT_PROFILE;
-  } catch {
-    return DEFAULT_PROFILE;
-  }
-}
-
-function saveProfile(profile: FighterProfile) {
-  localStorage.setItem('mma_fighter_profile', JSON.stringify(profile));
-}
-
 export default function ProfilePage() {
   const [user, setUser] = useState<{ email?: string } | null>(null);
   const [metrics, setMetrics] = useState<BodyMetric[]>([]);
-  const [trendData, setTrendData] = useState<any[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  const [trendData, setTrendData] = useState<{ date: string; weight: number }[]>([]);
+  const [stats, setStats] = useState<{
+    currentWeight?: number;
+    trendDirection?: string;
+    weightChange7Days?: number;
+    latestBodyFat?: number;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -121,6 +145,9 @@ export default function ProfilePage() {
     target_weight: undefined,
     notes: '',
   });
+  const [toast, setToast] = useState<string | null>(null);
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [profileStats, setProfileStats] = useState<ProfileStats | null>(null);
 
   // Form state
   const [formData, setFormData] = useState<CreateBodyMetricInput>({
@@ -134,18 +161,42 @@ export default function ProfilePage() {
     loadUserData();
     loadBodyMetrics();
     loadCompetitions();
+    loadProfileStats();
     const settings = getReminderSettings();
     setReminderEnabled(settings.enabled);
     setReminderTime(settings.time);
-    const loaded = loadProfile();
-    setProfile(loaded);
-    setProfileDraft(loaded);
   }, []);
 
-  const handleSaveProfile = () => {
-    saveProfile(profileDraft);
-    setProfile(profileDraft);
-    setEditingProfile(false);
+  const handleSaveProfile = async () => {
+    setSavingProfile(true);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: {
+          display_name: profileDraft.displayName,
+          weight_class: profileDraft.weightClass,
+          home_gym: profileDraft.homeGym,
+          stance: profileDraft.stance,
+          training_since: profileDraft.trainingSince,
+          bio: profileDraft.bio,
+          goal_weight: profileDraft.goalWeight,
+        },
+      });
+
+      if (error) {
+        alert('Error updating profile: ' + error.message);
+        return;
+      }
+
+      setProfile(profileDraft);
+      setEditingProfile(false);
+      setToast('Profile updated!');
+      setTimeout(() => setToast(null), 3000);
+    } catch (err) {
+      console.error('Error saving profile:', err);
+      alert('Error saving profile. Please try again.');
+    } finally {
+      setSavingProfile(false);
+    }
   };
 
   const handleCancelProfile = () => {
@@ -163,9 +214,68 @@ export default function ProfilePage() {
 
   const loadUserData = async () => {
     const {
-      data: { user },
+      data: { user: authUser },
     } = await supabase.auth.getUser();
-    setUser(user);
+    setUser(authUser ? { email: authUser.email ?? undefined } : null);
+
+    // Load profile from Supabase user metadata, fallback to localStorage
+    if (authUser) {
+      const m = authUser.user_metadata || {};
+      const hasMetadata = m.display_name || m.weight_class || m.home_gym || m.stance || m.training_since || m.bio;
+
+      let profileData: FighterProfile;
+      if (hasMetadata) {
+        profileData = {
+          displayName: String(m.display_name || ''),
+          weightClass: String(m.weight_class || ''),
+          homeGym: String(m.home_gym || ''),
+          stance: String(m.stance || ''),
+          trainingSince: String(m.training_since || ''),
+          bio: String(m.bio || ''),
+          goalWeight: m.goal_weight ? Number(m.goal_weight) : undefined,
+        };
+      } else {
+        // Fallback to localStorage for migration
+        try {
+          const stored = localStorage.getItem('mma_fighter_profile');
+          profileData = stored ? { ...DEFAULT_PROFILE, ...JSON.parse(stored) } : DEFAULT_PROFILE;
+        } catch {
+          profileData = DEFAULT_PROFILE;
+        }
+      }
+
+      setProfile(profileData);
+      setProfileDraft(profileData);
+    }
+  };
+
+  const loadProfileStats = async () => {
+    try {
+      const [trainingStatsRes, { data: { user: authUser } }] = await Promise.all([
+        getTrainingStats(),
+        supabase.auth.getUser(),
+      ]);
+
+      let totalPRs = 0;
+      if (authUser) {
+        const { count } = await supabase
+          .from('personal_records')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', authUser.id);
+        totalPRs = count || 0;
+      }
+
+      if (trainingStatsRes.data) {
+        setProfileStats({
+          totalSessions: trainingStatsRes.data.totalSessions,
+          totalHours: Math.round(trainingStatsRes.data.totalMinutes / 60),
+          currentStreak: trainingStatsRes.data.currentStreak,
+          totalPRs,
+        });
+      }
+    } catch (err) {
+      console.error('Error loading profile stats:', err);
+    }
   };
 
   const loadBodyMetrics = async () => {
@@ -382,15 +492,17 @@ export default function ProfilePage() {
               <span className="text-xl font-bold text-[#ef4444]">{getInitials()}</span>
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">
-                {profile.displayName || user?.email?.split('@')[0] || 'Fighter'}
-              </h2>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-xl font-bold text-white">
+                  {profile.displayName || user?.email?.split('@')[0] || 'Fighter'}
+                </h2>
+                {profile.weightClass && (
+                  <span className="text-xs font-medium text-[#f59e0b] bg-[#f59e0b]/10 px-2 py-0.5 rounded">
+                    {profile.weightClass}
+                  </span>
+                )}
+              </div>
               <p className="text-sm text-gray-400">{user?.email}</p>
-              {profile.weightClass && (
-                <span className="inline-block mt-1 text-xs font-medium text-[#f59e0b] bg-[#f59e0b]/10 px-2 py-0.5 rounded">
-                  {profile.weightClass}
-                </span>
-              )}
             </div>
           </div>
           {!editingProfile && (
@@ -403,6 +515,30 @@ export default function ProfilePage() {
           )}
         </div>
 
+        {/* Stats Summary Row */}
+        <div className="grid grid-cols-4 gap-3 py-4 border-t border-white/[0.08]">
+          <div className="text-center">
+            <Activity className="w-4 h-4 mx-auto mb-1 text-[#ef4444]" />
+            <div className="text-lg font-bold text-white">{profileStats?.totalSessions ?? 0}</div>
+            <div className="text-xs text-gray-500">Sessions</div>
+          </div>
+          <div className="text-center">
+            <Clock className="w-4 h-4 mx-auto mb-1 text-[#3b82f6]" />
+            <div className="text-lg font-bold text-white">{profileStats?.totalHours ?? 0}</div>
+            <div className="text-xs text-gray-500">Hours</div>
+          </div>
+          <div className="text-center">
+            <Flame className="w-4 h-4 mx-auto mb-1 text-[#f59e0b]" />
+            <div className="text-lg font-bold text-white">{profileStats?.currentStreak ?? 0}d</div>
+            <div className="text-xs text-gray-500">Streak</div>
+          </div>
+          <div className="text-center">
+            <Trophy className="w-4 h-4 mx-auto mb-1 text-[#22c55e]" />
+            <div className="text-lg font-bold text-white">{profileStats?.totalPRs ?? 0}</div>
+            <div className="text-xs text-gray-500">PRs</div>
+          </div>
+        </div>
+
         {editingProfile ? (
           <div className="space-y-4 pt-4 border-t border-white/[0.08]">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -412,21 +548,18 @@ export default function ProfilePage() {
                   type="text"
                   value={profileDraft.displayName}
                   onChange={e => setProfileDraft({ ...profileDraft, displayName: e.target.value })}
-                  placeholder="Your name"
+                  placeholder="Your fighter name"
                   className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
                 />
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Weight Class</label>
-                <select
+                <Select
+                  options={WEIGHT_CLASS_OPTIONS}
                   value={profileDraft.weightClass}
-                  onChange={e => setProfileDraft({ ...profileDraft, weightClass: e.target.value })}
-                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
-                >
-                  {WEIGHT_CLASSES.map(wc => (
-                    <option key={wc} value={wc}>{wc || 'Select...'}</option>
-                  ))}
-                </select>
+                  onChange={(value) => setProfileDraft({ ...profileDraft, weightClass: value })}
+                  placeholder="Select weight class..."
+                />
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Home Gym</label>
@@ -434,21 +567,18 @@ export default function ProfilePage() {
                   type="text"
                   value={profileDraft.homeGym}
                   onChange={e => setProfileDraft({ ...profileDraft, homeGym: e.target.value })}
-                  placeholder="Your gym"
+                  placeholder="e.g., 10th Planet Austin"
                   className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
                 />
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Stance</label>
-                <select
+                <Select
+                  options={STANCE_OPTIONS}
                   value={profileDraft.stance}
-                  onChange={e => setProfileDraft({ ...profileDraft, stance: e.target.value })}
-                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
-                >
-                  {STANCES.map(s => (
-                    <option key={s} value={s}>{s || 'Select...'}</option>
-                  ))}
-                </select>
+                  onChange={(value) => setProfileDraft({ ...profileDraft, stance: value })}
+                  placeholder="Select stance..."
+                />
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Training Since</label>
@@ -459,20 +589,34 @@ export default function ProfilePage() {
                   className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
                 />
               </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">Goal Weight (lbs)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={profileDraft.goalWeight || ''}
+                  onChange={e => setProfileDraft({ ...profileDraft, goalWeight: e.target.value ? parseFloat(e.target.value) : undefined })}
+                  onFocus={e => e.target.select()}
+                  placeholder="Target weight"
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                />
+              </div>
             </div>
             <div>
               <label className="block text-sm text-gray-400 mb-1">Bio</label>
               <textarea
                 value={profileDraft.bio}
-                onChange={e => setProfileDraft({ ...profileDraft, bio: e.target.value })}
+                onChange={e => setProfileDraft({ ...profileDraft, bio: e.target.value.slice(0, 200) })}
                 rows={3}
-                placeholder="A few words about yourself..."
+                maxLength={200}
+                placeholder="Tell us about your martial arts journey"
                 className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
               />
+              <div className="text-xs text-gray-500 mt-1 text-right">{profileDraft.bio.length}/200</div>
             </div>
             <div className="flex gap-3">
-              <Button onClick={handleSaveProfile} className="px-4 py-2 text-sm font-medium">
-                Save
+              <Button onClick={handleSaveProfile} disabled={savingProfile} className="px-4 py-2 text-sm font-medium">
+                {savingProfile ? 'Saving...' : 'Save'}
               </Button>
               <Button variant="ghost" onClick={handleCancelProfile} className="px-4 py-2 text-sm font-medium">
                 Cancel
@@ -661,11 +805,11 @@ export default function ProfilePage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="p-4">
           <Scale className="w-5 h-5 text-[#3b82f6] mb-2" />
           <div className="text-2xl font-bold text-white">
-            {stats?.currentWeight ? `${stats.currentWeight}` : '—'}
+            {stats?.currentWeight ? `${stats.currentWeight}` : '\u2014'}
           </div>
           <div className="text-sm text-gray-400">{stats?.currentWeight ? 'lbs current' : 'no weight logged'}</div>
         </Card>
@@ -681,17 +825,48 @@ export default function ProfilePage() {
           </div>
         </Card>
 
-        {stats?.latestBodyFat && (
-          <Card className="p-4">
-            <Percent className="w-5 h-5 text-[#f59e0b] mb-2" />
-            <div className="text-2xl font-bold text-white">{stats.latestBodyFat}%</div>
-            <div className="text-sm text-gray-400">body fat</div>
-          </Card>
-        )}
+        <Card className="p-4">
+          <Target className="w-5 h-5 text-[#22c55e] mb-2" />
+          {profile.goalWeight ? (
+            <>
+              <div className="text-2xl font-bold text-white">{profile.goalWeight}</div>
+              <div className="text-sm text-gray-400">
+                lbs goal
+                {stats?.currentWeight && (
+                  <span> ({(stats.currentWeight - profile.goalWeight) > 0 ? '+' : ''}{(stats.currentWeight - profile.goalWeight).toFixed(1)} lbs away)</span>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="text-2xl font-bold text-white">{'\u2014'}</div>
+              <button
+                onClick={() => setEditingProfile(true)}
+                className="text-sm text-[#3b82f6] hover:text-[#60a5fa] transition-colors"
+              >
+                Set a weight goal
+              </button>
+            </>
+          )}
+        </Card>
       </div>
 
       {/* Weight Trend Chart */}
       {trendData.length > 0 && <WeightTrendChart data={trendData} />}
+
+      {/* Advanced Metrics - Body Fat (only shown if logged) */}
+      {stats?.latestBodyFat && (
+        <Card className="p-4">
+          <h3 className="text-sm font-medium text-gray-400 mb-3">Advanced Metrics</h3>
+          <div className="flex items-center gap-3">
+            <Percent className="w-5 h-5 text-[#f59e0b]" />
+            <div>
+              <span className="text-xl font-bold text-white">{stats.latestBodyFat}%</span>
+              <span className="text-sm text-gray-400 ml-2">body fat</span>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* Recent Metrics */}
       <div>
@@ -843,7 +1018,7 @@ export default function ProfilePage() {
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-2">
                   <Percent className="w-4 h-4 inline mr-1" />
-                  Body Fat % (optional)
+                  Body Fat % (Optional)
                 </label>
                 <input
                   type="number"
@@ -898,6 +1073,14 @@ export default function ProfilePage() {
               </div>
             </form>
           </Card>
+        </div>
+      )}
+
+      {/* Success Toast */}
+      {toast && (
+        <div className="fixed bottom-6 right-6 bg-[#22c55e] text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50">
+          <Check className="w-4 h-4" />
+          <span className="text-sm font-medium">{toast}</span>
         </div>
       )}
     </div>

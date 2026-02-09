@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CreateGoalInput, GoalCategory } from '@/lib/types/metrics';
 import { createGoal } from '@/lib/supabase/goalsQueries';
+import { getBodyMetrics } from '@/lib/supabase/metricsQueries';
 import {
   GOAL_CATEGORIES,
   GOAL_CATEGORY_LABELS,
@@ -12,12 +13,14 @@ import {
   COMMON_UNITS,
 } from '@/lib/constants/goals';
 import { Select } from '@/components/ui/Select';
-import { Target, Calendar, TrendingUp, Type, FileText, Tag, Hash, Ruler } from 'lucide-react';
+import { Target, Calendar, TrendingUp, Type, FileText, Tag, Hash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function NewGoalPage() {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
+  const [latestWeight, setLatestWeight] = useState<number | null>(null);
+  const hasFetchedWeight = useRef(false);
   const [formData, setFormData] = useState<CreateGoalInput>({
     title: '',
     description: '',
@@ -27,6 +30,17 @@ export default function NewGoalPage() {
     unit: '',
     target_date: '',
   });
+
+  // Fetch latest body weight for auto-fill on weight goals
+  useEffect(() => {
+    if (hasFetchedWeight.current) return;
+    hasFetchedWeight.current = true;
+    getBodyMetrics({ limit: 1 }).then(({ data }) => {
+      if (data && data.length > 0) {
+        setLatestWeight(data[0].weight);
+      }
+    });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +63,13 @@ export default function NewGoalPage() {
   };
 
   const handleCategoryChange = (category: GoalCategory) => {
-    setFormData({ ...formData, category });
+    const updates: Partial<CreateGoalInput> = { category };
+    // Auto-fill current value and unit for weight goals
+    if (category === 'weight' && latestWeight !== null) {
+      updates.current_value = latestWeight;
+      updates.unit = 'lbs';
+    }
+    setFormData({ ...formData, ...updates });
   };
 
   const examples = GOAL_EXAMPLES[formData.category] || [];

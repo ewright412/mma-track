@@ -66,6 +66,7 @@ export function WeeklyVolumeChart({ data }: WeeklyVolumeChartProps) {
           }}
         />
         <Tooltip
+          cursor={{ fill: 'transparent' }}
           contentStyle={{
             backgroundColor: '#1a1a24',
             border: '1px solid rgba(255,255,255,0.1)',
@@ -91,7 +92,7 @@ export function WeeklyVolumeChart({ data }: WeeklyVolumeChartProps) {
             dataKey={discipline}
             stackId="volume"
             fill={
-              DISCIPLINE_HEX_COLORS[discipline as MMADiscipline] || '#6b7280'
+              DISCIPLINE_HEX_COLORS[discipline as MMADiscipline] || '#ef4444'
             }
             radius={[0, 0, 0, 0]}
           />

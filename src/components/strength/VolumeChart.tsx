@@ -12,8 +12,19 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { Card } from '@/components/ui/Card';
-import { MUSCLE_GROUP_LABELS, MUSCLE_GROUP_COLORS, MuscleGroup } from '@/lib/constants/exercises';
+import { MUSCLE_GROUP_LABELS, MuscleGroup } from '@/lib/constants/exercises';
 import { StrengthLog } from '@/lib/types/strength';
+
+// Volume chart-specific palette: red primary, no orange/pink
+const VOLUME_CHART_COLORS: Record<MuscleGroup, string> = {
+  chest: '#ef4444',
+  back: '#3b82f6',
+  shoulders: '#f59e0b',
+  legs: '#22c55e',
+  arms: '#a855f7',
+  core: '#14b8a6',
+  full_body: '#6366f1',
+};
 
 interface VolumeChartProps {
   logs: StrengthLog[];
@@ -97,6 +108,7 @@ export function VolumeChart({ logs, weeks = 8 }: VolumeChartProps) {
           <XAxis dataKey="week" stroke="#ffffff60" style={{ fontSize: '12px' }} />
           <YAxis stroke="#ffffff60" style={{ fontSize: '12px' }} />
           <Tooltip
+            cursor={{ fill: 'transparent' }}
             contentStyle={{
               backgroundColor: '#1a1a24',
               border: '1px solid rgba(255,255,255,0.1)',
@@ -114,7 +126,7 @@ export function VolumeChart({ logs, weeks = 8 }: VolumeChartProps) {
               key={muscleGroup}
               dataKey={muscleGroup}
               stackId="a"
-              fill={MUSCLE_GROUP_COLORS[muscleGroup]}
+              fill={VOLUME_CHART_COLORS[muscleGroup]}
             />
           ))}
         </BarChart>

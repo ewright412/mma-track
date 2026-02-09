@@ -9,7 +9,7 @@ import {
   GOAL_CATEGORY_COLORS,
   GOAL_CATEGORY_TEXT_COLORS,
   GOAL_CATEGORY_LABELS,
-  getProgressBarColor,
+  getOnTrackProgressColor,
   getGoalUrgency,
   formatDaysRemaining,
   calculateGoalProgress,
@@ -21,7 +21,6 @@ import {
   TrendingUp,
   CheckCircle2,
   XCircle,
-  Trash2,
   ChevronDown,
   ChevronUp,
   Clock,
@@ -54,6 +53,16 @@ export function GoalCard({
   const daysRemaining = calculateDaysRemaining(goal.target_date);
   const urgency = getGoalUrgency(daysRemaining);
   const daysRemainingText = formatDaysRemaining(daysRemaining);
+
+  // Calculate expected progress based on timeline elapsed
+  const expectedProgress = (() => {
+    if (!goal.target_date || !goal.created_at) return null;
+    const totalDays = Math.max(1, Math.ceil(
+      (new Date(goal.target_date).getTime() - new Date(goal.created_at).getTime()) / (1000 * 60 * 60 * 24)
+    ));
+    const elapsed = totalDays - (daysRemaining ?? 0);
+    return (elapsed / totalDays) * 100;
+  })();
 
   const handleSaveProgress = () => {
     const value = parseFloat(newProgressValue);
@@ -127,14 +136,14 @@ export function GoalCard({
               <div className="flex items-center gap-2 text-white/70">
                 <Target className="w-4 h-4" />
                 <span>
-                  {goal.current_value || 0} / {goal.target_value} {goal.unit}
+                  {goal.current_value || 0} {goal.unit} → {goal.target_value} {goal.unit}
                 </span>
               </div>
-              <span className="text-white/60">{progress}%</span>
+              <span className="text-white/60">{progress}% complete</span>
             </div>
             <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden">
               <div
-                className={`h-full ${getProgressBarColor(progress)} transition-all duration-500`}
+                className={`h-full ${getOnTrackProgressColor(progress, expectedProgress)} transition-all duration-500`}
                 style={{ width: `${Math.min(progress, 100)}%` }}
               />
             </div>
@@ -252,41 +261,32 @@ export function GoalCard({
             )}
 
             {/* Actions */}
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-4 flex-wrap pt-1">
               {goal.status === 'active' && onComplete && (
-                <Button
-                  variant="primary"
-                  size="sm"
+                <button
                   onClick={() => onComplete(goal.id)}
-                  className="bg-green-500 hover:bg-green-600 text-white"
+                  className="text-xs text-green-400 hover:text-green-300 transition-colors"
                 >
-                  <CheckCircle2 className="w-4 h-4 mr-2" />
-                  Complete
-                </Button>
+                  Mark Complete
+                </button>
               )}
 
               {goal.status === 'active' && onAbandon && (
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <button
                   onClick={() => onAbandon(goal.id)}
-                  className="text-gray-400 hover:text-gray-300"
+                  className="text-xs text-white/40 hover:text-white/60 transition-colors"
                 >
-                  <XCircle className="w-4 h-4 mr-2" />
                   Abandon
-                </Button>
+                </button>
               )}
 
               {onDelete && (
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <button
                   onClick={() => onDelete(goal.id)}
-                  className="ml-auto text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                  className="text-xs text-red-400/60 hover:text-red-400 transition-colors ml-auto"
                 >
-                  <Trash2 className="w-4 h-4 mr-2" />
                   Delete
-                </Button>
+                </button>
               )}
             </div>
           </div>

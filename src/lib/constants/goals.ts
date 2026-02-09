@@ -215,6 +215,23 @@ export function getProgressBarColor(progress: number): string {
 }
 
 /**
+ * Get progress bar color based on whether the goal is on track
+ * Compares actual progress vs expected progress based on elapsed time
+ * @param progress - Actual progress percentage (0-100+)
+ * @param expectedProgress - Expected progress percentage based on timeline (0-100)
+ * @returns Tailwind color class: green (on track), amber (slightly behind), red (significantly behind)
+ */
+export function getOnTrackProgressColor(progress: number, expectedProgress: number | null): string {
+  if (progress >= 100) return 'bg-green-500';
+  if (expectedProgress === null) return 'bg-blue-500';
+
+  const diff = progress - expectedProgress;
+  if (diff >= -5) return 'bg-green-500';   // On track or ahead
+  if (diff >= -20) return 'bg-amber-500';  // Slightly behind
+  return 'bg-red-500';                     // Significantly behind
+}
+
+/**
  * Get urgency level based on days remaining
  * @param daysRemaining - Days remaining (can be negative for overdue)
  * @returns Urgency level and color
