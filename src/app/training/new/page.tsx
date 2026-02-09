@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { MMA_DISCIPLINES, DISCIPLINE_HEX_COLORS, DURATION_PRESETS, getIntensityColor } from '@/lib/constants/disciplines';
 import { createTrainingSession } from '@/lib/supabase/queries';
+import { createNote } from '@/lib/supabase/notebookQueries';
 import { CreateTrainingSessionInput, MMADiscipline } from '@/lib/types/training';
-import { X, Plus } from 'lucide-react';
+import { X, Plus, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Technique {
   id: string;
@@ -31,6 +32,12 @@ export default function NewTrainingSessionPage() {
   const [notes, setNotes] = useState('');
   const [bjjType, setBjjType] = useState<'gi' | 'nogi'>('gi');
   const [techniques, setTechniques] = useState<Technique[]>([]);
+
+  // Post-save note prompt
+  const [savedSessionId, setSavedSessionId] = useState<string | null>(null);
+  const [showLearnPrompt, setShowLearnPrompt] = useState(false);
+  const [learnContent, setLearnContent] = useState('');
+  const [savingNote, setSavingNote] = useState(false);
 
   const handleAddTechnique = () => {
     const newTechnique: Technique = {
@@ -80,12 +87,29 @@ export default function NewTrainingSessionPage() {
       }
 
       if (data) {
-        router.push('/training');
+        setSavedSessionId(data.id);
+        setShowLearnPrompt(true);
+        setIsSubmitting(false);
       }
     } catch (err) {
       setError('An unexpected error occurred');
       setIsSubmitting(false);
     }
+  };
+
+  const handleSaveNote = async () => {
+    if (!learnContent.trim() || !savedSessionId) return;
+    setSavingNote(true);
+    await createNote({
+      content: learnContent.trim(),
+      discipline: discipline !== 'MMA' ? discipline : undefined,
+      session_id: savedSessionId,
+    });
+    router.push('/training');
+  };
+
+  const handleSkipNote = () => {
+    router.push('/training');
   };
 
   const getIntensityLabel = (val: number): string => {
@@ -321,21 +345,62 @@ export default function NewTrainingSessionPage() {
           )}
 
           {/* Submit */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto sm:min-w-[200px] py-3">
-              {isSubmitting ? 'Saving...' : 'Save Session'}
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => router.push('/training')}
-              disabled={isSubmitting}
-              className="w-full sm:w-auto py-3"
-            >
-              Cancel
-            </Button>
-          </div>
+          {!showLearnPrompt && (
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto sm:min-w-[200px] py-3">
+                {isSubmitting ? 'Saving...' : 'Save Session'}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => router.push('/training')}
+                disabled={isSubmitting}
+                className="w-full sm:w-auto py-3"
+              >
+                Cancel
+              </Button>
+            </div>
+          )}
         </form>
+
+        {/* Post-save: What did you learn? */}
+        {showLearnPrompt && (
+          <div className="mt-6 bg-[#1a1a24] border border-white/10 rounded-lg overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setShowLearnPrompt(true)}
+              className="w-full flex items-center justify-between p-4"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-green-400 text-sm font-medium">Session saved!</span>
+                <span className="text-white/60 text-sm">— What did you learn?</span>
+              </div>
+              <ChevronDown className="w-4 h-4 text-white/40" />
+            </button>
+            <div className="px-4 pb-4">
+              <textarea
+                value={learnContent}
+                onChange={(e) => setLearnContent(e.target.value)}
+                placeholder="Quick takeaway — a technique tip, something to drill next time..."
+                rows={3}
+                autoFocus
+                className="w-full px-4 py-3 bg-[#0f0f13] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none text-sm"
+              />
+              <div className="flex gap-3 mt-3">
+                <Button
+                  onClick={handleSaveNote}
+                  disabled={!learnContent.trim() || savingNote}
+                  className="text-sm px-4 py-2"
+                >
+                  {savingNote ? 'Saving...' : 'Save Note'}
+                </Button>
+                <Button variant="ghost" onClick={handleSkipNote} className="text-sm px-4 py-2">
+                  Skip
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

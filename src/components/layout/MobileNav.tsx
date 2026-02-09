@@ -9,12 +9,14 @@ import {
   HeartPulse,
   Weight,
   CalendarDays,
+  BookOpen,
 } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/training", label: "Training", icon: Dumbbell },
   { href: "/schedule", label: "Schedule", icon: CalendarDays },
+  { href: "/notebook", label: "Notebook", icon: BookOpen },
   { href: "/sparring", label: "Sparring", icon: SwordsIcon },
   { href: "/cardio", label: "Cardio", icon: HeartPulse },
   { href: "/strength", label: "Strength", icon: Weight },

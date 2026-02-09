@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Target, Dumbbell, Heart } from 'lucide-react';
+import { X, Target, Dumbbell, Heart, BookOpen } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { MMA_DISCIPLINES, DURATION_PRESETS, getIntensityColor } from '@/lib/constants/disciplines';
@@ -9,7 +9,7 @@ import { createTrainingSession } from '@/lib/supabase/queries';
 import { MMADiscipline } from '@/lib/types/training';
 import { useRouter } from 'next/navigation';
 
-type LogType = 'training' | 'strength' | 'cardio';
+type LogType = 'training' | 'strength' | 'cardio' | 'note';
 
 interface QuickLogModalProps {
   isOpen: boolean;
@@ -33,10 +33,11 @@ export function QuickLogModal({ isOpen, onClose, onSaved }: QuickLogModalProps) 
 
   const handleSelectType = (type: LogType) => {
     setLogType(type);
-    if (type === 'strength' || type === 'cardio') {
-      // For strength/cardio, redirect to full form
+    if (type === 'strength' || type === 'cardio' || type === 'note') {
       onClose();
-      router.push(type === 'strength' ? '/strength/new' : '/cardio/new');
+      if (type === 'strength') router.push('/strength/new');
+      else if (type === 'cardio') router.push('/cardio/new');
+      else router.push('/notebook/new');
       return;
     }
     setStep(2);
@@ -101,7 +102,7 @@ export function QuickLogModal({ isOpen, onClose, onSaved }: QuickLogModalProps) 
 
         {/* Step 1: Pick type */}
         {step === 1 && (
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => handleSelectType('training')}
               className="flex flex-col items-center gap-2 p-4 bg-[#0f0f13] border border-white/[0.08] rounded-lg hover:border-[#ef4444]/40 hover:bg-[#ef4444]/5 transition-all duration-150"
@@ -122,6 +123,13 @@ export function QuickLogModal({ isOpen, onClose, onSaved }: QuickLogModalProps) 
             >
               <Heart className="w-8 h-8 text-[#22c55e]" />
               <span className="text-sm font-medium text-white">Cardio</span>
+            </button>
+            <button
+              onClick={() => handleSelectType('note')}
+              className="flex flex-col items-center gap-2 p-4 bg-[#0f0f13] border border-white/[0.08] rounded-lg hover:border-[#f59e0b]/40 hover:bg-[#f59e0b]/5 transition-all duration-150"
+            >
+              <BookOpen className="w-8 h-8 text-[#f59e0b]" />
+              <span className="text-sm font-medium text-white">Note</span>
             </button>
           </div>
         )}

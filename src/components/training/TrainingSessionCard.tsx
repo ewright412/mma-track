@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { TrainingSessionWithTechniques } from '@/lib/types/training';
+import { NoteWithTags } from '@/lib/types/notebook';
 import { DISCIPLINE_COLORS, DISCIPLINE_TEXT_COLORS, getIntensityColor } from '@/lib/constants/disciplines';
-import { Calendar, Clock, Flame, ChevronDown, ChevronUp, Edit, Trash2, Copy } from 'lucide-react';
+import { getNotesBySession } from '@/lib/supabase/notebookQueries';
+import { Calendar, Clock, Flame, ChevronDown, ChevronUp, Edit, Trash2, Copy, BookOpen, Plus } from 'lucide-react';
 
 interface TrainingSessionCardProps {
   session: TrainingSessionWithTechniques;
@@ -16,7 +19,19 @@ interface TrainingSessionCardProps {
 }
 
 export function TrainingSessionCard({ session, onEdit, onDelete, onRepeat }: TrainingSessionCardProps) {
+  const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [sessionNotes, setSessionNotes] = useState<NoteWithTags[]>([]);
+  const [notesLoaded, setNotesLoaded] = useState(false);
+
+  useEffect(() => {
+    if (isExpanded && !notesLoaded) {
+      getNotesBySession(session.id).then(({ data }) => {
+        setSessionNotes(data || []);
+        setNotesLoaded(true);
+      });
+    }
+  }, [isExpanded, notesLoaded, session.id]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -137,8 +152,55 @@ export function TrainingSessionCard({ session, onEdit, onDelete, onRepeat }: Tra
             </div>
           )}
 
-          {!session.notes && (!session.techniques || session.techniques.length === 0) && (
-            <p className="text-white/40 text-sm italic">No additional details for this session</p>
+          {/* Notebook Notes */}
+          {notesLoaded && sessionNotes.length > 0 && (
+            <div className={session.notes || (session.techniques && session.techniques.length > 0) ? 'mt-4' : ''}>
+              <h4 className="text-sm font-medium text-white/80 mb-2 flex items-center gap-1.5">
+                <BookOpen className="w-4 h-4" />
+                Notebook Notes
+              </h4>
+              <div className="space-y-2">
+                {sessionNotes.map((note) => (
+                  <button
+                    key={note.id}
+                    onClick={() => router.push(`/notebook/edit/${note.id}`)}
+                    className="w-full text-left bg-background border border-border rounded-md p-3 hover:border-white/20 transition-colors"
+                  >
+                    <p className="text-white font-medium text-sm">
+                      {note.title || note.content.split('\n')[0]?.slice(0, 60) || 'Untitled'}
+                    </p>
+                    {note.tags.length > 0 && (
+                      <div className="flex gap-1.5 mt-1.5 flex-wrap">
+                        {note.tags.map((tag) => (
+                          <span key={tag} className="bg-white/10 text-xs text-gray-300 rounded-full px-2 py-0.5">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <p className="text-white/50 text-xs mt-1.5 line-clamp-2">
+                      {note.content.split('\n').filter((l) => l.trim()).slice(0, 2).join(' ').slice(0, 120)}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {notesLoaded && sessionNotes.length === 0 && (
+            <div className={session.notes || (session.techniques && session.techniques.length > 0) ? 'mt-4' : ''}>
+              <button
+                onClick={() => router.push(`/notebook/new?session=${session.id}&discipline=${encodeURIComponent(session.discipline)}`)}
+                className="flex items-center gap-1.5 text-sm text-white/40 hover:text-red-400 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                Add Notes
+              </button>
+            </div>
+          )}
+
+          {!session.notes && (!session.techniques || session.techniques.length === 0) && notesLoaded && sessionNotes.length === 0 && (
+            <p className="text-white/40 text-sm italic mt-2">No additional details for this session</p>
           )}
         </div>
       )}
