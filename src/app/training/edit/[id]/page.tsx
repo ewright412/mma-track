@@ -31,38 +31,38 @@ export default function EditTrainingSessionPage({ params }: { params: { id: stri
   const [techniques, setTechniques] = useState<Technique[]>([]);
 
   useEffect(() => {
+    const loadSession = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      const { data, error: fetchError } = await getTrainingSessionById(params.id);
+
+      if (fetchError) {
+        setError(fetchError.message);
+        setIsLoading(false);
+        return;
+      }
+
+      if (data) {
+        setSessionDate(data.session_date);
+        setDiscipline(data.discipline);
+        setDurationMinutes(data.duration_minutes);
+        setIntensity(data.intensity);
+        setNotes(data.notes || '');
+        setTechniques(
+          data.techniques.map((t) => ({
+            id: t.id,
+            technique_name: t.technique_name,
+            notes: t.notes || '',
+          }))
+        );
+      }
+
+      setIsLoading(false);
+    };
+
     loadSession();
   }, [params.id]);
-
-  const loadSession = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    const { data, error: fetchError } = await getTrainingSessionById(params.id);
-
-    if (fetchError) {
-      setError(fetchError.message);
-      setIsLoading(false);
-      return;
-    }
-
-    if (data) {
-      setSessionDate(data.session_date);
-      setDiscipline(data.discipline);
-      setDurationMinutes(data.duration_minutes);
-      setIntensity(data.intensity);
-      setNotes(data.notes || '');
-      setTechniques(
-        data.techniques.map((t) => ({
-          id: t.id,
-          technique_name: t.technique_name,
-          notes: t.notes || '',
-        }))
-      );
-    }
-
-    setIsLoading(false);
-  };
 
   const handleAddTechnique = () => {
     const newTechnique: Technique = {
@@ -179,7 +179,7 @@ export default function EditTrainingSessionPage({ params }: { params: { id: stri
               <Select
                 label="Discipline"
                 value={discipline}
-                onChange={(e) => setDiscipline(e.target.value)}
+                onChange={(e) => setDiscipline(e.target.value as typeof MMA_DISCIPLINES[number])}
                 options={MMA_DISCIPLINES.map((d) => ({ value: d, label: d }))}
                 required
               />
@@ -278,7 +278,7 @@ export default function EditTrainingSessionPage({ params }: { params: { id: stri
             {techniques.length === 0 ? (
               <div className="text-center py-8 text-white/40">
                 <p>No techniques added yet</p>
-                <p className="text-sm mt-1">Click "Add" to track specific techniques</p>
+                <p className="text-sm mt-1">Click &quot;Add&quot; to track specific techniques</p>
               </div>
             ) : (
               <div className="space-y-3">

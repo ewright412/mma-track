@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Select';
@@ -25,7 +25,7 @@ export default function TrainingPage() {
   const [intensityMinFilter, setIntensityMinFilter] = useState<string>('');
   const [intensityMaxFilter, setIntensityMaxFilter] = useState<string>('');
 
-  const loadSessions = async () => {
+  const loadSessions = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -56,19 +56,19 @@ export default function TrainingPage() {
     }
 
     setIsLoading(false);
-  };
+  }, [disciplineFilter, intensityMinFilter, intensityMaxFilter]);
 
-  const loadStats = async () => {
+  const loadStats = useCallback(async () => {
     const { data } = await getTrainingStats();
     if (data) {
       setStats(data);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadSessions();
     loadStats();
-  }, [disciplineFilter, intensityMinFilter, intensityMaxFilter]);
+  }, [loadSessions, loadStats]);
 
   const handleDelete = async (sessionId: string) => {
     if (!confirm('Are you sure you want to delete this training session?')) {

@@ -116,7 +116,7 @@ export default function NewTrainingSessionPage() {
               <Select
                 label="Discipline"
                 value={discipline}
-                onChange={(e) => setDiscipline(e.target.value)}
+                onChange={(e) => setDiscipline(e.target.value as typeof MMA_DISCIPLINES[number])}
                 options={MMA_DISCIPLINES.map((d) => ({ value: d, label: d }))}
                 required
               />
