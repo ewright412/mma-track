@@ -76,7 +76,7 @@ export default function OnboardingPage() {
   };
 
   const CATEGORY_BADGE_COLORS: Record<GoalCategory, string> = {
-    weight: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    weight: 'bg-red-500/20 text-red-300 border-red-500/30',
     cardio: 'bg-green-500/20 text-green-300 border-green-500/30',
     strength: 'bg-orange-500/20 text-orange-300 border-orange-500/30',
     skill: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
@@ -223,14 +223,14 @@ export default function OnboardingPage() {
                   value={customGoalTitle}
                   onChange={(e) => setCustomGoalTitle(e.target.value)}
                   placeholder="e.g., Deadlift 2x bodyweight"
-                  className="flex-1 bg-background border border-border rounded-input px-3 py-2 text-white text-sm placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 bg-background border border-border rounded-input px-3 py-2 text-white text-sm placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-red-500"
                   onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomGoal())}
                 />
                 <button
                   type="button"
                   onClick={addCustomGoal}
                   disabled={!customGoalTitle.trim()}
-                  className="px-3 py-2 bg-blue-500 text-white rounded-button text-sm font-medium transition-default hover:bg-blue-600 disabled:opacity-40"
+                  className="px-3 py-2 bg-red-500 text-white rounded-button text-sm font-medium transition-default hover:bg-red-600 disabled:opacity-40"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -261,7 +261,7 @@ export default function OnboardingPage() {
                   {selectedGoals.map((goal) => (
                     <span
                       key={goal.title}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/15 border border-blue-500/30 rounded-full text-sm text-blue-300"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/15 border border-red-500/30 rounded-full text-sm text-red-300"
                     >
                       {goal.title}
                       <button

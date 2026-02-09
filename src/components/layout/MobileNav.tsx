@@ -26,7 +26,7 @@ export function MobileNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0a1225] border-t border-border z-40" aria-label="Mobile navigation">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#1a1a24] border-t border-border z-40" aria-label="Mobile navigation">
       <div className="flex justify-around items-center h-16">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -39,7 +39,7 @@ export function MobileNav() {
               aria-current={isActive ? "page" : undefined}
               aria-label={item.label}
               className={`flex flex-col items-center justify-center flex-1 h-full space-y-1 transition-default ${
-                isActive ? "text-[#3b82f6]" : "text-white/70"
+                isActive ? "text-red-400" : "text-white/70"
               }`}
             >
               <Icon size={20} />

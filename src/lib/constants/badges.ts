@@ -74,7 +74,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     name: 'Road Warrior',
     description: '50km total cardio distance',
     icon: MapPin,
-    color: '#14b8a6',
+    color: '#f97316',
   },
   {
     key: 'sparring_veteran',

@@ -136,7 +136,7 @@ export default function NewTrainingSessionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060b18] p-4 md:p-6">
+    <div className="min-h-screen bg-[#0f0f13] p-4 md:p-6">
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white mb-1">Log Training Session</h1>
@@ -171,7 +171,7 @@ export default function NewTrainingSessionPage() {
                     className={`relative p-3 rounded-lg text-sm font-medium transition-all text-left ${
                       isSelected
                         ? 'text-white'
-                        : 'bg-[#0a1225] border border-white/10 text-gray-400 hover:text-white'
+                        : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
                     }`}
                     style={isSelected ? {
                       backgroundColor: `${color}20`,
@@ -198,8 +198,8 @@ export default function NewTrainingSessionPage() {
                     onClick={() => setBjjType('gi')}
                     className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                       bjjType === 'gi'
-                        ? 'bg-[#2563eb]/20 border border-[#2563eb] text-[#3b82f6]'
-                        : 'bg-[#0a1225] border border-white/10 text-gray-400 hover:text-white'
+                        ? 'bg-red-500/20 border border-red-500 text-red-400'
+                        : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
                     }`}
                   >
                     Gi
@@ -209,8 +209,8 @@ export default function NewTrainingSessionPage() {
                     onClick={() => setBjjType('nogi')}
                     className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                       bjjType === 'nogi'
-                        ? 'bg-[#2563eb]/20 border border-[#2563eb] text-[#3b82f6]'
-                        : 'bg-[#0a1225] border border-white/10 text-gray-400 hover:text-white'
+                        ? 'bg-red-500/20 border border-red-500 text-red-400'
+                        : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
                     }`}
                   >
                     No-Gi
@@ -231,8 +231,8 @@ export default function NewTrainingSessionPage() {
                   onClick={() => setDurationMinutes(preset)}
                   className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                     durationMinutes === preset
-                      ? 'bg-[#2563eb]/20 border border-[#2563eb] text-[#3b82f6] font-medium'
-                      : 'bg-[#0a1225] border border-white/10 text-gray-400 hover:text-white'
+                      ? 'bg-red-500/20 border border-red-500 text-red-400 font-medium'
+                      : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
                   }`}
                 >
                   {preset} min
@@ -296,7 +296,7 @@ export default function NewTrainingSessionPage() {
               onChange={(e) => setNotes(e.target.value)}
               placeholder="How did the session go?"
               rows={3}
-              className="w-full px-4 py-3 bg-[#0a1225] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/20 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
             />
           </div>
 
@@ -323,7 +323,7 @@ export default function NewTrainingSessionPage() {
                 {techniques.map((technique) => (
                   <div
                     key={technique.id}
-                    className="bg-[#0a1225] border border-white/10 rounded-lg p-3"
+                    className="bg-[#1a1a24] border border-white/10 rounded-lg p-3"
                   >
                     <div className="flex gap-2 mb-2">
                       <Input
@@ -381,7 +381,7 @@ export default function NewTrainingSessionPage() {
 
         {/* Post-save: What did you learn? */}
         {showLearnPrompt && (
-          <div className="mt-6 bg-[#0a1225] border border-white/10 rounded-lg overflow-hidden">
+          <div className="mt-6 bg-[#1a1a24] border border-white/10 rounded-lg overflow-hidden">
             <button
               type="button"
               onClick={() => setShowLearnPrompt(true)}
@@ -400,7 +400,7 @@ export default function NewTrainingSessionPage() {
                 placeholder="Quick takeaway — a technique tip, something to drill next time..."
                 rows={3}
                 autoFocus
-                className="w-full px-4 py-3 bg-[#060b18] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/20 transition-colors resize-none text-sm"
+                className="w-full px-4 py-3 bg-[#0f0f13] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none text-sm"
               />
               <div className="flex gap-3 mt-3">
                 <Button

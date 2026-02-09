@@ -91,7 +91,7 @@ export default function NewCardioLogPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060b18] p-4 md:p-6">
+    <div className="min-h-screen bg-[#0f0f13] p-4 md:p-6">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white mb-1">Log Cardio Session</h1>
@@ -107,9 +107,9 @@ export default function NewCardioLogPage() {
                 key={template.name}
                 type="button"
                 onClick={() => handleTemplateSelect(template)}
-                className="text-left p-3 bg-[#0a1225] border border-white/10 rounded-lg hover:border-[#2563eb]/30 transition-colors group flex flex-col justify-between min-h-[60px]"
+                className="text-left p-3 bg-[#1a1a24] border border-white/10 rounded-lg hover:border-red-500/30 transition-colors group flex flex-col justify-between min-h-[60px]"
               >
-                <p className="text-sm font-medium text-white group-hover:text-[#3b82f6] transition-colors">
+                <p className="text-sm font-medium text-white group-hover:text-red-400 transition-colors">
                   {template.name}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">{template.duration_minutes} min</p>
@@ -153,8 +153,8 @@ export default function NewCardioLogPage() {
                     onClick={() => setDurationMinutes(preset)}
                     className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                       durationMinutes === preset
-                        ? 'bg-[#2563eb]/20 border border-[#2563eb] text-[#3b82f6] font-medium'
-                        : 'bg-[#0a1225] border border-white/10 text-gray-400 hover:text-white'
+                        ? 'bg-red-500/20 border border-red-500 text-red-400 font-medium'
+                        : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
                     }`}
                   >
                     {preset} min
@@ -187,7 +187,7 @@ export default function NewCardioLogPage() {
                     type="checkbox"
                     checked={intervals}
                     onChange={(e) => setIntervals(e.target.checked)}
-                    className="w-4 h-4 rounded border-white/10 bg-[#0a1225] text-[#2563eb] focus:ring-[#2563eb]/20 focus:ring-offset-[#060b18]"
+                    className="w-4 h-4 rounded border-white/10 bg-[#1a1a24] text-red-500 focus:ring-red-500/20 focus:ring-offset-[#0f0f13]"
                   />
                   <span className="text-sm font-medium text-gray-300 flex items-center gap-2">
                     <Zap className="w-4 h-4 text-red-400" />
@@ -241,7 +241,7 @@ export default function NewCardioLogPage() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
-              className="w-full px-4 py-3 bg-[#0a1225] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/20 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
               placeholder="How did it feel? Any observations?"
             />
           </div>

@@ -103,7 +103,7 @@ export default function NewGoalPage() {
               type="text"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="e.g., Run 5K under 25 minutes"
               required
             />
@@ -123,7 +123,7 @@ export default function NewGoalPage() {
                   onClick={() => handleCategoryChange(cat)}
                   className={`p-3 rounded-default border-2 transition-default text-left ${
                     formData.category === cat
-                      ? 'border-blue-500 bg-blue-500/20 text-white'
+                      ? 'border-red-500 bg-red-500/20 text-white'
                       : 'border-white/20 bg-white/5 text-white/70 hover:border-white/40'
                   }`}
                 >
@@ -143,7 +143,7 @@ export default function NewGoalPage() {
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={3}
-              className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="Add details about your goal, why it matters, or how you'll achieve it..."
             />
           </div>
@@ -166,7 +166,7 @@ export default function NewGoalPage() {
                   })
                 }
                 onFocus={(e) => e.target.select()}
-                className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                 placeholder="e.g., 175"
                 required
               />
@@ -204,7 +204,7 @@ export default function NewGoalPage() {
                 })
               }
               onFocus={(e) => e.target.select()}
-              className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="Your starting point (can update later)"
             />
           </div>
@@ -219,7 +219,7 @@ export default function NewGoalPage() {
               type="date"
               value={formData.target_date}
               onChange={(e) => setFormData({ ...formData, target_date: e.target.value })}
-              className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               required
             />
           </div>
@@ -230,7 +230,7 @@ export default function NewGoalPage() {
               type="submit"
               variant="primary"
               disabled={saving || !formData.title.trim() || !formData.target_value || !formData.target_date}
-              className="flex-1 bg-blue-500 hover:bg-blue-600"
+              className="flex-1 bg-red-500 hover:bg-red-600"
             >
               <Target className="w-5 h-5 mr-2" />
               {saving ? 'Creating...' : 'Create Goal'}

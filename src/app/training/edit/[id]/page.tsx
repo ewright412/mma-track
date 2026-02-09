@@ -196,7 +196,7 @@ export default function EditTrainingSessionPage({ params }: { params: { id: stri
                     onClick={() => setBjjType('gi')}
                     className={`flex-1 py-2 rounded-button text-sm font-medium transition-default ${
                       bjjType === 'gi'
-                        ? 'bg-blue-500 text-white'
+                        ? 'bg-red-500 text-white'
                         : 'bg-card border border-border text-white/80 hover:bg-white/5'
                     }`}
                   >
@@ -207,7 +207,7 @@ export default function EditTrainingSessionPage({ params }: { params: { id: stri
                     onClick={() => setBjjType('nogi')}
                     className={`flex-1 py-2 rounded-button text-sm font-medium transition-default ${
                       bjjType === 'nogi'
-                        ? 'bg-blue-500 text-white'
+                        ? 'bg-red-500 text-white'
                         : 'bg-card border border-border text-white/80 hover:bg-white/5'
                     }`}
                   >

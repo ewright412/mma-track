@@ -525,9 +525,9 @@ export default function ProfilePage() {
     return (
       <div className="space-y-6">
         <div className="h-8 w-48 bg-white/5 rounded animate-pulse" />
-        <div className="h-48 bg-[#0a1225] rounded-lg animate-pulse" />
+        <div className="h-48 bg-[#1a1a24] rounded-lg animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#0a1225] rounded-lg animate-pulse" />)}
+          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />)}
         </div>
       </div>
     );
@@ -562,7 +562,7 @@ export default function ProfilePage() {
                   </span>
                 )}
                 {profile.stance && (
-                  <span className="text-xs font-medium text-[#3b82f6] bg-[#3b82f6]/10 px-2.5 py-1 rounded-md">
+                  <span className="text-xs font-medium text-red-400 bg-red-400/10 px-2.5 py-1 rounded-md">
                     {profile.stance}
                   </span>
                 )}
@@ -617,7 +617,7 @@ export default function ProfilePage() {
             <div className="text-xs text-gray-500">Sessions</div>
           </div>
           <div className="text-center">
-            <Clock className="w-4 h-4 mx-auto mb-1 text-[#3b82f6]" />
+            <Clock className="w-4 h-4 mx-auto mb-1 text-red-400" />
             <div className="text-lg font-bold text-white">{profileStats?.totalHours ?? 0}</div>
             <div className="text-xs text-gray-500">Hours</div>
           </div>
@@ -647,7 +647,7 @@ export default function ProfilePage() {
                   value={profileDraft.displayName}
                   onChange={e => setProfileDraft({ ...profileDraft, displayName: e.target.value })}
                   placeholder="Your fighter name"
-                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50"
                 />
               </div>
               <div>
@@ -666,7 +666,7 @@ export default function ProfilePage() {
                   value={profileDraft.homeGym}
                   onChange={e => setProfileDraft({ ...profileDraft, homeGym: e.target.value })}
                   placeholder="e.g., 10th Planet Austin"
-                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50"
                 />
               </div>
               <div>
@@ -684,7 +684,7 @@ export default function ProfilePage() {
                   type="date"
                   value={profileDraft.trainingSince}
                   onChange={e => setProfileDraft({ ...profileDraft, trainingSince: e.target.value })}
-                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50"
                 />
               </div>
               <div>
@@ -696,7 +696,7 @@ export default function ProfilePage() {
                   onChange={e => setProfileDraft({ ...profileDraft, goalWeight: e.target.value ? parseFloat(e.target.value) : undefined })}
                   onFocus={e => e.target.select()}
                   placeholder="Target weight"
-                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50"
                 />
               </div>
             </div>
@@ -708,7 +708,7 @@ export default function ProfilePage() {
                 rows={3}
                 maxLength={200}
                 placeholder="Tell us about your martial arts journey"
-                className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
+                className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50"
               />
               <div className="text-xs text-gray-500 mt-1 text-right">{profileDraft.bio.length}/200</div>
             </div>
@@ -833,7 +833,7 @@ export default function ProfilePage() {
                   <div className="flex items-center gap-3">
                     {!isPast && (
                       <span className={`text-sm font-medium ${
-                        daysUntil < 14 ? 'text-[#ef4444]' : daysUntil < 30 ? 'text-[#f59e0b]' : 'text-[#3b82f6]'
+                        daysUntil < 14 ? 'text-[#ef4444]' : daysUntil < 30 ? 'text-[#f59e0b]' : 'text-blue-400'
                       }`}>
                         {daysUntil}d
                       </span>
@@ -870,7 +870,7 @@ export default function ProfilePage() {
                   value={compForm.name}
                   onChange={(e) => setCompForm({ ...compForm, name: e.target.value })}
                   placeholder="e.g. First Amateur Fight"
-                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50"
                   required
                 />
               </div>
@@ -880,7 +880,7 @@ export default function ProfilePage() {
                   type="date"
                   value={compForm.competition_date}
                   onChange={(e) => setCompForm({ ...compForm, competition_date: e.target.value })}
-                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50"
                   required
                 />
               </div>
@@ -889,7 +889,7 @@ export default function ProfilePage() {
                 <select
                   value={compForm.weight_class}
                   onChange={(e) => setCompForm({ ...compForm, weight_class: e.target.value })}
-                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50"
                 >
                   {WEIGHT_CLASSES.map(wc => (
                     <option key={wc} value={wc}>{wc || 'Select...'}</option>
@@ -904,7 +904,7 @@ export default function ProfilePage() {
                   value={compForm.target_weight || ''}
                   onChange={(e) => setCompForm({ ...compForm, target_weight: e.target.value ? parseFloat(e.target.value) : undefined })}
                   onFocus={(e) => e.target.select()}
-                  className="w-full bg-[#060b18] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb]/50"
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50"
                   placeholder="Optional"
                 />
               </div>
@@ -935,7 +935,7 @@ export default function ProfilePage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="p-4">
-          <Scale className="w-5 h-5 text-[#3b82f6] mb-2" />
+          <Scale className="w-5 h-5 text-red-400 mb-2" />
           <div className="text-2xl font-bold text-white">
             {stats?.currentWeight ? `${stats.currentWeight}` : '\u2014'}
           </div>
@@ -970,7 +970,7 @@ export default function ProfilePage() {
               <div className="text-2xl font-bold text-white">{'\u2014'}</div>
               <a
                 href="/goals/new?category=weight"
-                className="text-sm text-[#3b82f6] hover:text-[#60a5fa] transition-colors"
+                className="text-sm text-red-400 hover:text-red-300 transition-colors"
               >
                 Set a weight goal
               </a>
@@ -1118,7 +1118,7 @@ export default function ProfilePage() {
                   type="date"
                   value={formData.metric_date}
                   onChange={(e) => setFormData({ ...formData, metric_date: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
                 />
               </div>
@@ -1137,7 +1137,7 @@ export default function ProfilePage() {
                     setFormData({ ...formData, weight: parseFloat(e.target.value) || 0 })
                   }
                   onFocus={(e) => e.target.select()}
-                  className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
                 />
               </div>
@@ -1161,7 +1161,7 @@ export default function ProfilePage() {
                     })
                   }
                   onFocus={(e) => e.target.select()}
-                  className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
               </div>
 
@@ -1175,7 +1175,7 @@ export default function ProfilePage() {
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   rows={3}
-                  className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="How are you feeling? Any changes?"
                 />
               </div>
@@ -1186,7 +1186,7 @@ export default function ProfilePage() {
                   type="submit"
                   variant="primary"
                   disabled={saving || formData.weight <= 0}
-                  className="flex-1 bg-blue-500 hover:bg-blue-600"
+                  className="flex-1 bg-red-500 hover:bg-red-600"
                 >
                   {saving ? 'Saving...' : 'Save Metric'}
                 </Button>

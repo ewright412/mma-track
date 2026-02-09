@@ -145,7 +145,7 @@ export default function NotebookPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#060b18] p-4 md:p-6">
+    <div className="min-h-screen bg-[#0f0f13] p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -164,7 +164,7 @@ export default function NotebookPage() {
             onClick={() => setActiveTab('notes')}
             className={`pb-2 text-sm font-medium transition-colors border-b-2 ${
               activeTab === 'notes'
-                ? 'text-white border-[#2563eb]'
+                ? 'text-white border-red-500'
                 : 'text-gray-400 border-transparent hover:text-gray-300'
             }`}
           >
@@ -174,7 +174,7 @@ export default function NotebookPage() {
             onClick={() => setActiveTab('techniques')}
             className={`pb-2 text-sm font-medium transition-colors border-b-2 ${
               activeTab === 'techniques'
-                ? 'text-white border-[#2563eb]'
+                ? 'text-white border-red-500'
                 : 'text-gray-400 border-transparent hover:text-gray-300'
             }`}
           >
@@ -193,7 +193,7 @@ export default function NotebookPage() {
                 placeholder="Search notes..."
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="w-full bg-[#0a1225] border border-white/10 rounded-lg pl-10 pr-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/20 transition-colors"
+                className="w-full bg-[#1a1a24] border border-white/10 rounded-lg pl-10 pr-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors"
               />
             </div>
 
@@ -248,7 +248,7 @@ export default function NotebookPage() {
                   <button
                     key={note.id}
                     onClick={() => router.push(`/notebook/edit/${note.id}`)}
-                    className="w-full text-left bg-[#0a1225] border border-white/[0.08] rounded-lg p-4 hover:border-white/20 transition-colors"
+                    className="w-full text-left bg-[#1a1a24] border border-white/[0.08] rounded-lg p-4 hover:border-white/20 transition-colors"
                   >
                     <div className="flex items-start justify-between gap-3 mb-1">
                       <h3 className="font-medium text-white truncate">
@@ -326,7 +326,7 @@ export default function NotebookPage() {
                           <button
                             key={`${disc}-${t.tag_name}`}
                             onClick={() => handleTagClick(t.tag_name)}
-                            className="bg-[#0a1225] border border-white/[0.08] rounded-lg px-3 py-2 hover:border-white/20 transition-colors text-left"
+                            className="bg-[#1a1a24] border border-white/[0.08] rounded-lg px-3 py-2 hover:border-white/20 transition-colors text-left"
                           >
                             <span className="text-sm text-white font-medium">{t.tag_name}</span>
                             <span className="text-xs text-white/40 ml-2">

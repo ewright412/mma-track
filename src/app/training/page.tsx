@@ -137,7 +137,7 @@ export default function TrainingPage() {
             </Card>
 
             <Card className="p-4">
-              <Clock className="w-5 h-5 text-[#3b82f6] mb-2" />
+              <Clock className="w-5 h-5 text-red-400 mb-2" />
               <p className="text-2xl font-bold text-white">{Math.floor(stats.totalMinutes / 60)}h</p>
               <p className="text-sm text-gray-400">total time</p>
             </Card>

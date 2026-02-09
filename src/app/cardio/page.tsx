@@ -120,7 +120,7 @@ export default function CardioPage() {
             <h2 className="text-lg font-semibold text-white mb-4">This Week</h2>
             <div className={`grid gap-4 ${weeklySummary.avgHeartRate > 0 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1 sm:grid-cols-3'}`}>
               <div>
-                <Clock className="w-5 h-5 text-[#3b82f6] mb-2" />
+                <Clock className="w-5 h-5 text-red-400 mb-2" />
                 <p className="text-2xl font-bold text-white">{weeklySummary.totalMinutes} min</p>
                 <p className="text-sm text-gray-400">total time</p>
               </div>
@@ -151,7 +151,7 @@ export default function CardioPage() {
         {stats && stats.totalSessions > 0 && (!weeklySummary || weeklySummary.totalMinutes === 0) && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <Card className="p-4">
-              <Activity className="w-5 h-5 text-[#3b82f6] mb-2" />
+              <Activity className="w-5 h-5 text-red-400 mb-2" />
               <p className="text-2xl font-bold text-white">{stats.totalSessions}</p>
               <p className="text-sm text-gray-400">total {stats.totalSessions === 1 ? 'session' : 'sessions'}</p>
             </Card>

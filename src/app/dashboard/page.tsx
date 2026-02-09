@@ -72,7 +72,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#060b18] p-4">
+      <div className="min-h-screen bg-[#0f0f13] p-4">
         <div className="max-w-7xl mx-auto">
           <div className="mb-6">
             <div className="h-8 w-48 bg-white/5 rounded animate-pulse mb-2" />
@@ -81,19 +81,19 @@ export default function DashboardPage() {
           {/* Quick Actions Skeleton */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-20 bg-[#0a1225] rounded-lg animate-pulse" />
+              <div key={i} className="h-20 bg-[#1a1a24] rounded-lg animate-pulse" />
             ))}
           </div>
           {/* Stats Skeleton */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-24 bg-[#0a1225] rounded-lg animate-pulse" />
+              <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />
             ))}
           </div>
           {/* Charts Skeleton */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div className="h-72 bg-[#0a1225] rounded-lg animate-pulse" />
-            <div className="h-72 bg-[#0a1225] rounded-lg animate-pulse" />
+            <div className="h-72 bg-[#1a1a24] rounded-lg animate-pulse" />
+            <div className="h-72 bg-[#1a1a24] rounded-lg animate-pulse" />
           </div>
         </div>
       </div>
@@ -102,7 +102,7 @@ export default function DashboardPage() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-[#060b18] p-4 flex items-center justify-center">
+      <div className="min-h-screen bg-[#0f0f13] p-4 flex items-center justify-center">
         <div className="text-gray-400">Failed to load dashboard data</div>
       </div>
     );
@@ -135,7 +135,7 @@ export default function DashboardPage() {
     : null;
 
   return (
-    <div className="min-h-screen bg-[#060b18] p-4">
+    <div className="min-h-screen bg-[#0f0f13] p-4">
       <div className="max-w-7xl mx-auto">
         {/* Share Week button */}
         <div className="flex justify-end mb-3">
@@ -153,28 +153,28 @@ export default function DashboardPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
           <button
             onClick={() => router.push('/training/new')}
-            className="flex items-center gap-3 p-3 bg-[#0a1225] border-l-4 border-l-[#ef4444] border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
+            className="flex items-center gap-3 p-3 bg-[#1a1a24] border-l-4 border-l-[#ef4444] border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
           >
             <Target className="w-5 h-5 text-[#ef4444]" />
             <span className="text-sm font-medium text-white">Log Training</span>
           </button>
           <button
             onClick={() => router.push('/strength/new')}
-            className="flex items-center gap-3 p-3 bg-[#0a1225] border-l-4 border-l-[#3b82f6] border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
+            className="flex items-center gap-3 p-3 bg-[#1a1a24] border-l-4 border-l-red-400 border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
           >
-            <Dumbbell className="w-5 h-5 text-[#3b82f6]" />
+            <Dumbbell className="w-5 h-5 text-red-400" />
             <span className="text-sm font-medium text-white">Log Workout</span>
           </button>
           <button
             onClick={() => router.push('/sparring/new')}
-            className="flex items-center gap-3 p-3 bg-[#0a1225] border-l-4 border-l-[#f59e0b] border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
+            className="flex items-center gap-3 p-3 bg-[#1a1a24] border-l-4 border-l-[#f59e0b] border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
           >
             <Activity className="w-5 h-5 text-[#f59e0b]" />
             <span className="text-sm font-medium text-white">Log Sparring</span>
           </button>
           <button
             onClick={() => router.push('/cardio/new')}
-            className="flex items-center gap-3 p-3 bg-[#0a1225] border-l-4 border-l-[#22c55e] border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
+            className="flex items-center gap-3 p-3 bg-[#1a1a24] border-l-4 border-l-[#22c55e] border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
           >
             <Heart className="w-5 h-5 text-[#22c55e]" />
             <span className="text-sm font-medium text-white">Log Cardio</span>
@@ -300,7 +300,7 @@ export default function DashboardPage() {
           {/* Discipline Balance (Radar) */}
           <Card className="p-6">
             <div className="flex items-center gap-3 mb-4">
-              <Target className="w-5 h-5 text-[#3b82f6]" />
+              <Target className="w-5 h-5 text-red-400" />
               <h2 className="text-lg font-semibold text-white">
                 Discipline Balance
               </h2>
@@ -339,7 +339,7 @@ export default function DashboardPage() {
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <Dumbbell className="w-5 h-5 text-[#3b82f6]" />
+                <Dumbbell className="w-5 h-5 text-red-400" />
                 <h2 className="text-lg font-semibold text-white">
                   Strength Highlights
                 </h2>
@@ -355,7 +355,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-4">
-              <Card className="p-3 bg-[#060b18]">
+              <Card className="p-3 bg-[#0f0f13]">
                 <div className="text-xs text-gray-400 mb-1">Weekly Volume</div>
                 <div className="text-lg font-bold text-white">
                   {data.strengthStats
@@ -364,7 +364,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="text-xs text-gray-500">lbs this week</div>
               </Card>
-              <Card className="p-3 bg-[#060b18]">
+              <Card className="p-3 bg-[#0f0f13]">
                 <div className="text-xs text-gray-400 mb-1">Workouts</div>
                 <div className="text-lg font-bold text-white">
                   {data.strengthStats?.workoutsThisWeek || 0}
@@ -430,14 +430,14 @@ export default function DashboardPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-4">
-              <Card className="p-3 bg-[#060b18]">
+              <Card className="p-3 bg-[#0f0f13]">
                 <div className="text-xs text-gray-400 mb-1">This Week</div>
                 <div className="text-lg font-bold text-white">
                   {data.cardioThisWeekMinutes} min
                 </div>
                 <div className="text-xs text-gray-500">cardio training</div>
               </Card>
-              <Card className="p-3 bg-[#060b18]">
+              <Card className="p-3 bg-[#0f0f13]">
                 <div className="text-xs text-gray-400 mb-1">Total Sessions</div>
                 <div className="text-lg font-bold text-white">
                   {data.cardioStats?.totalSessions || 0}
@@ -515,7 +515,7 @@ export default function DashboardPage() {
 
             {data.bodyMetricsStats ? (
               <div className="grid grid-cols-2 gap-4">
-                <Card className="p-4 bg-[#060b18]">
+                <Card className="p-4 bg-[#0f0f13]">
                   <div className="text-sm text-gray-400 mb-2">
                     Current Weight
                   </div>
@@ -525,7 +525,7 @@ export default function DashboardPage() {
                       : 'N/A'}
                   </div>
                 </Card>
-                <Card className="p-4 bg-[#060b18]">
+                <Card className="p-4 bg-[#0f0f13]">
                   <div className="text-sm text-gray-400 mb-2">7-Day Trend</div>
                   <div className="flex items-center gap-2">
                     {data.bodyMetricsStats.trendDirection === 'up' && (

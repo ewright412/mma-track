@@ -128,7 +128,7 @@ export default function SparringPage() {
               </Card>
 
               <Card className="p-4">
-                <Target className="w-5 h-5 text-[#3b82f6] mb-2" />
+                <Target className="w-5 h-5 text-red-400 mb-2" />
                 <p className="text-2xl font-bold text-white">{stats.totalRounds}</p>
                 <p className="text-sm text-gray-400">total {stats.totalRounds === 1 ? 'round' : 'rounds'}</p>
               </Card>
@@ -151,7 +151,7 @@ export default function SparringPage() {
                 <p className="text-2xl font-bold text-white">{stats.averageRatings.striking_defense}/10</p>
                 <div className="mt-2 h-1.5 bg-white/10 rounded-full overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-[#3b82f6]"
+                    className="h-full rounded-full bg-red-400"
                     style={{ width: `${stats.averageRatings.striking_defense * 10}%` }}
                   />
                 </div>

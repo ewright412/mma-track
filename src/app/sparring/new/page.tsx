@@ -148,7 +148,7 @@ export default function NewSparringSessionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060b18] p-4 md:p-6">
+    <div className="min-h-screen bg-[#0f0f13] p-4 md:p-6">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white mb-1">Log Sparring Session</h1>
@@ -187,7 +187,7 @@ export default function NewSparringSessionPage() {
                   type="button"
                   onClick={() => handleTotalRoundsChange(totalRounds - 1)}
                   disabled={totalRounds <= 1}
-                  className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#0a1225] border border-white/10 text-gray-400 hover:text-white disabled:opacity-30 transition-colors"
+                  className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white disabled:opacity-30 transition-colors"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
@@ -204,7 +204,7 @@ export default function NewSparringSessionPage() {
                   type="button"
                   onClick={() => handleTotalRoundsChange(totalRounds + 1)}
                   disabled={totalRounds >= 20}
-                  className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#0a1225] border border-white/10 text-gray-400 hover:text-white disabled:opacity-30 transition-colors"
+                  className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white disabled:opacity-30 transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -219,7 +219,7 @@ export default function NewSparringSessionPage() {
 
             <div className="space-y-4">
               {rounds.map((round) => (
-                <div key={round.round_number} className="bg-[#0a1225] border border-white/10 rounded-lg p-4">
+                <div key={round.round_number} className="bg-[#1a1a24] border border-white/10 rounded-lg p-4">
                   <h3 className="text-sm font-semibold text-white mb-3">Round {round.round_number}</h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
@@ -259,7 +259,7 @@ export default function NewSparringSessionPage() {
                       placeholder="Round notes (optional)"
                       value={round.notes}
                       onChange={(e) => handleRoundNotesChange(round.round_number, e.target.value)}
-                      className="w-full px-3 py-2 bg-[#060b18] border border-white/10 rounded-lg text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/20 transition-colors"
+                      className="w-full px-3 py-2 bg-[#0f0f13] border border-white/10 rounded-lg text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors"
                     />
                   </div>
                 </div>
@@ -284,7 +284,7 @@ export default function NewSparringSessionPage() {
                     onChange={(e) => setWhatWentWell(e.target.value)}
                     placeholder="What did you do well?"
                     rows={3}
-                    className="w-full pl-4 pr-4 py-3 bg-[#0a1225] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-green-500/50 focus:ring-1 focus:ring-green-500/20 transition-colors resize-none"
+                    className="w-full pl-4 pr-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-green-500/50 focus:ring-1 focus:ring-green-500/20 transition-colors resize-none"
                   />
                 </div>
               </div>
@@ -301,7 +301,7 @@ export default function NewSparringSessionPage() {
                     onChange={(e) => setWhatToImprove(e.target.value)}
                     placeholder="What areas need more work?"
                     rows={3}
-                    className="w-full pl-4 pr-4 py-3 bg-[#0a1225] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 transition-colors resize-none"
+                    className="w-full pl-4 pr-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 transition-colors resize-none"
                   />
                 </div>
               </div>
@@ -316,7 +316,7 @@ export default function NewSparringSessionPage() {
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Any other observations?"
                   rows={2}
-                  className="w-full px-4 py-3 bg-[#0a1225] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/20 transition-colors resize-none"
+                  className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
                 />
               </div>
             </div>

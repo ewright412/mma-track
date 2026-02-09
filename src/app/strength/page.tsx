@@ -166,14 +166,14 @@ export default function StrengthPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#060b18] p-4 flex items-center justify-center">
+      <div className="min-h-screen bg-[#0f0f13] p-4 flex items-center justify-center">
         <div className="text-gray-400">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#060b18] p-4">
+    <div className="min-h-screen bg-[#0f0f13] p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -192,7 +192,7 @@ export default function StrengthPage() {
             <div className="text-sm text-gray-400">total {stats.totalWorkouts === 1 ? 'workout' : 'workouts'}</div>
           </Card>
           <Card className="p-4">
-            <Calendar className="w-5 h-5 text-[#3b82f6] mb-2" />
+            <Calendar className="w-5 h-5 text-red-400 mb-2" />
             <div className="text-2xl font-bold text-white">{stats.workoutsThisWeek}</div>
             <div className="text-sm text-gray-400">this week</div>
           </Card>
@@ -219,7 +219,7 @@ export default function StrengthPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {recentPRs.slice(0, 6).map(pr => (
-                <div key={pr.id} className="flex items-center justify-between p-3 bg-[#060b18] border border-white/[0.08] rounded-lg">
+                <div key={pr.id} className="flex items-center justify-between p-3 bg-[#0f0f13] border border-white/[0.08] rounded-lg">
                   <div>
                     <div className="text-white font-medium">{pr.exercise_name}</div>
                     <div className="text-xs text-gray-400">

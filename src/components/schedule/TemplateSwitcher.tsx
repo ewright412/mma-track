@@ -39,7 +39,7 @@ export function TemplateSwitcher({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 bg-[#0a1225] border border-white/[0.08] rounded-lg hover:border-white/20 transition-all duration-150"
+        className="flex items-center gap-2 px-3 py-2 bg-[#1a1a24] border border-white/[0.08] rounded-lg hover:border-white/20 transition-all duration-150"
       >
         <span className="text-sm font-medium text-white">
           {activeTemplate?.name || 'No Template'}
@@ -52,7 +52,7 @@ export function TemplateSwitcher({
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 z-50 mt-1 min-w-[220px] bg-[#0a1225] border border-white/[0.12] rounded-lg shadow-xl overflow-hidden">
+        <div className="absolute left-0 z-50 mt-1 min-w-[220px] bg-[#1a1a24] border border-white/[0.12] rounded-lg shadow-xl overflow-hidden">
           {templates.map(template => {
             const isActive = template.id === activeTemplateId;
             return (

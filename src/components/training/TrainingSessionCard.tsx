@@ -191,7 +191,7 @@ export function TrainingSessionCard({ session, onEdit, onDelete, onRepeat }: Tra
             <div className={session.notes || (session.techniques && session.techniques.length > 0) ? 'mt-4' : ''}>
               <button
                 onClick={() => router.push(`/notebook/new?session=${session.id}&discipline=${encodeURIComponent(session.discipline)}`)}
-                className="flex items-center gap-1.5 text-sm text-white/40 hover:text-[#3b82f6] transition-colors"
+                className="flex items-center gap-1.5 text-sm text-white/40 hover:text-red-400 transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 Add Notes

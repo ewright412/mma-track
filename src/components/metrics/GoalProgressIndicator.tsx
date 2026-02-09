@@ -47,7 +47,7 @@ export function GoalProgressIndicator({ goals, maxDisplay = 3 }: GoalProgressInd
         </div>
         <p className="text-white/60 text-sm text-center py-4">
           No active goals yet.{' '}
-          <Link href="/goals/new" className="text-blue-400 hover:text-blue-300 underline">
+          <Link href="/goals/new" className="text-red-400 hover:text-red-300 underline">
             Create your first goal
           </Link>
         </p>
@@ -64,7 +64,7 @@ export function GoalProgressIndicator({ goals, maxDisplay = 3 }: GoalProgressInd
         </h3>
         <Link
           href="/goals"
-          className="text-sm text-blue-400 hover:text-blue-300 transition-default"
+          className="text-sm text-red-400 hover:text-red-300 transition-default"
         >
           View All
         </Link>
@@ -128,7 +128,7 @@ export function GoalProgressIndicator({ goals, maxDisplay = 3 }: GoalProgressInd
       <div className="mt-4 pt-3 border-t border-white/10 text-center">
         <Link
           href="/goals"
-          className="text-sm text-blue-400 hover:text-blue-300 transition-default inline-flex items-center gap-1"
+          className="text-sm text-red-400 hover:text-red-300 transition-default inline-flex items-center gap-1"
         >
           <TrendingUp className="w-4 h-4" />
           Manage All Goals

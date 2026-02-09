@@ -64,7 +64,7 @@ export function WeightTrendChart({ data, title = 'Weight Trend' }: WeightTrendCh
               onClick={() => setTimeRange(days as 30 | 60 | 90 | 180)}
               className={
                 timeRange === days
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-red-500 text-white'
                   : 'text-white/60 hover:text-white'
               }
             >
@@ -123,7 +123,7 @@ export function WeightTrendChart({ data, title = 'Weight Trend' }: WeightTrendCh
 
       <div className="mt-4 text-sm text-white/60">
         <p className="flex items-center gap-2">
-          <span className="w-3 h-0.5 bg-blue-500"></span>
+          <span className="w-3 h-0.5 bg-red-500"></span>
           Actual weight
         </p>
         <p className="flex items-center gap-2 mt-1">

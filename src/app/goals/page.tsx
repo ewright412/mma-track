@@ -100,7 +100,7 @@ export default function GoalsPage() {
       <div className="space-y-6">
         <div className="h-8 w-48 bg-white/5 rounded animate-pulse" />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#0a1225] rounded-lg animate-pulse" />)}
+          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />)}
         </div>
       </div>
     );
@@ -122,7 +122,7 @@ export default function GoalsPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <Card className="p-4">
-          <Target className="w-5 h-5 text-[#3b82f6] mb-2" />
+          <Target className="w-5 h-5 text-red-400 mb-2" />
           <div className="text-2xl font-bold text-white">{stats?.activeGoals || 0}</div>
           <div className="text-sm text-gray-400">active {(stats?.activeGoals || 0) === 1 ? 'goal' : 'goals'}</div>
         </Card>
@@ -194,7 +194,7 @@ export default function GoalsPage() {
             <Card className="p-6">
               <p className="text-white/60 text-center">
                 No active goals yet.{' '}
-                <Link href="/goals/new" className="text-blue-400 hover:text-blue-300 underline">
+                <Link href="/goals/new" className="text-red-400 hover:text-red-300 underline">
                   Create your first goal
                 </Link>
               </p>
