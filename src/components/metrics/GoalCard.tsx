@@ -159,6 +159,59 @@ export function GoalCard({
               </div>
             )}
 
+            {/* Progress Details */}
+            {goal.target_value && goal.status === 'active' && (
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-white/5 rounded-lg p-3 text-center">
+                  <div className="text-xs text-white/50 mb-1">Current</div>
+                  <div className="text-lg font-bold text-white">
+                    {goal.current_value ?? 0} <span className="text-xs text-white/50">{goal.unit}</span>
+                  </div>
+                </div>
+                <div className="bg-white/5 rounded-lg p-3 text-center">
+                  <div className="text-xs text-white/50 mb-1">Target</div>
+                  <div className="text-lg font-bold text-blue-400">
+                    {goal.target_value} <span className="text-xs text-white/50">{goal.unit}</span>
+                  </div>
+                </div>
+                <div className="bg-white/5 rounded-lg p-3 text-center">
+                  <div className="text-xs text-white/50 mb-1">
+                    {daysRemaining !== null && daysRemaining >= 0 ? 'Days Left' : 'Status'}
+                  </div>
+                  <div className={`text-lg font-bold ${urgency.textColor}`}>
+                    {daysRemaining !== null ? (daysRemaining >= 0 ? daysRemaining : 'Overdue') : 'N/A'}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Trend Indicator */}
+            {goal.target_value && goal.current_value !== undefined && goal.current_value !== null && daysRemaining !== null && goal.status === 'active' && (
+              <div className="flex items-center gap-2 text-sm">
+                {(() => {
+                  const totalDays = goal.target_date && goal.created_at
+                    ? Math.max(1, Math.ceil((new Date(goal.target_date).getTime() - new Date(goal.created_at).getTime()) / (1000 * 60 * 60 * 24)))
+                    : null;
+                  const elapsed = totalDays ? totalDays - (daysRemaining ?? 0) : null;
+                  const expectedProgress = totalDays && elapsed ? (elapsed / totalDays) * 100 : null;
+
+                  if (progress >= 100) {
+                    return <span className="text-green-400 font-medium">Goal reached!</span>;
+                  }
+                  if (expectedProgress !== null) {
+                    if (progress >= expectedProgress + 10) {
+                      return <span className="text-green-400 font-medium">Ahead of schedule</span>;
+                    }
+                    if (progress <= expectedProgress - 10) {
+                      return <span className="text-orange-400 font-medium">Behind schedule</span>;
+                    }
+                    return <span className="text-blue-400 font-medium">On track</span>;
+                  }
+                  return null;
+                })()}
+              </div>
+            )}
+
             {/* Update Progress */}
             {goal.status === 'active' && goal.target_value && (
               <div className="bg-white/5 rounded-default p-3">
@@ -168,6 +221,7 @@ export function GoalCard({
                       type="number"
                       value={newProgressValue}
                       onChange={(e) => setNewProgressValue(e.target.value)}
+                      onFocus={(e) => e.target.select()}
                       placeholder="Current value"
                       className="flex-1 bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />

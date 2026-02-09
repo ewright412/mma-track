@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
+import { ExerciseSelect } from '@/components/ui/ExerciseSelect';
 import { X, Plus, Save, Dumbbell, Trash2 } from 'lucide-react';
 import {
   ALL_EXERCISES,
@@ -301,7 +302,7 @@ export default function NewStrengthLogPage() {
                 </label>
                 <Select
                   value={selectedTemplate}
-                  onChange={e => loadTemplate(e.target.value)}
+                  onChange={value => loadTemplate(value)}
                   options={[
                     { value: '', label: '-- None --' },
                     ...templates.map(template => ({
@@ -323,16 +324,9 @@ export default function NewStrengthLogPage() {
                     <label className="block text-sm font-medium text-gray-300 mb-2">
                       Exercise {exerciseIndex + 1}
                     </label>
-                    <Select
+                    <ExerciseSelect
                       value={exercise.exerciseName}
-                      onChange={e => updateExerciseName(exercise.id, e.target.value)}
-                      options={[
-                        { value: '', label: '-- Select Exercise --' },
-                        ...ALL_EXERCISES.map(ex => ({
-                          value: ex.name,
-                          label: `${ex.name} (${CATEGORY_LABELS[ex.category]} - ${MUSCLE_GROUP_LABELS[ex.primaryMuscleGroup]})`,
-                        })),
-                      ]}
+                      onChange={value => updateExerciseName(exercise.id, value)}
                       required
                     />
                   </div>
@@ -379,8 +373,8 @@ export default function NewStrengthLogPage() {
                       <div className="flex items-center gap-1">
                         <Select
                           value={set.rpe.toString()}
-                          onChange={e =>
-                            updateSet(exercise.id, setIndex, 'rpe', parseInt(e.target.value))
+                          onChange={value =>
+                            updateSet(exercise.id, setIndex, 'rpe', parseInt(value))
                           }
                           options={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(rpe => ({
                             value: rpe.toString(),

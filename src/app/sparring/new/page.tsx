@@ -152,7 +152,7 @@ export default function NewSparringSessionPage() {
               <Select
                 label="Opponent Skill Level"
                 value={opponentSkillLevel}
-                onChange={(e) => setOpponentSkillLevel(e.target.value as OpponentSkillLevel)}
+                onChange={(value) => setOpponentSkillLevel(value as OpponentSkillLevel)}
                 options={OPPONENT_SKILL_LEVELS.map((level) => ({ value: level, label: level }))}
                 required
               />

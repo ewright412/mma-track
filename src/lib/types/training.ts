@@ -6,9 +6,7 @@ export type MMADiscipline =
   | 'Kickboxing'
   | 'Wrestling'
   | 'Brazilian Jiu-Jitsu'
-  | 'Judo'
-  | 'MMA/Sparring'
-  | 'Submission Grappling/No-Gi';
+  | 'MMA';
 
 export interface SessionTechnique {
   id: string;

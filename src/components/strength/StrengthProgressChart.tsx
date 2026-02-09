@@ -84,7 +84,7 @@ export function StrengthProgressChart({
         <div className="w-64">
           <Select
             value={selectedExercise}
-            onChange={e => onExerciseChange(e.target.value)}
+            onChange={value => onExerciseChange(value)}
             options={availableExercises.map(ex => ({ value: ex, label: ex }))}
           />
         </div>

@@ -323,9 +323,7 @@ function generateInsights(
       'Kickboxing',
       'Wrestling',
       'Brazilian Jiu-Jitsu',
-      'Judo',
-      'MMA/Sparring',
-      'Submission Grappling/No-Gi',
+      'MMA',
     ];
 
     // Check which trained disciplines haven't been trained recently

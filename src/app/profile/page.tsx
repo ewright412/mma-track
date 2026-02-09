@@ -304,14 +304,30 @@ export default function ProfilePage() {
 
         <Card className="p-6">
           <div className="flex items-center justify-between mb-2">
-            <Percent className="w-8 h-8 text-green-400" />
+            <Scale className="w-8 h-8 text-green-400" />
           </div>
           <div className="text-3xl font-bold text-white mb-1">
-            {stats?.latestBodyFat ? `${stats.latestBodyFat}%` : 'N/A'}
+            {stats?.currentWeight ? `${stats.currentWeight} lbs` : '---'}
           </div>
-          <div className="text-sm text-white/60">Body Fat %</div>
+          <div className="text-sm text-white/60">Goal Weight</div>
+          {stats?.currentWeight && (
+            <div className="text-xs text-white/40 mt-1">Set in goals</div>
+          )}
         </Card>
       </div>
+
+      {/* Body Fat (optional, only if logged) */}
+      {stats?.latestBodyFat && (
+        <Card className="p-4">
+          <div className="flex items-center gap-3">
+            <Percent className="w-5 h-5 text-white/40" />
+            <div>
+              <span className="text-sm text-white/60">Body Fat: </span>
+              <span className="text-sm font-medium text-white">{stats.latestBodyFat}%</span>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* Weight Trend Chart */}
       {trendData.length > 0 && <WeightTrendChart data={trendData} />}
@@ -456,6 +472,7 @@ export default function ProfilePage() {
                   onChange={(e) =>
                     setFormData({ ...formData, weight: parseFloat(e.target.value) || 0 })
                   }
+                  onFocus={(e) => e.target.select()}
                   className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
@@ -479,6 +496,7 @@ export default function ProfilePage() {
                         : undefined,
                     })
                   }
+                  onFocus={(e) => e.target.select()}
                   className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>

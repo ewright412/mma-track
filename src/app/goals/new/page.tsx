@@ -11,6 +11,7 @@ import {
   GOAL_EXAMPLES,
   COMMON_UNITS,
 } from '@/lib/constants/goals';
+import { Select } from '@/components/ui/Select';
 import { Target, Calendar, TrendingUp, Type, FileText, Tag, Hash, Ruler } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -126,7 +127,7 @@ export default function NewGoalPage() {
             <div>
               <label className="block text-sm font-medium text-white/80 mb-2">
                 <Hash className="w-4 h-4 inline mr-1" />
-                Target Value (optional)
+                Target Value *
               </label>
               <input
                 type="number"
@@ -138,65 +139,62 @@ export default function NewGoalPage() {
                     target_value: e.target.value ? parseFloat(e.target.value) : undefined,
                   })
                 }
+                onFocus={(e) => e.target.select()}
                 className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="e.g., 155"
+                placeholder="e.g., 175"
+                required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-white/80 mb-2">
-                <Ruler className="w-4 h-4 inline mr-1" />
-                Unit (optional)
-              </label>
-              <select
+              <Select
+                label="Unit *"
                 value={formData.unit}
-                onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-                className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select unit...</option>
-                {COMMON_UNITS.map((unit) => (
-                  <option key={unit} value={unit}>
-                    {unit}
-                  </option>
-                ))}
-              </select>
+                onChange={(value) => setFormData({ ...formData, unit: value })}
+                placeholder="Select unit..."
+                options={COMMON_UNITS.map((unit) => ({
+                  value: unit,
+                  label: unit,
+                }))}
+                required
+              />
             </div>
           </div>
 
           {/* Current Value */}
-          {formData.target_value && (
-            <div>
-              <label className="block text-sm font-medium text-white/80 mb-2">
-                <TrendingUp className="w-4 h-4 inline mr-1" />
-                Current Value (optional)
-              </label>
-              <input
-                type="number"
-                step="0.1"
-                value={formData.current_value || ''}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    current_value: e.target.value ? parseFloat(e.target.value) : undefined,
-                  })
-                }
-                className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Your starting point (can update later)"
-              />
-            </div>
-          )}
+          <div>
+            <label className="block text-sm font-medium text-white/80 mb-2">
+              <TrendingUp className="w-4 h-4 inline mr-1" />
+              Current Value
+            </label>
+            <input
+              type="number"
+              step="0.1"
+              value={formData.current_value || ''}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  current_value: e.target.value ? parseFloat(e.target.value) : undefined,
+                })
+              }
+              onFocus={(e) => e.target.select()}
+              className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Your starting point (can update later)"
+            />
+          </div>
 
           {/* Target Date */}
           <div>
             <label className="block text-sm font-medium text-white/80 mb-2">
               <Calendar className="w-4 h-4 inline mr-1" />
-              Target Date (optional)
+              Target Date *
             </label>
             <input
               type="date"
               value={formData.target_date}
               onChange={(e) => setFormData({ ...formData, target_date: e.target.value })}
               className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
 
@@ -205,7 +203,7 @@ export default function NewGoalPage() {
             <Button
               type="submit"
               variant="primary"
-              disabled={saving || !formData.title.trim()}
+              disabled={saving || !formData.title.trim() || !formData.target_value || !formData.target_date}
               className="flex-1 bg-blue-500 hover:bg-blue-600"
             >
               <Target className="w-5 h-5 mr-2" />

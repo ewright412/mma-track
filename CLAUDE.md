@@ -71,7 +71,7 @@ A web app (and eventually mobile-friendly PWA) for MMA fighters and enthusiasts 
 - NO flashy gradients or neon glows. Clean, dark, athletic aesthetic.
 
 ## MMA Disciplines (Constants)
-Boxing, Muay Thai, Kickboxing, Wrestling, Brazilian Jiu-Jitsu, Judo, MMA/Sparring, Submission Grappling/No-Gi
+Boxing, Muay Thai, Kickboxing, Wrestling, Brazilian Jiu-Jitsu, MMA
 
 ## Current Phase
 See tasks.md for current implementation phase and checklist.

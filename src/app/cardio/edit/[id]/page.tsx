@@ -184,7 +184,7 @@ export default function EditCardioLogPage() {
               <Select
                 label="Cardio Type"
                 value={cardioType}
-                onChange={(e) => setCardioType(e.target.value as CardioType)}
+                onChange={(value) => setCardioType(value as CardioType)}
                 options={CARDIO_TYPES.map((type) => ({ value: type, label: type }))}
                 required
               />

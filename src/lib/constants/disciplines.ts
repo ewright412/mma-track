@@ -7,33 +7,37 @@ export const MMA_DISCIPLINES: MMADiscipline[] = [
   'Kickboxing',
   'Wrestling',
   'Brazilian Jiu-Jitsu',
-  'Judo',
-  'MMA/Sparring',
-  'Submission Grappling/No-Gi',
+  'MMA',
 ];
+
+// Hex colors for each discipline
+export const DISCIPLINE_HEX_COLORS: Record<MMADiscipline, string> = {
+  'Boxing': '#ef4444',
+  'Muay Thai': '#f97316',
+  'Kickboxing': '#f59e0b',
+  'Wrestling': '#22c55e',
+  'Brazilian Jiu-Jitsu': '#3b82f6',
+  'MMA': '#a855f7',
+};
 
 // Discipline color mapping for UI (using Tailwind color values)
 export const DISCIPLINE_COLORS: Record<MMADiscipline, string> = {
   'Boxing': 'bg-red-500',
   'Muay Thai': 'bg-orange-500',
-  'Kickboxing': 'bg-yellow-500',
+  'Kickboxing': 'bg-amber-500',
   'Wrestling': 'bg-green-500',
   'Brazilian Jiu-Jitsu': 'bg-blue-500',
-  'Judo': 'bg-indigo-500',
-  'MMA/Sparring': 'bg-purple-500',
-  'Submission Grappling/No-Gi': 'bg-pink-500',
+  'MMA': 'bg-purple-500',
 };
 
 // Text color for discipline badges
 export const DISCIPLINE_TEXT_COLORS: Record<MMADiscipline, string> = {
   'Boxing': 'text-red-100',
   'Muay Thai': 'text-orange-100',
-  'Kickboxing': 'text-yellow-100',
+  'Kickboxing': 'text-amber-100',
   'Wrestling': 'text-green-100',
   'Brazilian Jiu-Jitsu': 'text-blue-100',
-  'Judo': 'text-indigo-100',
-  'MMA/Sparring': 'text-purple-100',
-  'Submission Grappling/No-Gi': 'text-pink-100',
+  'MMA': 'text-purple-100',
 };
 
 // Quick duration presets (in minutes)

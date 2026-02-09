@@ -91,15 +91,12 @@ export default function NewCardioLogPage() {
                 key={template.name}
                 type="button"
                 onClick={() => handleTemplateSelect(template)}
-                className="text-left p-3 bg-background border border-border rounded-lg hover:border-accent transition-default group"
+                className="text-left p-3 bg-background border border-border rounded-lg hover:border-accent transition-default group flex flex-col justify-between min-h-[60px]"
               >
-                <div className="flex items-center gap-2 mb-1">
-                  {template.intervals && <Zap className="w-3 h-3 text-purple-400" />}
-                  <p className="text-sm font-medium text-white group-hover:text-accent transition-default">
-                    {template.name}
-                  </p>
-                </div>
-                <p className="text-xs text-white/60">{template.duration_minutes} min</p>
+                <p className="text-sm font-medium text-white group-hover:text-accent transition-default">
+                  {template.name}
+                </p>
+                <p className="text-xs text-white/40 mt-1">{template.duration_minutes} min</p>
               </button>
             ))}
           </div>
@@ -124,7 +121,7 @@ export default function NewCardioLogPage() {
               <Select
                 label="Cardio Type"
                 value={cardioType}
-                onChange={(e) => setCardioType(e.target.value as CardioType)}
+                onChange={(value) => setCardioType(value as CardioType)}
                 options={CARDIO_TYPES.map((type) => ({ value: type, label: type }))}
                 required
               />

@@ -4,17 +4,7 @@ import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { MMADiscipline } from '@/lib/types/training';
 
-// Hex colors for each discipline (matching the design system)
-const DISCIPLINE_HEX_COLORS: Record<MMADiscipline, string> = {
-  Boxing: '#ef4444',
-  'Muay Thai': '#f97316',
-  Kickboxing: '#eab308',
-  Wrestling: '#22c55e',
-  'Brazilian Jiu-Jitsu': '#3b82f6',
-  Judo: '#6366f1',
-  'MMA/Sparring': '#a855f7',
-  'Submission Grappling/No-Gi': '#ec4899',
-};
+import { DISCIPLINE_HEX_COLORS } from '@/lib/constants/disciplines';
 
 interface DisciplineBreakdownChartProps {
   sessionsByDiscipline: Record<string, number>;

@@ -31,6 +31,7 @@ export default function NewTrainingSessionPage() {
   const [durationMinutes, setDurationMinutes] = useState(60);
   const [intensity, setIntensity] = useState(5);
   const [notes, setNotes] = useState('');
+  const [bjjType, setBjjType] = useState<'gi' | 'nogi'>('gi');
   const [techniques, setTechniques] = useState<Technique[]>([]);
 
   const handleAddTechnique = () => {
@@ -63,7 +64,7 @@ export default function NewTrainingSessionPage() {
         discipline,
         duration_minutes: durationMinutes,
         intensity,
-        notes: notes.trim() || undefined,
+        notes: (discipline === 'Brazilian Jiu-Jitsu' ? `[${bjjType === 'gi' ? 'Gi' : 'No-Gi'}] ` : '') + (notes.trim() || '') || undefined,
         techniques: techniques
           .filter((t) => t.technique_name.trim())
           .map((t) => ({
@@ -116,11 +117,42 @@ export default function NewTrainingSessionPage() {
               <Select
                 label="Discipline"
                 value={discipline}
-                onChange={(e) => setDiscipline(e.target.value as typeof MMA_DISCIPLINES[number])}
+                onChange={(value) => setDiscipline(value as typeof MMA_DISCIPLINES[number])}
                 options={MMA_DISCIPLINES.map((d) => ({ value: d, label: d }))}
                 required
               />
             </div>
+
+            {/* BJJ Gi/No-Gi Toggle */}
+            {discipline === 'Brazilian Jiu-Jitsu' && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-white/80 mb-2">Type</label>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setBjjType('gi')}
+                    className={`flex-1 py-2 rounded-button text-sm font-medium transition-default ${
+                      bjjType === 'gi'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-card border border-border text-white/80 hover:bg-white/5'
+                    }`}
+                  >
+                    Gi
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBjjType('nogi')}
+                    className={`flex-1 py-2 rounded-button text-sm font-medium transition-default ${
+                      bjjType === 'nogi'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-card border border-border text-white/80 hover:bg-white/5'
+                    }`}
+                  >
+                    No-Gi
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Duration */}
             <div className="mb-4">

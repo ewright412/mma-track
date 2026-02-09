@@ -14,6 +14,7 @@ import {
   deleteGoal,
 } from '@/lib/supabase/goalsQueries';
 import { GOAL_CATEGORIES, GOAL_CATEGORY_LABELS } from '@/lib/constants/goals';
+import { Select } from '@/components/ui/Select';
 import { Plus, Target, CheckCircle2, AlertCircle, Filter } from 'lucide-react';
 import Link from 'next/link';
 
@@ -158,34 +159,33 @@ export default function GoalsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Category Filter */}
           <div>
-            <label className="block text-sm text-white/60 mb-2">Category</label>
-            <select
+            <Select
+              label="Category"
               value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value as GoalCategory | 'all')}
-              className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">All Categories</option>
-              {GOAL_CATEGORIES.map((cat) => (
-                <option key={cat} value={cat}>
-                  {GOAL_CATEGORY_LABELS[cat]}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => setCategoryFilter(value as GoalCategory | 'all')}
+              options={[
+                { value: 'all', label: 'All Categories' },
+                ...GOAL_CATEGORIES.map((cat) => ({
+                  value: cat,
+                  label: GOAL_CATEGORY_LABELS[cat],
+                })),
+              ]}
+            />
           </div>
 
           {/* Status Filter */}
           <div>
-            <label className="block text-sm text-white/60 mb-2">Status</label>
-            <select
+            <Select
+              label="Status"
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as GoalStatus | 'all')}
-              className="w-full bg-white/10 border border-white/20 rounded-input px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="active">Active Only</option>
-              <option value="completed">Completed Only</option>
-              <option value="abandoned">Abandoned Only</option>
-              <option value="all">All Statuses</option>
-            </select>
+              onChange={(value) => setStatusFilter(value as GoalStatus | 'all')}
+              options={[
+                { value: 'active', label: 'Active Only' },
+                { value: 'completed', label: 'Completed Only' },
+                { value: 'abandoned', label: 'Abandoned Only' },
+                { value: 'all', label: 'All Statuses' },
+              ]}
+            />
           </div>
         </div>
       </Card>

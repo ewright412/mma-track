@@ -263,7 +263,7 @@ export default function StrengthPage() {
               <Select
                 label="Filter by Exercise"
                 value={filterExercise}
-                onChange={e => setFilterExercise(e.target.value)}
+                onChange={value => setFilterExercise(value)}
                 options={[
                   { value: '', label: 'All Exercises' },
                   ...userExercises.map(ex => ({ value: ex, label: ex })),
@@ -274,7 +274,7 @@ export default function StrengthPage() {
               <Select
                 label="Filter by Muscle Group"
                 value={filterMuscleGroup}
-                onChange={e => setFilterMuscleGroup(e.target.value)}
+                onChange={value => setFilterMuscleGroup(value)}
                 options={[
                   { value: '', label: 'All Muscle Groups' },
                   ...Object.entries(MUSCLE_GROUP_LABELS).map(([value, label]) => ({

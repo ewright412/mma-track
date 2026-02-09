@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { MMA_DISCIPLINES, DISCIPLINE_COLORS } from '@/lib/constants/disciplines';
+import { MMA_DISCIPLINES, DISCIPLINE_HEX_COLORS } from '@/lib/constants/disciplines';
 import { createGoal } from '@/lib/supabase/goalsQueries';
 import { MMADiscipline } from '@/lib/types/training';
 import { GoalCategory } from '@/lib/types/metrics';
@@ -18,6 +18,7 @@ import {
   Target,
   Bell,
   CheckCircle,
+  Plus,
 } from 'lucide-react';
 
 interface QuickGoal {
@@ -40,6 +41,8 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [selectedDisciplines, setSelectedDisciplines] = useState<MMADiscipline[]>([]);
   const [selectedGoals, setSelectedGoals] = useState<QuickGoal[]>([]);
+  const [customGoalTitle, setCustomGoalTitle] = useState('');
+  const [customGoalCategory, setCustomGoalCategory] = useState<GoalCategory>('other');
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -59,6 +62,25 @@ export default function OnboardingPage() {
         ? prev.filter((g) => g.title !== goal.title)
         : [...prev, goal]
     );
+  };
+
+  const addCustomGoal = () => {
+    if (!customGoalTitle.trim()) return;
+    const newGoal: QuickGoal = {
+      title: customGoalTitle.trim(),
+      category: customGoalCategory,
+      unit: '',
+    };
+    setSelectedGoals((prev) => [...prev, newGoal]);
+    setCustomGoalTitle('');
+  };
+
+  const CATEGORY_BADGE_COLORS: Record<GoalCategory, string> = {
+    weight: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    cardio: 'bg-green-500/20 text-green-300 border-green-500/30',
+    strength: 'bg-red-500/20 text-red-300 border-red-500/30',
+    skill: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    other: 'bg-gray-500/20 text-gray-300 border-gray-500/30',
   };
 
   const handleEnableNotifications = async () => {
@@ -144,25 +166,35 @@ export default function OnboardingPage() {
             <div className="grid grid-cols-2 gap-3 mb-8">
               {MMA_DISCIPLINES.map((discipline) => {
                 const isSelected = selectedDisciplines.includes(discipline);
-                const colorClass = DISCIPLINE_COLORS[discipline];
+                const hexColor = DISCIPLINE_HEX_COLORS[discipline];
                 return (
                   <button
                     key={discipline}
                     onClick={() => toggleDiscipline(discipline)}
-                    className={`p-4 rounded-card border text-left transition-all duration-150 ease-out ${
+                    className={`p-4 rounded-card text-left transition-all duration-150 ease-out ${
                       isSelected
-                        ? 'border-accent bg-accent/10'
-                        : 'border-white/[0.08] bg-card hover:border-white/20'
+                        ? 'bg-card'
+                        : 'border border-white/[0.08] bg-card hover:border-white/20'
                     }`}
+                    style={isSelected ? {
+                      borderLeft: `3px solid ${hexColor}`,
+                      borderTop: '1px solid rgba(255,255,255,0.12)',
+                      borderRight: '1px solid rgba(255,255,255,0.12)',
+                      borderBottom: '1px solid rgba(255,255,255,0.12)',
+                      backgroundColor: `${hexColor}08`,
+                    } : undefined}
                   >
                     <div className="flex items-center gap-3">
-                      <div
-                        className={`w-3 h-3 rounded-full ${colorClass}`}
-                      />
+                      {isSelected && (
+                        <div
+                          className="w-3 h-3 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: hexColor }}
+                        />
+                      )}
                       <span className="text-sm font-medium">{discipline}</span>
                     </div>
                     {isSelected && (
-                      <CheckCircle className="w-4 h-4 text-accent mt-2" />
+                      <CheckCircle className="w-4 h-4 mt-2" style={{ color: hexColor }} />
                     )}
                   </button>
                 );
@@ -178,36 +210,92 @@ export default function OnboardingPage() {
               <Target className="w-7 h-7 text-accent-blue" />
             </div>
             <h2 className="text-2xl font-bold mb-2">Set your first goals</h2>
-            <p className="text-white/60 mb-6">
-              Pick a few goals to get started, or skip and add your own later.
+            <p className="text-white/60 mb-4">
+              Create a custom goal or pick from suggestions below.
             </p>
-            <div className="space-y-3 mb-8">
-              {QUICK_GOALS.map((goal) => {
-                const isSelected = selectedGoals.some(
-                  (g) => g.title === goal.title
-                );
-                return (
+
+            {/* Custom Goal Input */}
+            <div className="bg-card border border-white/[0.08] rounded-card p-4 mb-6">
+              <label className="block text-sm font-medium text-white/80 mb-2">Create Custom Goal</label>
+              <div className="flex gap-2 mb-3">
+                <input
+                  type="text"
+                  value={customGoalTitle}
+                  onChange={(e) => setCustomGoalTitle(e.target.value)}
+                  placeholder="e.g., Deadlift 2x bodyweight"
+                  className="flex-1 bg-background border border-border rounded-input px-3 py-2 text-white text-sm placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomGoal())}
+                />
+                <button
+                  type="button"
+                  onClick={addCustomGoal}
+                  disabled={!customGoalTitle.trim()}
+                  className="px-3 py-2 bg-blue-500 text-white rounded-button text-sm font-medium transition-default hover:bg-blue-600 disabled:opacity-40"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {(['strength', 'cardio', 'weight', 'skill', 'other'] as GoalCategory[]).map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setCustomGoalCategory(cat)}
+                    className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-default capitalize ${
+                      customGoalCategory === cat
+                        ? CATEGORY_BADGE_COLORS[cat]
+                        : 'border-white/10 text-white/40 hover:border-white/20'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Selected Goals */}
+            {selectedGoals.length > 0 && (
+              <div className="mb-4">
+                <label className="block text-xs font-medium text-white/50 uppercase tracking-wider mb-2">Your goals ({selectedGoals.length})</label>
+                <div className="flex flex-wrap gap-2">
+                  {selectedGoals.map((goal) => (
+                    <span
+                      key={goal.title}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/15 border border-blue-500/30 rounded-full text-sm text-blue-300"
+                    >
+                      {goal.title}
+                      <button
+                        onClick={() => toggleGoal(goal)}
+                        className="text-blue-400 hover:text-white ml-1"
+                      >
+                        &times;
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Suggested Goals */}
+            <div className="mb-8">
+              <label className="block text-xs font-medium text-white/50 uppercase tracking-wider mb-2">Suggested goals</label>
+              <div className="space-y-2">
+                {QUICK_GOALS.filter((g) => !selectedGoals.some((s) => s.title === g.title)).map((goal) => (
                   <button
                     key={goal.title}
                     onClick={() => toggleGoal(goal)}
-                    className={`w-full p-4 rounded-card border text-left transition-all duration-150 ease-out flex items-center justify-between ${
-                      isSelected
-                        ? 'border-accent-blue bg-accent-blue/10'
-                        : 'border-white/[0.08] bg-card hover:border-white/20'
-                    }`}
+                    className="w-full p-3 rounded-card border border-white/[0.08] bg-card/50 hover:border-white/20 text-left transition-all duration-150 ease-out flex items-center justify-between"
                   >
-                    <div>
-                      <span className="text-sm font-medium">{goal.title}</span>
-                      <span className="text-xs text-white/40 ml-2 capitalize">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-white/80">{goal.title}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium border capitalize ${CATEGORY_BADGE_COLORS[goal.category]}`}>
                         {goal.category}
                       </span>
                     </div>
-                    {isSelected && (
-                      <CheckCircle className="w-5 h-5 text-accent-blue flex-shrink-0" />
-                    )}
+                    <Plus className="w-4 h-4 text-white/30" />
                   </button>
-                );
-              })}
+                ))}
+              </div>
             </div>
           </div>
         )}

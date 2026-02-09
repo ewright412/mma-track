@@ -5,7 +5,14 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   error?: string;
 }
 
-export function Input({ label, error, className = "", ...props }: InputProps) {
+export function Input({ label, error, className = "", onFocus, ...props }: InputProps) {
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (props.type === 'number') {
+      e.target.select();
+    }
+    onFocus?.(e);
+  };
+
   return (
     <div className="w-full">
       {label && (
@@ -17,6 +24,7 @@ export function Input({ label, error, className = "", ...props }: InputProps) {
         className={`w-full bg-background border border-border rounded-input px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-accent transition-default ${
           error ? "border-red-500" : ""
         } ${className}`}
+        onFocus={handleFocus}
         {...props}
       />
       {error && <p className="mt-1 text-sm text-red-500">{error}</p>}

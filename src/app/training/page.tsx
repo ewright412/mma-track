@@ -181,7 +181,7 @@ export default function TrainingPage() {
               <Select
                 label="Discipline"
                 value={disciplineFilter}
-                onChange={(e) => setDisciplineFilter(e.target.value)}
+                onChange={(value) => setDisciplineFilter(value)}
                 options={[
                   { value: 'all', label: 'All Disciplines' },
                   ...MMA_DISCIPLINES.map((d) => ({ value: d, label: d })),

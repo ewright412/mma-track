@@ -12,19 +12,8 @@ import {
   Legend,
 } from 'recharts';
 import { MMADiscipline } from '@/lib/types/training';
+import { DISCIPLINE_HEX_COLORS } from '@/lib/constants/disciplines';
 import { WeeklyDisciplineVolume } from '@/lib/supabase/dashboardQueries';
-
-// Hex colors for each discipline
-const DISCIPLINE_HEX_COLORS: Record<MMADiscipline, string> = {
-  Boxing: '#ef4444',
-  'Muay Thai': '#f97316',
-  Kickboxing: '#eab308',
-  Wrestling: '#22c55e',
-  'Brazilian Jiu-Jitsu': '#3b82f6',
-  Judo: '#6366f1',
-  'MMA/Sparring': '#a855f7',
-  'Submission Grappling/No-Gi': '#ec4899',
-};
 
 interface WeeklyVolumeChartProps {
   data: WeeklyDisciplineVolume[];

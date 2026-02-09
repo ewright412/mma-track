@@ -231,7 +231,7 @@ export default function CardioPage() {
 
             <Select
               value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value as CardioType | 'All')}
+              onChange={(value) => setSelectedType(value as CardioType | 'All')}
               options={[
                 { value: 'All', label: 'All Types' },
                 ...CARDIO_TYPES.map((type) => ({ value: type, label: type })),
@@ -241,7 +241,7 @@ export default function CardioPage() {
 
             <Select
               value={selectedInterval}
-              onChange={(e) => setSelectedInterval(e.target.value as 'All' | 'true' | 'false')}
+              onChange={(value) => setSelectedInterval(value as 'All' | 'true' | 'false')}
               options={[
                 { value: 'All', label: 'All Sessions' },
                 { value: 'true', label: 'Intervals Only' },
