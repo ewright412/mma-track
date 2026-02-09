@@ -9,6 +9,7 @@ import {
   TrainingStats,
   MMADiscipline,
 } from '../types/training';
+import { matchSessionToSchedule } from './scheduleQueries';
 
 // ============================================================================
 // CREATE
@@ -70,6 +71,14 @@ export async function createTrainingSession(
         techniques = insertedTechniques || [];
       }
     }
+
+    // Auto-match to schedule (fire-and-forget, non-blocking)
+    matchSessionToSchedule(
+      session.id,
+      input.session_date,
+      input.discipline,
+      input.duration_minutes
+    ).catch(err => console.error('Schedule matching failed:', err));
 
     return {
       data: {

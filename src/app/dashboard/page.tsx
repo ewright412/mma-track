@@ -26,6 +26,7 @@ import { TrainingInsights } from '@/components/charts/TrainingInsights';
 import { GoalProgressIndicator } from '@/components/metrics/GoalProgressIndicator';
 import { CompetitionCountdown } from '@/components/dashboard/CompetitionCountdown';
 import { TrainingLoadCard } from '@/components/dashboard/TrainingLoadCard';
+import { TodaysPlanCard } from '@/components/dashboard/TodaysPlanCard';
 
 // Lazy load heavy chart components for better initial load performance
 const DisciplineBreakdownChart = dynamic(
@@ -153,6 +154,9 @@ export default function DashboardPage() {
           competition={data.nextCompetition}
           currentWeight={data.bodyMetricsStats?.currentWeight}
         />
+
+        {/* Today's Plan */}
+        <TodaysPlanCard entries={data.todaysSchedule} />
 
         {/* Key Stats Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">

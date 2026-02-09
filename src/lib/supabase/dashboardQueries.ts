@@ -12,6 +12,8 @@ import { getStrengthStats, getPersonalRecords } from './strength-queries';
 import { getBodyMetricsStats } from './metricsQueries';
 import { getGoals, getUpcomingGoals } from './goalsQueries';
 import { getNextCompetition } from './competitionQueries';
+import { getTodaysSchedule, getWeeklyAdherenceSummary } from './scheduleQueries';
+import { ScheduleEntryWithAdherence, WeeklyAdherenceSummary } from '../types/schedule';
 
 // ============================================================================
 // DASHBOARD TYPES
@@ -70,6 +72,10 @@ export interface DashboardData {
 
   // Insights
   insights: TrainingInsight[];
+
+  // Schedule
+  todaysSchedule: ScheduleEntryWithAdherence[];
+  scheduleAdherenceThisWeek: WeeklyAdherenceSummary | null;
 }
 
 // ============================================================================
@@ -134,6 +140,8 @@ export async function getDashboardData(): Promise<{
       strengthStatsResult,
       personalRecordsResult,
       nextCompetitionRes,
+      todaysScheduleRes,
+      weeklyAdherenceRes,
     ] = await Promise.all([
       getTrainingStats(),
       getTrainingSessions({ startDate: thisWeekStartStr }),
@@ -151,6 +159,8 @@ export async function getDashboardData(): Promise<{
       getStrengthStats(user.id).catch(() => null),
       getPersonalRecords(user.id).catch(() => []),
       getNextCompetition(),
+      getTodaysSchedule(),
+      getWeeklyAdherenceSummary(thisWeekStartStr),
     ]);
 
     // Build weekly discipline volume data (last 8 weeks)
@@ -216,6 +226,8 @@ export async function getDashboardData(): Promise<{
       trainingLoadThisWeek,
       trainingLoad4WeekAvg,
       insights: [],
+      todaysSchedule: todaysScheduleRes.data || [],
+      scheduleAdherenceThisWeek: weeklyAdherenceRes.data,
     };
 
     // Set cardio comparison data

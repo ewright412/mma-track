@@ -12,6 +12,7 @@
 - ✅ Phase 7: Dashboard & Analytics (DEPLOYED)
 - ✅ Phase 8: PWA & Polish (COMPLETE)
 - ✅ Phase 9: Feature Enhancements (COMPLETE)
+- ✅ Phase 10: Training Schedule (COMPLETE)
 
 ### Setup
 - [x] Initialize Next.js 14 with TypeScript, Tailwind, ESLint
@@ -723,3 +724,77 @@
 - Enhanced: TrainingInsights (dismissible), TrainingSessionCard (repeat), Header (Quick Log), LayoutWrapper (FAB)
 - Enhanced: dashboardQueries.ts (competition, 30-day disciplines, training load, priority insights)
 - Production build verified: All 21 pages compile successfully with no errors
+
+---
+
+## Phase 10: Training Schedule
+**Status: COMPLETE** ✅
+
+### Database & Types
+- [x] Created schedule_templates, schedule_entries, schedule_adherence tables (migration 007_schedule_tables.sql)
+- [x] Row Level Security policies for all 3 tables
+- [x] Indexes for performance (template_id, day_of_week, date, user_id+is_active)
+- [x] TypeScript types for all schedule entities (lib/types/schedule.ts)
+
+### Database Functions
+- [x] Created lib/supabase/scheduleQueries.ts with:
+  - [x] Template CRUD (create, read, update, delete, set active)
+  - [x] Entry CRUD (create, update, delete)
+  - [x] Adherence recording (upsert with conflict on entry+date)
+  - [x] Auto-matching: matchSessionToSchedule() — matches training sessions to schedule entries
+  - [x] Dashboard helpers: getTodaysSchedule(), getWeeklyAdherenceSummary()
+  - [x] Streak calculation: getAdherenceStreak() — consecutive days following schedule
+  - [x] Monthly trend: getMonthlyAdherenceTrend() — adherence % per month
+
+### Components
+- [x] ScheduleEntryCard — discipline-colored card with time, location, adherence status
+- [x] ScheduleEntryModal — add/edit/delete entries via Modal with discipline, time, location, notes
+- [x] WeeklyGrid — 7-column grid (desktop) / day tab + list view (mobile)
+- [x] AdherenceSummary — weekly progress bar, streak counter, monthly trend bars
+- [x] TemplateSwitcher — dropdown for switching/creating/deleting templates
+- [x] TodaysPlanCard — dashboard card showing today's scheduled sessions with completion status
+
+### Pages
+- [x] Schedule builder page at /schedule with:
+  - [x] Template management (create, switch, delete)
+  - [x] Weekly grid view with clickable day cells
+  - [x] Add/edit/delete entries via modal
+  - [x] Rest Day option with gray/green styling
+  - [x] Adherence summary (weekly %, streak, monthly trend)
+  - [x] Empty state for new users
+  - [x] Responsive: 7-column grid on desktop, day tabs on mobile
+
+### Dashboard Integration
+- [x] TodaysPlanCard at top of dashboard showing today's scheduled sessions
+- [x] Entries show time, discipline (color-coded), location, completion status
+- [x] Rest Day display with Coffee icon
+- [x] "Complete" badge when all sessions done
+- [x] Schedule data added to getDashboardData() parallel fetch
+
+### Auto-Matching
+- [x] When training session is saved, automatically matches to schedule entry (same day + discipline)
+- [x] Status determined by duration: >= 80% of scheduled = completed, < 80% = partial
+- [x] Fire-and-forget pattern — session saves even if matching fails
+- [x] Missed status inferred on-the-fly (no background process needed)
+
+### Navigation
+- [x] Schedule added to Sidebar (between Training and Sparring) with CalendarDays icon
+- [x] Schedule added to MobileNav (replaces Profile, accessible from Header)
+
+### Phase 10 Exit Criteria
+- [x] User can create schedule templates and add weekly entries
+- [x] Weekly grid displays entries color-coded by discipline
+- [x] Rest Day option available with distinct styling
+- [x] Dashboard shows Today's Plan with completion status
+- [x] Training sessions auto-match to schedule entries
+- [x] Adherence tracking: weekly %, streak, monthly trend
+- [x] Template switching works correctly
+- [x] Mobile responsive at 375px
+- [x] No TypeScript errors in production build (22 pages compiled)
+
+**Phase 10 Complete!** ✅
+- 3 new database tables: schedule_templates, schedule_entries, schedule_adherence
+- 10 new files created, 5 existing files modified
+- New components: ScheduleEntryCard, ScheduleEntryModal, WeeklyGrid, AdherenceSummary, TemplateSwitcher, TodaysPlanCard
+- Enhanced: queries.ts (auto-matching), dashboardQueries.ts (schedule data), Sidebar, MobileNav, Dashboard
+- Production build verified: All 22 pages compile successfully with no errors
