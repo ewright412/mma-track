@@ -11,6 +11,7 @@
 - ✅ Phase 6: Body Metrics & Goals (DEPLOYED)
 - ✅ Phase 7: Dashboard & Analytics (DEPLOYED)
 - ✅ Phase 8: PWA & Polish (COMPLETE)
+- ✅ Phase 9: Feature Enhancements (COMPLETE)
 
 ### Setup
 - [x] Initialize Next.js 14 with TypeScript, Tailwind, ESLint
@@ -646,4 +647,79 @@
 - CSV export for all 5 data types (training, cardio, strength, metrics, goals)
 - Dashboard first-load JS reduced 39% via lazy loading
 - Accessibility: skip-to-content, ARIA, focus-visible, aria-current
+- Production build verified: All 21 pages compile successfully with no errors
+
+---
+
+## Phase 9: Feature Enhancements
+**Status: COMPLETE** ✅
+
+### Feature 1: Competition Countdown
+- [x] Created `competitions` table (migration 006_competitions.sql) with RLS policies
+- [x] TypeScript types (`lib/types/competition.ts`)
+- [x] CRUD query functions (`lib/supabase/competitionQueries.ts`)
+- [x] Competition management section on Profile page (add/delete/list)
+- [x] `CompetitionCountdown` dashboard card:
+  - [x] Shows next upcoming competition with day countdown
+  - [x] Color-coded: 30+ days blue, 14-30 amber, under 14 red with pulse
+  - [x] Current weight vs target weight display
+  - [x] Hidden when no competition set
+
+### Feature 2: Quick Log
+- [x] `QuickLogModal` component with multi-step flow:
+  - [x] Step 1: Pick type (Training / Strength / Cardio) — 3 big buttons
+  - [x] Step 2 (Training): Discipline grid, duration presets, intensity slider, notes, save
+  - [x] Strength/Cardio redirect to full forms
+- [x] `QuickLogFAB` — floating red "+" button on mobile (bottom-right, above nav)
+- [x] "Quick Log" button in Header for desktop
+- [x] "Repeat" button on `TrainingSessionCard` — duplicates session with today's date
+
+### Feature 3: Discipline Balance Chart
+- [x] `DisciplineBalanceChart` component using Recharts RadarChart
+  - [x] Axes: one per discipline the user trains
+  - [x] Values: sessions in last 30 days per discipline
+  - [x] Subtle dark theme, red fill area
+  - [x] Requires 3+ disciplines for display
+- [x] Added `disciplineLast30Days` to dashboard data
+- [x] Replaces pie chart on dashboard with radar chart
+
+### Feature 4: Training Load Indicator
+- [x] `TrainingLoadCard` component:
+  - [x] Calculates: (sessions × duration × intensity) for current week
+  - [x] Compares to 4-week rolling average
+  - [x] Displays: "Low" (<70%), "Optimal" (70-130%), "High" (>130%)
+  - [x] Color: Blue for low, Green for optimal, Red for high
+  - [x] Visual bar indicator with optimal zone markers
+  - [x] Contextual subtext (e.g., "Training 20% more than your average")
+- [x] Added `trainingLoadThisWeek` and `trainingLoad4WeekAvg` to dashboard data
+
+### Feature 5: Smart Suggestions (Insights)
+- [x] Replaced "Areas to Focus" with "Insights" section
+- [x] Enhanced insight engine with priority-based sorting:
+  - [x] "You haven't trained [discipline] in [X] days" — 14+ day threshold
+  - [x] "Cardio volume down X% from last month"
+  - [x] "You've trained X days straight — consider a rest day" — 6+ days
+  - [x] "New PR! You hit [weight] on [exercise]" — celebrates specific PRs
+  - [x] Overdue goals warning
+  - [x] Declining sparring ratings
+  - [x] Week-over-week improvement
+- [x] Max 3 insights shown, prioritized by relevance
+- [x] Each insight is dismissible with X button
+
+### Phase 9 Exit Criteria
+- [x] Competition countdown visible on dashboard when competition set
+- [x] Quick Log accessible from FAB (mobile) and header (desktop)
+- [x] Repeat button works on training history items
+- [x] Radar chart shows discipline balance on dashboard
+- [x] Training load indicator shows weekly load status
+- [x] Smart insights replace old "Areas to Focus" with max 3 prioritized items
+- [x] All insights are dismissible
+- [x] No TypeScript errors in production build (21 pages compiled)
+
+**Phase 9 Complete!** ✅
+- 5 new features implemented across dashboard, profile, training, and layout
+- New database table: competitions (with migration and RLS)
+- New components: CompetitionCountdown, QuickLogModal, QuickLogFAB, DisciplineBalanceChart, TrainingLoadCard
+- Enhanced: TrainingInsights (dismissible), TrainingSessionCard (repeat), Header (Quick Log), LayoutWrapper (FAB)
+- Enhanced: dashboardQueries.ts (competition, 30-day disciplines, training load, priority insights)
 - Production build verified: All 21 pages compile successfully with no errors

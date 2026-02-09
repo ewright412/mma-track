@@ -6,15 +6,16 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { TrainingSessionWithTechniques } from '@/lib/types/training';
 import { DISCIPLINE_COLORS, DISCIPLINE_TEXT_COLORS, getIntensityColor } from '@/lib/constants/disciplines';
-import { Calendar, Clock, Flame, ChevronDown, ChevronUp, Edit, Trash2 } from 'lucide-react';
+import { Calendar, Clock, Flame, ChevronDown, ChevronUp, Edit, Trash2, Copy } from 'lucide-react';
 
 interface TrainingSessionCardProps {
   session: TrainingSessionWithTechniques;
   onEdit?: (sessionId: string) => void;
   onDelete?: (sessionId: string) => void;
+  onRepeat?: (session: TrainingSessionWithTechniques) => void;
 }
 
-export function TrainingSessionCard({ session, onEdit, onDelete }: TrainingSessionCardProps) {
+export function TrainingSessionCard({ session, onEdit, onDelete, onRepeat }: TrainingSessionCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const formatDate = (dateString: string) => {
@@ -64,6 +65,16 @@ export function TrainingSessionCard({ session, onEdit, onDelete }: TrainingSessi
 
         {/* Right side: Actions */}
         <div className="flex items-center gap-2">
+          {onRepeat && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onRepeat(session)}
+              title="Repeat session"
+            >
+              <Copy className="w-4 h-4" />
+            </Button>
+          )}
           {onEdit && (
             <Button
               variant="ghost"

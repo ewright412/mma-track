@@ -32,6 +32,8 @@ import {
   Edit2,
   MapPin,
   Shield,
+  Swords,
+  Trash2,
 } from 'lucide-react';
 import { getTrainingSessions } from '@/lib/supabase/queries';
 import { getCardioLogs } from '@/lib/supabase/cardioQueries';
@@ -50,6 +52,12 @@ import {
   requestNotificationPermission,
   getNotificationPermission,
 } from '@/lib/utils/notifications';
+import { Competition, CreateCompetitionInput } from '@/lib/types/competition';
+import {
+  getCompetitions,
+  createCompetition,
+  deleteCompetition,
+} from '@/lib/supabase/competitionQueries';
 
 interface FighterProfile {
   displayName: string;
@@ -104,6 +112,15 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<FighterProfile>(DEFAULT_PROFILE);
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileDraft, setProfileDraft] = useState<FighterProfile>(DEFAULT_PROFILE);
+  const [competitions, setCompetitions] = useState<Competition[]>([]);
+  const [showCompModal, setShowCompModal] = useState(false);
+  const [compForm, setCompForm] = useState<CreateCompetitionInput>({
+    name: '',
+    competition_date: '',
+    weight_class: '',
+    target_weight: undefined,
+    notes: '',
+  });
 
   // Form state
   const [formData, setFormData] = useState<CreateBodyMetricInput>({
@@ -116,6 +133,7 @@ export default function ProfilePage() {
   useEffect(() => {
     loadUserData();
     loadBodyMetrics();
+    loadCompetitions();
     const settings = getReminderSettings();
     setReminderEnabled(settings.enabled);
     setReminderTime(settings.time);
@@ -166,6 +184,44 @@ export default function ProfilePage() {
       console.error('Error loading body metrics:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadCompetitions = async () => {
+    try {
+      const { data } = await getCompetitions();
+      if (data) setCompetitions(data);
+    } catch (error) {
+      console.error('Error loading competitions:', error);
+    }
+  };
+
+  const handleAddCompetition = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!compForm.name || !compForm.competition_date) return;
+
+    try {
+      const { error } = await createCompetition(compForm);
+      if (!error) {
+        setShowCompModal(false);
+        setCompForm({ name: '', competition_date: '', weight_class: '', target_weight: undefined, notes: '' });
+        loadCompetitions();
+      } else {
+        alert('Error saving competition: ' + error.message);
+      }
+    } catch (error) {
+      console.error('Error adding competition:', error);
+      alert('Error saving competition');
+    }
+  };
+
+  const handleDeleteCompetition = async (id: string) => {
+    if (!confirm('Delete this competition?')) return;
+    const { error } = await deleteCompetition(id);
+    if (!error) {
+      loadCompetitions();
+    } else {
+      alert('Error deleting competition: ' + error.message);
     }
   };
 
@@ -461,6 +517,137 @@ export default function ProfilePage() {
           </div>
         )}
       </Card>
+
+      {/* Competitions */}
+      <Card className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <Swords className="w-5 h-5 text-[#ef4444]" />
+            <h2 className="text-lg font-semibold text-white">Competitions</h2>
+          </div>
+          <Button onClick={() => setShowCompModal(true)} className="px-3 py-1.5 text-sm">
+            <Plus className="w-4 h-4 mr-1" />
+            Add
+          </Button>
+        </div>
+
+        {competitions.length === 0 ? (
+          <p className="text-sm text-gray-500">No competitions scheduled. Add one to start your countdown.</p>
+        ) : (
+          <div className="space-y-3">
+            {competitions.map((comp) => {
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+              const compDate = new Date(comp.competition_date + 'T00:00:00');
+              const diffMs = compDate.getTime() - today.getTime();
+              const daysUntil = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+              const isPast = daysUntil < 0;
+
+              return (
+                <div
+                  key={comp.id}
+                  className={`flex items-center justify-between p-3 rounded-lg border ${
+                    isPast ? 'border-white/[0.05] bg-white/[0.02] opacity-60' : 'border-white/[0.08] bg-white/5'
+                  }`}
+                >
+                  <div>
+                    <div className="text-sm font-medium text-white">{comp.name}</div>
+                    <div className="text-xs text-gray-400 mt-0.5">
+                      {new Date(comp.competition_date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                      {comp.weight_class && ` \u00B7 ${comp.weight_class}`}
+                      {comp.target_weight && ` \u00B7 Target: ${comp.target_weight} lbs`}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {!isPast && (
+                      <span className={`text-sm font-medium ${
+                        daysUntil < 14 ? 'text-[#ef4444]' : daysUntil < 30 ? 'text-[#f59e0b]' : 'text-[#3b82f6]'
+                      }`}>
+                        {daysUntil}d
+                      </span>
+                    )}
+                    <button
+                      onClick={() => handleDeleteCompetition(comp.id)}
+                      className="text-gray-500 hover:text-red-400 transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </Card>
+
+      {/* Add Competition Modal */}
+      {showCompModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-white">Add Competition</h2>
+              <button onClick={() => setShowCompModal(false)} className="text-white/60 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleAddCompetition} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-1">Name *</label>
+                <input
+                  type="text"
+                  value={compForm.name}
+                  onChange={(e) => setCompForm({ ...compForm, name: e.target.value })}
+                  placeholder="e.g. First Amateur Fight"
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-1">Date *</label>
+                <input
+                  type="date"
+                  value={compForm.competition_date}
+                  onChange={(e) => setCompForm({ ...compForm, competition_date: e.target.value })}
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-1">Weight Class</label>
+                <select
+                  value={compForm.weight_class}
+                  onChange={(e) => setCompForm({ ...compForm, weight_class: e.target.value })}
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                >
+                  {WEIGHT_CLASSES.map(wc => (
+                    <option key={wc} value={wc}>{wc || 'Select...'}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-1">Target Weight (lbs)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={compForm.target_weight || ''}
+                  onChange={(e) => setCompForm({ ...compForm, target_weight: e.target.value ? parseFloat(e.target.value) : undefined })}
+                  onFocus={(e) => e.target.select()}
+                  className="w-full bg-[#0f0f13] border border-white/[0.08] rounded-md px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50"
+                  placeholder="Optional"
+                />
+              </div>
+              <div className="flex gap-3">
+                <Button type="submit" className="flex-1 px-4 py-2 text-sm font-medium">
+                  Save
+                </Button>
+                <Button type="button" variant="ghost" onClick={() => setShowCompModal(false)} className="flex-1 px-4 py-2 text-sm font-medium">
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </Card>
+        </div>
+      )}
 
       {/* Body Metrics Stats */}
       <div className="flex items-center justify-between">

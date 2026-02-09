@@ -24,6 +24,8 @@ import {
 import { getDashboardData, DashboardData } from '@/lib/supabase/dashboardQueries';
 import { TrainingInsights } from '@/components/charts/TrainingInsights';
 import { GoalProgressIndicator } from '@/components/metrics/GoalProgressIndicator';
+import { CompetitionCountdown } from '@/components/dashboard/CompetitionCountdown';
+import { TrainingLoadCard } from '@/components/dashboard/TrainingLoadCard';
 
 // Lazy load heavy chart components for better initial load performance
 const DisciplineBreakdownChart = dynamic(
@@ -36,6 +38,10 @@ const WeeklyVolumeChart = dynamic(
 );
 const SparringTrendMini = dynamic(
   () => import('@/components/charts/SparringTrendMini').then(mod => ({ default: mod.SparringTrendMini })),
+  { loading: () => <div className="h-64 bg-card rounded-card animate-pulse" /> }
+);
+const DisciplineBalanceChart = dynamic(
+  () => import('@/components/charts/DisciplineBalanceChart').then(mod => ({ default: mod.DisciplineBalanceChart })),
   { loading: () => <div className="h-64 bg-card rounded-card animate-pulse" /> }
 );
 
@@ -142,6 +148,12 @@ export default function DashboardPage() {
           </button>
         </div>
 
+        {/* Competition Countdown */}
+        <CompetitionCountdown
+          competition={data.nextCompetition}
+          currentWeight={data.bodyMetricsStats?.currentWeight}
+        />
+
         {/* Key Stats Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {/* Sessions This Week */}
@@ -211,22 +223,20 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Training Insights */}
+        {/* Training Load */}
         <div className="mb-6">
-          {data.insights.length > 1 ? (
-            <TrainingInsights insights={data.insights} />
-          ) : (
-            <Card className="p-6 border-dashed">
-              <div className="flex items-center gap-3 mb-2">
-                <Lightbulb className="w-5 h-5 text-yellow-400" />
-                <h2 className="text-lg font-semibold text-white">Areas to Focus</h2>
-              </div>
-              <p className="text-sm text-gray-400">
-                Train more this week to unlock personalized insights.
-              </p>
-            </Card>
-          )}
+          <TrainingLoadCard
+            loadThisWeek={data.trainingLoadThisWeek}
+            load4WeekAvg={data.trainingLoad4WeekAvg}
+          />
         </div>
+
+        {/* Insights */}
+        {data.insights.length > 0 && (
+          <div className="mb-6">
+            <TrainingInsights insights={data.insights} />
+          </div>
+        )}
 
         {/* Training Overview + Discipline Breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -251,18 +261,17 @@ export default function DashboardPage() {
             <WeeklyVolumeChart data={data.weeklyDisciplineVolume} />
           </Card>
 
-          {/* Discipline Breakdown */}
+          {/* Discipline Balance (Radar) */}
           <Card className="p-6">
             <div className="flex items-center gap-3 mb-4">
               <Target className="w-5 h-5 text-red-400" />
               <h2 className="text-lg font-semibold text-white">
-                Discipline Breakdown
+                Discipline Balance
               </h2>
+              <span className="text-xs text-gray-500">Last 30 days</span>
             </div>
-            <DisciplineBreakdownChart
-              sessionsByDiscipline={
-                data.trainingStats?.sessionsByDiscipline || {}
-              }
+            <DisciplineBalanceChart
+              sessionsByDiscipline={data.disciplineLast30Days}
             />
           </Card>
         </div>

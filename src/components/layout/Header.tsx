@@ -1,15 +1,17 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, Bell, Settings, LogOut } from "lucide-react";
+import { Menu, Bell, Settings, LogOut, Plus } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { useState } from "react";
+import { QuickLogModal } from "@/components/dashboard/QuickLogModal";
 
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, signOut } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showQuickLog, setShowQuickLog] = useState(false);
 
   // Get page title from pathname
   const getPageTitle = () => {
@@ -43,6 +45,13 @@ export function Header() {
 
         {/* Right: User Info & Actions */}
         <div className="flex items-center space-x-4">
+          <button
+            onClick={() => setShowQuickLog(true)}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-[#ef4444] text-white text-sm font-medium rounded-md hover:bg-[#dc2626] transition-all duration-150"
+          >
+            <Plus size={16} />
+            Quick Log
+          </button>
           <button className="text-white/70 hover:text-white transition-default">
             <Bell size={20} />
           </button>
@@ -81,6 +90,11 @@ export function Header() {
           </div>
         </div>
       </div>
+
+      <QuickLogModal
+        isOpen={showQuickLog}
+        onClose={() => setShowQuickLog(false)}
+      />
     </header>
   );
 }

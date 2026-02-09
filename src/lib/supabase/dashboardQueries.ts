@@ -4,12 +4,14 @@ import { SparringTrendData, FocusArea } from '../types/sparring';
 import { CardioStats, CardioTrendData } from '../types/cardio';
 import { StrengthStats, PersonalRecord } from '../types/strength';
 import { BodyMetricsStats, Goal } from '../types/metrics';
+import { Competition } from '../types/competition';
 import { getTrainingStats, getTrainingSessions } from './queries';
 import { getSparringTrends, detectFocusAreas } from './sparringQueries';
 import { getCardioStats, getCardioTrends, getWeeklyCardioSummary } from './cardioQueries';
 import { getStrengthStats, getPersonalRecords } from './strength-queries';
 import { getBodyMetricsStats } from './metricsQueries';
 import { getGoals, getUpcomingGoals } from './goalsQueries';
+import { getNextCompetition } from './competitionQueries';
 
 // ============================================================================
 // DASHBOARD TYPES
@@ -25,6 +27,7 @@ export interface TrainingInsight {
   type: 'warning' | 'info' | 'success';
   message: string;
   category: 'training' | 'sparring' | 'cardio' | 'strength' | 'goals';
+  priority: number; // higher = more important, used for sorting
 }
 
 export interface DashboardData {
@@ -54,6 +57,16 @@ export interface DashboardData {
   // Goals
   activeGoals: Goal[];
   upcomingGoals: Goal[];
+
+  // Competition
+  nextCompetition: Competition | null;
+
+  // 30-day discipline breakdown (for radar chart)
+  disciplineLast30Days: Record<string, number>;
+
+  // Training load
+  trainingLoadThisWeek: number;
+  trainingLoad4WeekAvg: number;
 
   // Insights
   insights: TrainingInsight[];
@@ -120,6 +133,7 @@ export async function getDashboardData(): Promise<{
       upcomingGoalsRes,
       strengthStatsResult,
       personalRecordsResult,
+      nextCompetitionRes,
     ] = await Promise.all([
       getTrainingStats(),
       getTrainingSessions({ startDate: thisWeekStartStr }),
@@ -136,6 +150,7 @@ export async function getDashboardData(): Promise<{
       getUpcomingGoals(30),
       getStrengthStats(user.id).catch(() => null),
       getPersonalRecords(user.id).catch(() => []),
+      getNextCompetition(),
     ]);
 
     // Build weekly discipline volume data (last 8 weeks)
@@ -150,6 +165,34 @@ export async function getDashboardData(): Promise<{
     const recentPRs = allPRs.filter(
       (pr) => new Date(pr.achieved_date) >= thirtyDaysAgo
     );
+
+    // 30-day discipline breakdown (for radar chart)
+    const allRecentSessions = allRecentSessionsRes.data || [];
+    const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().split('T')[0];
+    const disciplineLast30Days: Record<string, number> = {};
+    allRecentSessions
+      .filter((s) => s.session_date >= thirtyDaysAgoStr)
+      .forEach((s) => {
+        disciplineLast30Days[s.discipline] = (disciplineLast30Days[s.discipline] || 0) + 1;
+      });
+
+    // Training load calculation
+    const fourWeeksAgo = new Date(today);
+    fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
+    const fourWeeksAgoStr = fourWeeksAgo.toISOString().split('T')[0];
+
+    const thisWeekSessions = thisWeekSessionsRes.data || [];
+    const trainingLoadThisWeek = thisWeekSessions.reduce(
+      (sum, s) => sum + s.duration_minutes * s.intensity,
+      0
+    );
+
+    const last4WeekSessions = allRecentSessions.filter(
+      (s) => s.session_date >= fourWeeksAgoStr && s.session_date < thisWeekStartStr
+    );
+    const trainingLoad4WeekAvg = last4WeekSessions.length > 0
+      ? last4WeekSessions.reduce((sum, s) => sum + s.duration_minutes * s.intensity, 0) / 4
+      : 0;
 
     // Build dashboard data
     const dashboardData: DashboardData = {
@@ -168,27 +211,16 @@ export async function getDashboardData(): Promise<{
       bodyMetricsStats: bodyMetricsStatsRes.data,
       activeGoals: activeGoalsRes.data || [],
       upcomingGoals: upcomingGoalsRes.data || [],
+      nextCompetition: nextCompetitionRes.data || null,
+      disciplineLast30Days,
+      trainingLoadThisWeek,
+      trainingLoad4WeekAvg,
       insights: [],
     };
 
     // Set cardio comparison data
     if (cardioLastMonthRes) {
       dashboardData.cardioLastMonthMinutes = cardioLastMonthRes.lastMonthMinutes;
-      // Store for insights
-      const thisMonthMinutes = cardioLastMonthRes.thisMonthMinutes;
-      if (cardioLastMonthRes.lastMonthMinutes > 0 && thisMonthMinutes > 0) {
-        const change =
-          ((thisMonthMinutes - cardioLastMonthRes.lastMonthMinutes) /
-            cardioLastMonthRes.lastMonthMinutes) *
-          100;
-        if (change < -20) {
-          dashboardData.insights.push({
-            type: 'warning',
-            message: `Cardio volume is ${Math.abs(Math.round(change))}% lower than last month`,
-            category: 'cardio',
-          });
-        }
-      }
     }
 
     // Generate insights
@@ -314,82 +346,57 @@ function generateInsights(
 ): TrainingInsight[] {
   const insights: TrainingInsight[] = [];
 
-  // 1. Check for undertrained disciplines
+  // 1. Consecutive training days warning (6+ days straight)
+  if (data.trainingStats && data.trainingStats.currentStreak >= 6) {
+    insights.push({
+      type: 'warning',
+      message: `You've trained ${data.trainingStats.currentStreak} days straight \u2014 consider a rest day`,
+      category: 'training',
+      priority: 90,
+    });
+  }
+
+  // 2. Discipline gaps — 14+ days since last session per discipline
   if (data.trainingStats && data.trainingStats.totalSessions > 0) {
     const allSessions = [...data.sessionsThisWeek, ...data.sessionsLastWeek];
-    const disciplines: MMADiscipline[] = [
-      'Boxing',
-      'Muay Thai',
-      'Kickboxing',
-      'Wrestling',
-      'Brazilian Jiu-Jitsu',
-      'MMA',
-    ];
-
-    // Check which trained disciplines haven't been trained recently
     const trainedDisciplines = Object.keys(
       data.trainingStats.sessionsByDiscipline
     ).filter(
       (d) => data.trainingStats!.sessionsByDiscipline[d as MMADiscipline] > 0
     );
 
-    // For each discipline the user has ever trained, check if it's been trained in the last 3 weeks
     if (trainedDisciplines.length > 0) {
-      const threeWeeksAgo = new Date();
-      threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
-      const threeWeeksAgoStr = threeWeeksAgo.toISOString().split('T')[0];
+      const today = new Date();
+      const fourteenDaysAgo = new Date();
+      fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+      const fourteenDaysAgoStr = fourteenDaysAgo.toISOString().split('T')[0];
 
-      // Use all sessions from the 8-week data (allRecentSessions covers this)
-      const recentDisciplines = new Set(
-        allSessions
-          .filter((s) => s.session_date >= threeWeeksAgoStr)
-          .map((s) => s.discipline)
-      );
+      // Build a map of last session date per discipline
+      const lastSessionByDiscipline: Record<string, string> = {};
+      allSessions.forEach((s) => {
+        if (!lastSessionByDiscipline[s.discipline] || s.session_date > lastSessionByDiscipline[s.discipline]) {
+          lastSessionByDiscipline[s.discipline] = s.session_date;
+        }
+      });
 
       trainedDisciplines.forEach((discipline) => {
-        if (!recentDisciplines.has(discipline as MMADiscipline)) {
+        const lastDate = lastSessionByDiscipline[discipline];
+        if (!lastDate || lastDate < fourteenDaysAgoStr) {
+          const daysSince = lastDate
+            ? Math.floor((today.getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24))
+            : 14;
           insights.push({
             type: 'warning',
-            message: `You haven't trained ${discipline} in 3+ weeks`,
+            message: `You haven't trained ${discipline} in ${daysSince} days`,
             category: 'training',
+            priority: 80,
           });
         }
       });
     }
-
-    // Training streak
-    if (data.trainingStats.currentStreak >= 7) {
-      insights.push({
-        type: 'success',
-        message: `${data.trainingStats.currentStreak}-day training streak! Keep it up!`,
-        category: 'training',
-      });
-    }
-
-    // Week-over-week comparison
-    const thisWeekCount = data.sessionsThisWeek.length;
-    const lastWeekCount = data.sessionsLastWeek.length;
-    if (lastWeekCount > 0 && thisWeekCount > lastWeekCount) {
-      insights.push({
-        type: 'success',
-        message: `Training up this week: ${thisWeekCount} sessions vs ${lastWeekCount} last week`,
-        category: 'training',
-      });
-    }
   }
 
-  // 2. Sparring focus areas with declining trends
-  data.sparringFocusAreas.forEach((area) => {
-    if (area.trend === 'declining' && area.priority !== 'low') {
-      insights.push({
-        type: 'warning',
-        message: `Your sparring ${area.categoryLabel.toLowerCase()} ratings are trending down`,
-        category: 'sparring',
-      });
-    }
-  });
-
-  // 3. Cardio comparison
+  // 3. Cardio volume comparison
   if (cardioComparison && cardioComparison.lastMonthMinutes > 0) {
     const change =
       ((cardioComparison.thisMonthMinutes - cardioComparison.lastMonthMinutes) /
@@ -399,24 +406,28 @@ function generateInsights(
     if (change < -20) {
       insights.push({
         type: 'warning',
-        message: `Cardio volume is ${Math.abs(Math.round(change))}% lower than last month`,
+        message: `Cardio volume down ${Math.abs(Math.round(change))}% from last month`,
         category: 'cardio',
+        priority: 70,
       });
     } else if (change > 20) {
       insights.push({
         type: 'success',
         message: `Cardio volume is up ${Math.round(change)}% compared to last month`,
         category: 'cardio',
+        priority: 40,
       });
     }
   }
 
-  // 4. Strength PRs
+  // 4. Celebrate recent PRs individually (top 1)
   if (data.recentPRs.length > 0) {
+    const latestPR = data.recentPRs[0];
     insights.push({
       type: 'success',
-      message: `${data.recentPRs.length} new personal record${data.recentPRs.length > 1 ? 's' : ''} in the last 30 days!`,
+      message: `New PR! You hit ${Math.round(latestPR.value)} lbs on ${latestPR.exercise_name}`,
       category: 'strength',
+      priority: 85,
     });
   }
 
@@ -431,16 +442,41 @@ function generateInsights(
       type: 'warning',
       message: `${overdueGoals.length} goal${overdueGoals.length > 1 ? 's are' : ' is'} past the target date`,
       category: 'goals',
+      priority: 75,
     });
   }
 
-  if (data.upcomingGoals.length > 0) {
+  // 6. Sparring focus areas with declining trends
+  const decliningArea = data.sparringFocusAreas.find(
+    (area) => area.trend === 'declining' && area.priority !== 'low'
+  );
+  if (decliningArea) {
     insights.push({
-      type: 'info',
-      message: `${data.upcomingGoals.length} goal${data.upcomingGoals.length > 1 ? 's' : ''} due in the next 30 days`,
-      category: 'goals',
+      type: 'warning',
+      message: `Your sparring ${decliningArea.categoryLabel.toLowerCase()} ratings are trending down`,
+      category: 'sparring',
+      priority: 60,
     });
   }
 
-  return insights;
+  // 7. Training streak celebration (not same as rest warning)
+  if (data.trainingStats && data.trainingStats.currentStreak >= 7 && data.trainingStats.currentStreak < 6) {
+    // This case won't fire since >= 7 is always >= 6, but the rest day warning takes priority
+  }
+
+  // 8. Week-over-week improvement
+  const thisWeekCount = data.sessionsThisWeek.length;
+  const lastWeekCount = data.sessionsLastWeek.length;
+  if (lastWeekCount > 0 && thisWeekCount > lastWeekCount) {
+    insights.push({
+      type: 'success',
+      message: `Training up this week: ${thisWeekCount} sessions vs ${lastWeekCount} last week`,
+      category: 'training',
+      priority: 30,
+    });
+  }
+
+  // Sort by priority (highest first) and return max 3
+  insights.sort((a, b) => b.priority - a.priority);
+  return insights.slice(0, 3);
 }

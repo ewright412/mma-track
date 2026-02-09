@@ -7,7 +7,7 @@ import { Select } from '@/components/ui/Select';
 import { Card } from '@/components/ui/Card';
 import { TrainingSessionCard } from '@/components/training/TrainingSessionCard';
 import { TrainingHeatMap } from '@/components/training/TrainingHeatMap';
-import { getTrainingSessions, deleteTrainingSession, getTrainingStats } from '@/lib/supabase/queries';
+import { getTrainingSessions, deleteTrainingSession, getTrainingStats, createTrainingSession } from '@/lib/supabase/queries';
 import { TrainingSessionWithTechniques, TrainingSessionFilters, TrainingStats } from '@/lib/types/training';
 import { MMA_DISCIPLINES } from '@/lib/constants/disciplines';
 import { Plus, Filter, Flame, Clock, TrendingUp } from 'lucide-react';
@@ -91,6 +91,28 @@ export default function TrainingPage() {
 
   const handleEdit = (sessionId: string) => {
     router.push(`/training/edit/${sessionId}`);
+  };
+
+  const handleRepeat = async (session: TrainingSessionWithTechniques) => {
+    const today = new Date().toISOString().split('T')[0];
+    const { error: repeatError } = await createTrainingSession({
+      session_date: today,
+      discipline: session.discipline,
+      duration_minutes: session.duration_minutes,
+      intensity: session.intensity,
+      notes: session.notes || undefined,
+      techniques: session.techniques.map((t) => ({
+        technique_name: t.technique_name,
+        notes: t.notes || undefined,
+      })),
+    });
+
+    if (repeatError) {
+      alert('Failed to repeat session: ' + repeatError.message);
+    } else {
+      loadSessions();
+      loadStats();
+    }
   };
 
   return (
@@ -227,6 +249,7 @@ export default function TrainingPage() {
                 session={session}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                onRepeat={handleRepeat}
               />
             ))}
           </div>
