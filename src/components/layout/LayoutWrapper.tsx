@@ -17,11 +17,12 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
                       pathname.startsWith('/forgot-password') ||
                       pathname.startsWith('/reset-password');
   const isOnboardingRoute = pathname.startsWith('/onboarding');
+  const isMarketingRoute = pathname === '/';
 
   return (
     <AuthGuard>
-      {/* For auth/onboarding routes, just render children without sidebar/header */}
-      {isAuthRoute || isOnboardingRoute ? (
+      {/* For auth/onboarding/marketing routes, just render children without sidebar/header */}
+      {isAuthRoute || isOnboardingRoute || isMarketingRoute ? (
         <>{children}</>
       ) : (
         <>

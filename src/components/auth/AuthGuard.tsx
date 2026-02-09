@@ -15,6 +15,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
                       pathname.startsWith('/forgot-password') ||
                       pathname.startsWith('/reset-password');
   const isOnboardingRoute = pathname.startsWith('/onboarding');
+  const isPublicRoute = pathname === '/';
 
   useEffect(() => {
     if (loading) return; // Wait for auth to load
@@ -24,16 +25,21 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       router.replace('/dashboard');
     }
 
+    // If on public marketing route and logged in, redirect to dashboard
+    if (isPublicRoute && user) {
+      router.replace('/dashboard');
+    }
+
     // If on protected route and not logged in, redirect to signin
-    if (!isAuthRoute && !isOnboardingRoute && !user && pathname !== '/') {
+    if (!isAuthRoute && !isOnboardingRoute && !isPublicRoute && !user) {
       router.replace('/signin');
     }
 
     // If logged in and hasn't completed onboarding, redirect to onboarding
-    if (user && !isAuthRoute && !isOnboardingRoute && !isOnboardingComplete()) {
+    if (user && !isAuthRoute && !isOnboardingRoute && !isPublicRoute && !isOnboardingComplete()) {
       router.replace('/onboarding');
     }
-  }, [user, loading, pathname, isAuthRoute, isOnboardingRoute, router]);
+  }, [user, loading, pathname, isAuthRoute, isOnboardingRoute, isPublicRoute, router]);
 
   // Show loading state while checking auth
   if (loading) {
@@ -45,12 +51,12 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   }
 
   // Don't render protected content if not authenticated
-  if (!isAuthRoute && !user && pathname !== '/') {
+  if (!isAuthRoute && !isPublicRoute && !user) {
     return null;
   }
 
   // Don't render auth pages if already authenticated
-  if (isAuthRoute && user) {
+  if ((isAuthRoute || isPublicRoute) && user) {
     return null;
   }
 

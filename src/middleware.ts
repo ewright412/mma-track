@@ -6,9 +6,12 @@ export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
 
-  // Just refresh the session, don't redirect
-  // Let the client-side AuthGuard handle redirects
-  await supabase.auth.getSession();
+  const { data: { session } } = await supabase.auth.getSession();
+
+  // Authenticated users on the landing page get redirected to dashboard
+  if (req.nextUrl.pathname === '/' && session) {
+    return NextResponse.redirect(new URL('/dashboard', req.url));
+  }
 
   return res;
 }
