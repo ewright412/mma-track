@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/AuthContext';
+import { isOnboardingComplete } from '@/lib/utils/onboarding';
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -13,22 +14,26 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
                       pathname.startsWith('/signup') ||
                       pathname.startsWith('/forgot-password') ||
                       pathname.startsWith('/reset-password');
+  const isOnboardingRoute = pathname.startsWith('/onboarding');
 
   useEffect(() => {
     if (loading) return; // Wait for auth to load
 
     // If on auth route and logged in, redirect to dashboard
     if (isAuthRoute && user) {
-      console.log('[AuthGuard] User is logged in, redirecting to dashboard');
       router.replace('/dashboard');
     }
 
     // If on protected route and not logged in, redirect to signin
-    if (!isAuthRoute && !user && pathname !== '/') {
-      console.log('[AuthGuard] No user, redirecting to signin');
+    if (!isAuthRoute && !isOnboardingRoute && !user && pathname !== '/') {
       router.replace('/signin');
     }
-  }, [user, loading, pathname, isAuthRoute, router]);
+
+    // If logged in and hasn't completed onboarding, redirect to onboarding
+    if (user && !isAuthRoute && !isOnboardingRoute && !isOnboardingComplete()) {
+      router.replace('/onboarding');
+    }
+  }, [user, loading, pathname, isAuthRoute, isOnboardingRoute, router]);
 
   // Show loading state while checking auth
   if (loading) {

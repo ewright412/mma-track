@@ -15,14 +15,18 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
                       pathname.startsWith('/signup') ||
                       pathname.startsWith('/forgot-password') ||
                       pathname.startsWith('/reset-password');
+  const isOnboardingRoute = pathname.startsWith('/onboarding');
 
   return (
     <AuthGuard>
-      {/* For auth routes, just render children without sidebar/header */}
-      {isAuthRoute ? (
+      {/* For auth/onboarding routes, just render children without sidebar/header */}
+      {isAuthRoute || isOnboardingRoute ? (
         <>{children}</>
       ) : (
         <>
+          <a href="#main-content" className="skip-to-content">
+            Skip to content
+          </a>
           <div className="flex h-screen overflow-hidden">
             {/* Desktop Sidebar */}
             <Sidebar />
@@ -30,7 +34,12 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
             {/* Main Content */}
             <div className="flex flex-col flex-1 overflow-hidden">
               <Header />
-              <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+              <main
+                id="main-content"
+                role="main"
+                aria-label="Main content"
+                className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 pb-20 md:pb-8"
+              >
                 <PageTransition>{children}</PageTransition>
               </main>
             </div>

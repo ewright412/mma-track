@@ -8,7 +8,7 @@ import {
   SwordsIcon,
   HeartPulse,
   Weight,
-  TrendingUp,
+  Target,
   User,
 } from "lucide-react";
 
@@ -18,7 +18,7 @@ const navItems = [
   { href: "/sparring", label: "Sparring", icon: SwordsIcon },
   { href: "/cardio", label: "Cardio", icon: HeartPulse },
   { href: "/strength", label: "Strength", icon: Weight },
-  { href: "/progress", label: "Progress", icon: TrendingUp },
+  { href: "/goals", label: "Goals", icon: Target },
   { href: "/profile", label: "Profile", icon: User },
 ];
 
@@ -26,7 +26,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden md:flex md:flex-col w-64 bg-card border-r border-border">
+    <aside className="hidden md:flex md:flex-col w-64 bg-card border-r border-border" role="navigation" aria-label="Main navigation">
       {/* Logo/Brand */}
       <div className="p-6 border-b border-border">
         <h1 className="text-2xl font-bold text-white">
@@ -44,6 +44,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              aria-current={isActive ? "page" : undefined}
               className={`flex items-center space-x-3 px-4 py-3 rounded-button transition-default ${
                 isActive
                   ? "bg-accent text-white"

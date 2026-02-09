@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
+  <rect width="96" height="96" rx="19" fill="#0f0f13"/>
+  <g transform="translate(14, 14)">
+    <!-- MMA Glove / Fist Icon -->
+    <circle cx="34" cy="34" r="28.56" fill="none" stroke="#ef4444" stroke-width="4"/>
+    <text x="34" y="39.44" font-family="Arial, sans-serif" font-weight="bold" font-size="31" fill="#ef4444" text-anchor="middle" dominant-baseline="middle">M</text>
+    <line x1="13.600000000000001" y1="53.04" x2="54.400000000000006" y2="53.04" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>
