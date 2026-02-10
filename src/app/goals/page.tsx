@@ -17,11 +17,15 @@ import { GOAL_CATEGORIES, GOAL_CATEGORY_LABELS } from '@/lib/constants/goals';
 import { Select } from '@/components/ui/Select';
 import { Plus, Target, CheckCircle2, AlertCircle, Filter } from 'lucide-react';
 import Link from 'next/link';
+import { PaywallGate } from '@/components/billing/PaywallGate';
+import { useSubscription } from '@/lib/hooks/useSubscription';
 
 export default function GoalsPage() {
+  const { isPro } = useSubscription();
   const [goals, setGoals] = useState<Goal[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<GoalCategory | 'all'>('all');
   const [statusFilter, setStatusFilter] = useState<GoalStatus | 'all'>('active');
   const [showCompletedSection, setShowCompletedSection] = useState(false);
@@ -32,6 +36,7 @@ export default function GoalsPage() {
 
   const loadGoals = async () => {
     setLoading(true);
+    setError(null);
     try {
       const filters = {
         category: categoryFilter !== 'all' ? categoryFilter : undefined,
@@ -43,8 +48,9 @@ export default function GoalsPage() {
 
       if (goalsRes.data) setGoals(goalsRes.data);
       if (statsRes.data) setStats(statsRes.data);
-    } catch (error) {
-      console.error('Error loading goals:', error);
+    } catch (err) {
+      console.error('Error loading goals:', err);
+      setError('Failed to load goals. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -101,6 +107,21 @@ export default function GoalsPage() {
         <div className="h-8 w-48 bg-white/5 rounded animate-pulse" />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />)}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="text-center">
+          <Target className="w-12 h-12 text-red-400/40 mx-auto mb-3" />
+          <p className="text-red-400 mb-1">Failed to load goals</p>
+          <p className="text-gray-500 text-sm mb-4">{error}</p>
+          <Button variant="secondary" onClick={loadGoals}>
+            Try Again
+          </Button>
         </div>
       </div>
     );
@@ -201,7 +222,7 @@ export default function GoalsPage() {
             </Card>
           ) : (
             <div className="space-y-4">
-              {activeGoals.map((goal) => (
+              {activeGoals.slice(0, isPro ? undefined : 3).map((goal) => (
                 <GoalCard
                   key={goal.id}
                   goal={goal}
@@ -211,6 +232,19 @@ export default function GoalsPage() {
                   onDelete={handleDeleteGoal}
                 />
               ))}
+              {!isPro && activeGoals.length > 3 && (
+                <PaywallGate isPro={false} feature={`${activeGoals.length - 3} more goal${activeGoals.length - 3 > 1 ? 's' : ''} — unlimited with Pro`}>
+                  <div className="space-y-4">
+                    {activeGoals.slice(3).map((goal) => (
+                      <GoalCard
+                        key={goal.id}
+                        goal={goal}
+                        onDelete={handleDeleteGoal}
+                      />
+                    ))}
+                  </div>
+                </PaywallGate>
+              )}
             </div>
           )}
         </div>

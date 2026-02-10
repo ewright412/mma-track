@@ -1,5 +1,5 @@
 /**
- * CSV Export utility for MMA Tracker data.
+ * CSV Export utility for Clinch data.
  * Converts arrays of objects to CSV format and triggers download.
  */
 

@@ -9,7 +9,7 @@ import { ExerciseCategory, MuscleGroup } from '../constants/exercises';
 export interface StrengthSet {
   reps: number;
   weight: number;
-  rpe: number; // Rate of Perceived Exertion (1-10)
+  rpe?: number; // Rate of Perceived Exertion (1-10) — legacy, no longer collected
 }
 
 export interface StrengthLog {

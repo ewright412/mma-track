@@ -45,6 +45,7 @@ function getTodayDayOfWeek(): number {
 
 export default function SchedulePage() {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [templates, setTemplates] = useState<ScheduleTemplate[]>([]);
   const [activeTemplate, setActiveTemplateState] = useState<ScheduleTemplateWithEntries | null>(null);
   const [adherenceMap, setAdherenceMap] = useState<Map<string, AdherenceStatus>>(new Map());
@@ -95,6 +96,7 @@ export default function SchedulePage() {
       setMonthlyTrend(trendRes.data || []);
     } catch (err) {
       console.error('Failed to load schedule data:', err);
+      setError('Failed to load schedule. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -158,6 +160,21 @@ export default function SchedulePage() {
             ))}
           </div>
           <div className="md:hidden h-48 bg-[#1a1a24] rounded-lg animate-pulse" />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#0f0f13] p-4 flex items-center justify-center">
+        <div className="text-center">
+          <CalendarDays className="w-12 h-12 text-red-400/40 mx-auto mb-3" />
+          <p className="text-red-400 mb-1">Failed to load schedule</p>
+          <p className="text-gray-500 text-sm mb-4">{error}</p>
+          <Button variant="secondary" onClick={loadData}>
+            Try Again
+          </Button>
         </div>
       </div>
     );

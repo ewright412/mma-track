@@ -110,7 +110,7 @@ export default function OnboardingPage() {
     // Save discipline preferences
     if (selectedDisciplines.length > 0) {
       localStorage.setItem(
-        'mma-tracker-preferred-disciplines',
+        'clinch-preferred-disciplines',
         JSON.stringify(selectedDisciplines)
       );
     }
@@ -141,7 +141,7 @@ export default function OnboardingPage() {
             <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-6">
               <Swords className="w-10 h-10 text-accent" />
             </div>
-            <h1 className="text-3xl font-bold mb-3">Welcome to MMA Tracker</h1>
+            <h1 className="text-3xl font-bold mb-3">Welcome to Clinch</h1>
             <p className="text-white/60 text-lg mb-8">
               Track your training across all martial arts disciplines. Let&apos;s
               set up your profile in a few quick steps.

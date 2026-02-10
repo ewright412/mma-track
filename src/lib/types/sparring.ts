@@ -2,14 +2,18 @@
 
 export type OpponentSkillLevel = 'Beginner' | 'Intermediate' | 'Advanced' | 'Professional';
 
+export type SparringType = 'mma' | 'striking' | 'grappling';
+
 export interface SparringRound {
   id: string;
   session_id: string;
   round_number: number;
-  striking_offense: number; // 1-10
-  striking_defense: number; // 1-10
-  takedowns: number; // 1-10
-  ground_game: number; // 1-10
+  ratings: Record<string, number>; // Dynamic category ratings (e.g. { striking: 7, defense: 8 })
+  // Legacy columns (nullable, kept for backward compat)
+  striking_offense: number | null;
+  striking_defense: number | null;
+  takedowns: number | null;
+  ground_game: number | null;
   notes: string | null;
   created_at: string;
 }
@@ -18,6 +22,7 @@ export interface SparringSession {
   id: string;
   user_id: string;
   session_date: string; // ISO 8601 date string
+  sparring_type: SparringType;
   total_rounds: number;
   opponent_skill_level: OpponentSkillLevel;
   notes: string | null;
@@ -35,6 +40,7 @@ export interface SparringSessionWithRounds extends SparringSession {
 // Type for creating a new sparring session
 export interface CreateSparringSessionInput {
   session_date: string;
+  sparring_type: SparringType;
   total_rounds: number;
   opponent_skill_level: OpponentSkillLevel;
   notes?: string;
@@ -42,10 +48,7 @@ export interface CreateSparringSessionInput {
   what_to_improve?: string;
   rounds: Array<{
     round_number: number;
-    striking_offense: number;
-    striking_defense: number;
-    takedowns: number;
-    ground_game: number;
+    ratings: Record<string, number>;
     notes?: string;
   }>;
 }
@@ -53,6 +56,7 @@ export interface CreateSparringSessionInput {
 // Type for updating a sparring session
 export interface UpdateSparringSessionInput {
   session_date?: string;
+  sparring_type?: SparringType;
   total_rounds?: number;
   opponent_skill_level?: OpponentSkillLevel;
   notes?: string;
@@ -63,6 +67,7 @@ export interface UpdateSparringSessionInput {
 // Type for filtering sparring sessions
 export interface SparringSessionFilters {
   opponent_skill_level?: OpponentSkillLevel | OpponentSkillLevel[];
+  sparring_type?: SparringType;
   startDate?: string;
   endDate?: string;
 }
@@ -71,27 +76,21 @@ export interface SparringSessionFilters {
 export interface SparringStats {
   totalSessions: number;
   totalRounds: number;
-  averageRatings: {
-    striking_offense: number;
-    striking_defense: number;
-    takedowns: number;
-    ground_game: number;
-  };
+  averageRatings: Record<string, number>; // Dynamic: key is category, value is average
   sessionsByOpponentLevel: Record<OpponentSkillLevel, number>;
+  sessionsBySparringType: Record<SparringType, number>;
 }
 
 // Type for trend data (for charts)
 export interface SparringTrendData {
   date: string;
-  striking_offense: number;
-  striking_defense: number;
-  takedowns: number;
-  ground_game: number;
+  sparring_type: SparringType;
+  ratings: Record<string, number>;
 }
 
 // Type for focus areas (patterns detector)
 export interface FocusArea {
-  category: 'striking_offense' | 'striking_defense' | 'takedowns' | 'ground_game';
+  category: string;
   categoryLabel: string;
   averageRating: number;
   trend: 'improving' | 'declining' | 'stable';

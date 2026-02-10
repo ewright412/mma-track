@@ -1,14 +1,13 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
-import { Menu, Bell, Settings, LogOut, Plus } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { LogOut, Plus } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { useState } from "react";
 import { QuickLogModal } from "@/components/dashboard/QuickLogModal";
 
 export function Header() {
   const pathname = usePathname();
-  const router = useRouter();
   const { user, signOut } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showQuickLog, setShowQuickLog] = useState(false);
@@ -21,7 +20,7 @@ export function Header() {
 
   const handleSignOut = async () => {
     await signOut();
-    router.push('/signin');
+    window.location.href = '/';
   };
 
   // Get user initials
@@ -33,30 +32,19 @@ export function Header() {
   return (
     <header className="bg-[#0f0f13] border-b border-border px-4 py-4 md:px-6">
       <div className="flex items-center justify-between">
-        {/* Left: Mobile Menu + Page Title */}
-        <div className="flex items-center space-x-4">
-          <button className="md:hidden text-white/70 hover:text-white transition-default">
-            <Menu size={24} />
-          </button>
-          <h2 className="text-xl md:text-2xl font-semibold text-white">
-            {getPageTitle()}
-          </h2>
-        </div>
+        {/* Left: Page Title */}
+        <h2 className="text-xl md:text-2xl font-semibold text-white">
+          {getPageTitle()}
+        </h2>
 
         {/* Right: User Info & Actions */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3">
           <button
             onClick={() => setShowQuickLog(true)}
             className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 transition-all duration-150"
           >
             <Plus size={16} />
             Quick Log
-          </button>
-          <button className="text-white/70 hover:text-white transition-default">
-            <Bell size={20} />
-          </button>
-          <button className="text-white/70 hover:text-white transition-default">
-            <Settings size={20} />
           </button>
           <div className="relative">
             <button

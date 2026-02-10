@@ -5,29 +5,33 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
-import { OPPONENT_SKILL_LEVELS, RATING_COLORS, getRatingColor } from '@/lib/constants/sparring';
+import {
+  OPPONENT_SKILL_LEVELS,
+  SPARRING_TYPES,
+  SPARRING_TYPE_CATEGORIES,
+  getRatingColor,
+} from '@/lib/constants/sparring';
 import { createSparringSession } from '@/lib/supabase/sparringQueries';
 import { checkAndAwardBadges } from '@/lib/supabase/badgeQueries';
 import { BADGE_MAP } from '@/lib/constants/badges';
 import { supabase } from '@/lib/supabase/client';
-import { CreateSparringSessionInput, OpponentSkillLevel } from '@/lib/types/sparring';
+import { CreateSparringSessionInput, OpponentSkillLevel, SparringType } from '@/lib/types/sparring';
 import { Plus, Minus } from 'lucide-react';
 
 interface RoundRating {
   round_number: number;
-  striking_offense: number;
-  striking_defense: number;
-  takedowns: number;
-  ground_game: number;
+  ratings: Record<string, number>;
   notes: string;
 }
 
-const RATING_FIELDS = [
-  { key: 'striking_offense' as const, label: 'Striking Off', color: RATING_COLORS.striking_offense },
-  { key: 'striking_defense' as const, label: 'Striking Def', color: RATING_COLORS.striking_defense },
-  { key: 'takedowns' as const, label: 'Takedowns', color: RATING_COLORS.takedowns },
-  { key: 'ground_game' as const, label: 'Ground Game', color: RATING_COLORS.ground_game },
-];
+function makeDefaultRound(roundNumber: number, sparringType: SparringType): RoundRating {
+  const categories = SPARRING_TYPE_CATEGORIES[sparringType];
+  const ratings: Record<string, number> = {};
+  categories.forEach((cat) => {
+    ratings[cat.key] = 5;
+  });
+  return { round_number: roundNumber, ratings, notes: '' };
+}
 
 export default function NewSparringSessionPage() {
   const router = useRouter();
@@ -35,6 +39,7 @@ export default function NewSparringSessionPage() {
   const [error, setError] = useState<string | null>(null);
   const [badgeToast, setBadgeToast] = useState<string | null>(null);
 
+  const [sparringType, setSparringType] = useState<SparringType>('mma');
   const [sessionDate, setSessionDate] = useState(() => {
     const today = new Date();
     return today.toISOString().split('T')[0];
@@ -45,10 +50,28 @@ export default function NewSparringSessionPage() {
   const [whatWentWell, setWhatWentWell] = useState('');
   const [whatToImprove, setWhatToImprove] = useState('');
   const [rounds, setRounds] = useState<RoundRating[]>([
-    { round_number: 1, striking_offense: 5, striking_defense: 5, takedowns: 5, ground_game: 5, notes: '' },
-    { round_number: 2, striking_offense: 5, striking_defense: 5, takedowns: 5, ground_game: 5, notes: '' },
-    { round_number: 3, striking_offense: 5, striking_defense: 5, takedowns: 5, ground_game: 5, notes: '' },
+    makeDefaultRound(1, 'mma'),
+    makeDefaultRound(2, 'mma'),
+    makeDefaultRound(3, 'mma'),
   ]);
+
+  const categories = SPARRING_TYPE_CATEGORIES[sparringType];
+
+  const handleSparringTypeChange = (newType: SparringType) => {
+    setSparringType(newType);
+    // Rebuild rounds with the new type's categories
+    const newCategories = SPARRING_TYPE_CATEGORIES[newType];
+    setRounds((prev) =>
+      prev.map((round) => {
+        const newRatings: Record<string, number> = {};
+        newCategories.forEach((cat) => {
+          // Preserve rating if the same key exists, otherwise default to 5
+          newRatings[cat.key] = round.ratings[cat.key] ?? 5;
+        });
+        return { ...round, ratings: newRatings };
+      })
+    );
+  };
 
   const handleTotalRoundsChange = (newTotal: number) => {
     const validated = Math.max(1, Math.min(20, newTotal));
@@ -58,14 +81,7 @@ export default function NewSparringSessionPage() {
     if (validated > currentLength) {
       const newRounds = [...rounds];
       for (let i = currentLength + 1; i <= validated; i++) {
-        newRounds.push({
-          round_number: i,
-          striking_offense: 5,
-          striking_defense: 5,
-          takedowns: 5,
-          ground_game: 5,
-          notes: '',
-        });
+        newRounds.push(makeDefaultRound(i, sparringType));
       }
       setRounds(newRounds);
     } else if (validated < currentLength) {
@@ -73,14 +89,12 @@ export default function NewSparringSessionPage() {
     }
   };
 
-  const handleRatingChange = (
-    roundNumber: number,
-    field: 'striking_offense' | 'striking_defense' | 'takedowns' | 'ground_game',
-    value: number
-  ) => {
+  const handleRatingChange = (roundNumber: number, key: string, value: number) => {
     setRounds(
       rounds.map((r) =>
-        r.round_number === roundNumber ? { ...r, [field]: value } : r
+        r.round_number === roundNumber
+          ? { ...r, ratings: { ...r.ratings, [key]: value } }
+          : r
       )
     );
   };
@@ -101,6 +115,7 @@ export default function NewSparringSessionPage() {
     try {
       const input: CreateSparringSessionInput = {
         session_date: sessionDate,
+        sparring_type: sparringType,
         total_rounds: totalRounds,
         opponent_skill_level: opponentSkillLevel,
         notes: notes.trim() || undefined,
@@ -108,10 +123,7 @@ export default function NewSparringSessionPage() {
         what_to_improve: whatToImprove.trim() || undefined,
         rounds: rounds.map((r) => ({
           round_number: r.round_number,
-          striking_offense: r.striking_offense,
-          striking_defense: r.striking_defense,
-          takedowns: r.takedowns,
-          ground_game: r.ground_game,
+          ratings: r.ratings,
           notes: r.notes.trim() || undefined,
         })),
       };
@@ -156,6 +168,30 @@ export default function NewSparringSessionPage() {
         </div>
 
         <form onSubmit={handleSubmit}>
+          {/* Sparring Type Selector */}
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-white border-b border-white/5 pb-2 mb-4">Sparring Type</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {SPARRING_TYPES.map((type) => (
+                <button
+                  key={type.value}
+                  type="button"
+                  onClick={() => handleSparringTypeChange(type.value)}
+                  className={`p-4 rounded-lg border text-left transition-all ${
+                    sparringType === type.value
+                      ? 'border-red-500 bg-red-500/10 text-white'
+                      : 'border-white/10 bg-[#1a1a24] text-gray-400 hover:border-white/20 hover:text-gray-300'
+                  }`}
+                >
+                  <p className="font-medium text-sm">{type.label}</p>
+                  <p className="text-xs mt-1 opacity-60">
+                    {SPARRING_TYPE_CATEGORIES[type.value].map((c) => c.label).join(', ')}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Session Details */}
           <div className="mb-8">
             <h2 className="text-lg font-semibold text-white border-b border-white/5 pb-2 mb-4">Session Details</h2>
@@ -223,7 +259,7 @@ export default function NewSparringSessionPage() {
                   <h3 className="text-sm font-semibold text-white mb-3">Round {round.round_number}</h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
-                    {RATING_FIELDS.map(({ key, label, color }) => (
+                    {categories.map(({ key, label, color }) => (
                       <div key={key}>
                         <div className="flex justify-between items-center mb-1">
                           <label className="text-xs font-medium text-gray-400">
@@ -233,14 +269,14 @@ export default function NewSparringSessionPage() {
                             className="text-xs font-bold px-1.5 py-0.5 rounded"
                             style={{ color, backgroundColor: `${color}20` }}
                           >
-                            {round[key]}/10
+                            {round.ratings[key]}/10
                           </span>
                         </div>
                         <input
                           type="range"
                           min="1"
                           max="10"
-                          value={round[key]}
+                          value={round.ratings[key]}
                           onChange={(e) =>
                             handleRatingChange(round.round_number, key, Number(e.target.value))
                           }

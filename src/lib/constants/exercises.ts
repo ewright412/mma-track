@@ -9,6 +9,7 @@ export interface Exercise {
   category: ExerciseCategory;
   primaryMuscleGroup: MuscleGroup;
   secondaryMuscleGroups: MuscleGroup[];
+  bodyweight?: boolean;
 }
 
 // ============================================================================
@@ -69,18 +70,21 @@ export const COMPOUND_EXERCISES: Exercise[] = [
     category: 'compound',
     primaryMuscleGroup: 'back',
     secondaryMuscleGroups: ['arms', 'core'],
+    bodyweight: true,
   },
   {
     name: 'Chin-ups',
     category: 'compound',
     primaryMuscleGroup: 'back',
     secondaryMuscleGroups: ['arms'],
+    bodyweight: true,
   },
   {
     name: 'Dips',
     category: 'compound',
     primaryMuscleGroup: 'chest',
     secondaryMuscleGroups: ['shoulders', 'arms'],
+    bodyweight: true,
   },
 ];
 
@@ -112,6 +116,7 @@ export const MMA_SPECIFIC_EXERCISES: Exercise[] = [
     category: 'mma_specific',
     primaryMuscleGroup: 'core',
     secondaryMuscleGroups: [],
+    bodyweight: true,
   },
   {
     name: 'Farmer Carries',
@@ -148,6 +153,7 @@ export const MMA_SPECIFIC_EXERCISES: Exercise[] = [
     category: 'mma_specific',
     primaryMuscleGroup: 'full_body',
     secondaryMuscleGroups: ['core', 'legs'],
+    bodyweight: true,
   },
   {
     name: 'Hip Escapes (weighted)',
@@ -215,24 +221,28 @@ export const ACCESSORY_EXERCISES: Exercise[] = [
     category: 'accessory',
     primaryMuscleGroup: 'core',
     secondaryMuscleGroups: ['shoulders'],
+    bodyweight: true,
   },
   {
     name: 'Hanging Leg Raises',
     category: 'accessory',
     primaryMuscleGroup: 'core',
     secondaryMuscleGroups: ['arms'],
+    bodyweight: true,
   },
   {
     name: 'Russian Twists',
     category: 'accessory',
     primaryMuscleGroup: 'core',
     secondaryMuscleGroups: [],
+    bodyweight: true,
   },
   {
     name: 'Planks',
     category: 'accessory',
     primaryMuscleGroup: 'core',
     secondaryMuscleGroups: ['shoulders'],
+    bodyweight: true,
   },
 ];
 
@@ -256,6 +266,11 @@ export function getExerciseByName(name: string): Exercise | undefined {
 
 export function getExercisesByCategory(category: ExerciseCategory): Exercise[] {
   return ALL_EXERCISES.filter(ex => ex.category === category);
+}
+
+export function isBodyweightExercise(name: string): boolean {
+  const exercise = getExerciseByName(name);
+  return exercise?.bodyweight === true;
 }
 
 export function getExercisesByMuscleGroup(muscleGroup: MuscleGroup): Exercise[] {

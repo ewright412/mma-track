@@ -9,6 +9,7 @@ import { ExerciseSelect } from '@/components/ui/ExerciseSelect';
 import { X, Plus, Save, Dumbbell, Trash2 } from 'lucide-react';
 import {
   getExerciseByName,
+  isBodyweightExercise,
 } from '@/lib/constants/exercises';
 import { createStrengthLog, checkAndUpdatePR } from '@/lib/supabase/strength-queries';
 import { getWorkoutTemplates, createWorkoutTemplate } from '@/lib/supabase/strength-queries';
@@ -21,6 +22,7 @@ interface ExerciseEntry {
   id: string;
   exerciseName: string;
   sets: StrengthSet[];
+  isBodyweight: boolean;
 }
 
 export default function NewStrengthLogPage() {
@@ -60,7 +62,8 @@ export default function NewStrengthLogPage() {
       {
         id: crypto.randomUUID(),
         exerciseName: '',
-        sets: [{ reps: 0, weight: 0, rpe: 5 }],
+        sets: [{ reps: 0, weight: 0 }],
+        isBodyweight: false,
       },
     ]);
   }
@@ -70,8 +73,19 @@ export default function NewStrengthLogPage() {
   }
 
   function updateExerciseName(id: string, name: string) {
+    const isBW = isBodyweightExercise(name);
     setExercises(
-      exercises.map(ex => (ex.id === id ? { ...ex, exerciseName: name } : ex))
+      exercises.map(ex => {
+        if (ex.id !== id) return ex;
+        return {
+          ...ex,
+          exerciseName: name,
+          isBodyweight: isBW,
+          sets: isBW
+            ? ex.sets.map(s => ({ ...s, weight: 0 }))
+            : ex.sets,
+        };
+      })
     );
   }
 
@@ -79,7 +93,7 @@ export default function NewStrengthLogPage() {
     setExercises(
       exercises.map(ex =>
         ex.id === exerciseId
-          ? { ...ex, sets: [...ex.sets, { reps: 0, weight: 0, rpe: 5 }] }
+          ? { ...ex, sets: [...ex.sets, { reps: 0, weight: ex.isBodyweight ? 0 : 0 }] }
           : ex
       )
     );
@@ -115,19 +129,38 @@ export default function NewStrengthLogPage() {
     );
   }
 
+  function toggleBodyweight(exerciseId: string) {
+    setExercises(
+      exercises.map(ex => {
+        if (ex.id !== exerciseId) return ex;
+        const newBW = !ex.isBodyweight;
+        return {
+          ...ex,
+          isBodyweight: newBW,
+          sets: newBW
+            ? ex.sets.map(s => ({ ...s, weight: 0 }))
+            : ex.sets,
+        };
+      })
+    );
+  }
+
   function loadTemplate(templateId: string) {
     const template = templates.find(t => t.id === templateId);
     if (!template) return;
 
-    const loadedExercises: ExerciseEntry[] = template.exercises.map(ex => ({
-      id: crypto.randomUUID(),
-      exerciseName: ex.exercise_name,
-      sets: Array(ex.default_sets).fill(null).map(() => ({
-        reps: ex.default_reps,
-        weight: 0,
-        rpe: 5,
-      })),
-    }));
+    const loadedExercises: ExerciseEntry[] = template.exercises.map(ex => {
+      const isBW = isBodyweightExercise(ex.exercise_name);
+      return {
+        id: crypto.randomUUID(),
+        exerciseName: ex.exercise_name,
+        isBodyweight: isBW,
+        sets: Array(ex.default_sets).fill(null).map(() => ({
+          reps: ex.default_reps,
+          weight: 0,
+        })),
+      };
+    });
 
     setExercises(loadedExercises);
     setSelectedTemplate(templateId);
@@ -347,17 +380,30 @@ export default function NewStrengthLogPage() {
                     </button>
                   </div>
 
+                  {/* Bodyweight toggle */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <input
+                      type="checkbox"
+                      id={`bw-${exercise.id}`}
+                      checked={exercise.isBodyweight}
+                      onChange={() => toggleBodyweight(exercise.id)}
+                      className="w-4 h-4 rounded border-white/10 bg-[#1a1a24] text-red-500 focus:ring-red-500/20 focus:ring-offset-[#0f0f13]"
+                    />
+                    <label htmlFor={`bw-${exercise.id}`} className="text-sm text-gray-400">
+                      Bodyweight
+                    </label>
+                  </div>
+
                   {/* Sets Table */}
                   <div className="space-y-2 mb-3">
-                    <div className="grid grid-cols-[40px_1fr_1fr_80px_32px] gap-2 text-xs font-medium text-gray-500 px-1">
+                    <div className={`grid ${exercise.isBodyweight ? 'grid-cols-[40px_1fr_32px]' : 'grid-cols-[40px_1fr_1fr_32px]'} gap-2 text-xs font-medium text-gray-500 px-1`}>
                       <div>Set</div>
                       <div>Reps</div>
-                      <div>Weight (lbs)</div>
-                      <div>RPE</div>
+                      {!exercise.isBodyweight && <div>Weight (lbs)</div>}
                       <div></div>
                     </div>
                     {exercise.sets.map((set, setIndex) => (
-                      <div key={setIndex} className="grid grid-cols-[40px_1fr_1fr_80px_32px] gap-2 items-center">
+                      <div key={setIndex} className={`grid ${exercise.isBodyweight ? 'grid-cols-[40px_1fr_32px]' : 'grid-cols-[40px_1fr_1fr_32px]'} gap-2 items-center`}>
                         <div className="text-sm text-gray-400 text-center font-medium">{setIndex + 1}</div>
                         <Input
                           type="number"
@@ -369,27 +415,18 @@ export default function NewStrengthLogPage() {
                           required
                           className="!py-2 !px-3"
                         />
-                        <Input
-                          type="number"
-                          value={set.weight || ''}
-                          onChange={e =>
-                            updateSet(exercise.id, setIndex, 'weight', parseFloat(e.target.value) || 0)
-                          }
-                          min="0"
-                          step="0.5"
-                          required
-                          className="!py-2 !px-3"
-                        />
-                        <Select
-                          value={set.rpe.toString()}
-                          onChange={value =>
-                            updateSet(exercise.id, setIndex, 'rpe', parseInt(value))
-                          }
-                          options={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(rpe => ({
-                            value: rpe.toString(),
-                            label: rpe.toString(),
-                          }))}
-                        />
+                        {!exercise.isBodyweight && (
+                          <Input
+                            type="number"
+                            value={set.weight || ''}
+                            onChange={e =>
+                              updateSet(exercise.id, setIndex, 'weight', parseFloat(e.target.value) || 0)
+                            }
+                            min="0"
+                            step="0.5"
+                            className="!py-2 !px-3"
+                          />
+                        )}
                         {exercise.sets.length > 1 && (
                           <button
                             type="button"
@@ -443,7 +480,7 @@ export default function NewStrengthLogPage() {
               rows={3}
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              placeholder="How did the workout feel?"
+              placeholder="How did it feel? Any notes..."
             />
           </div>
 

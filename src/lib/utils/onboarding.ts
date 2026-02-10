@@ -1,4 +1,4 @@
-const ONBOARDING_KEY = 'mma-tracker-onboarding-complete';
+const ONBOARDING_KEY = 'clinch-onboarding-complete';
 
 export function isOnboardingComplete(): boolean {
   if (typeof window === 'undefined') return true;

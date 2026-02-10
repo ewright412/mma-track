@@ -12,7 +12,7 @@ import {
   Legend,
 } from 'recharts';
 import { SparringTrendData } from '@/lib/types/sparring';
-import { RATING_COLORS } from '@/lib/constants/sparring';
+import { RATING_COLORS, SPARRING_TYPE_CATEGORIES } from '@/lib/constants/sparring';
 
 interface SparringTrendMiniProps {
   data: SparringTrendData[];
@@ -27,12 +27,26 @@ export function SparringTrendMini({ data }: SparringTrendMiniProps) {
     );
   }
 
+  // Collect all unique rating keys across the trend data
+  const allKeys = new Set<string>();
+  data.forEach((d) => {
+    Object.keys(d.ratings).forEach((k) => allKeys.add(k));
+  });
+
+  // All categories for label lookup
+  const allCategories = [
+    ...SPARRING_TYPE_CATEGORIES.mma,
+    ...SPARRING_TYPE_CATEGORIES.striking,
+    ...SPARRING_TYPE_CATEGORIES.grappling,
+  ];
+
+  // Flatten ratings into top-level keys for recharts
   const chartData = data.map((d) => ({
-    ...d,
     date: new Date(d.date).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
     }),
+    ...d.ratings,
   }));
 
   return (
@@ -67,12 +81,11 @@ export function SparringTrendMini({ data }: SparringTrendMiniProps) {
             color: '#fff',
             fontSize: '13px',
           }}
-          formatter={(value: number, name: string) => [
-            `${value}/10`,
-            name
-              .replace('_', ' ')
-              .replace(/\b\w/g, (l) => l.toUpperCase()),
-          ]}
+          formatter={(value: number, name: string) => {
+            const catDef = allCategories.find((c) => c.key === name);
+            const label = catDef ? catDef.label : name.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+            return [`${value}/10`, label];
+          }}
         />
         <Legend
           wrapperStyle={{
@@ -80,44 +93,23 @@ export function SparringTrendMini({ data }: SparringTrendMiniProps) {
             fontSize: '11px',
             paddingTop: '4px',
           }}
-          formatter={(value: string) =>
-            value
-              .replace('_', ' ')
-              .replace(/\b\w/g, (l) => l.toUpperCase())
-          }
+          formatter={(value: string) => {
+            const catDef = allCategories.find((c) => c.key === value);
+            return catDef ? catDef.label : value.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+          }}
         />
-        <Line
-          type="monotone"
-          dataKey="striking_offense"
-          stroke={RATING_COLORS.striking_offense}
-          strokeWidth={2}
-          dot={{ r: 3 }}
-          name="striking_offense"
-        />
-        <Line
-          type="monotone"
-          dataKey="striking_defense"
-          stroke={RATING_COLORS.striking_defense}
-          strokeWidth={2}
-          dot={{ r: 3 }}
-          name="striking_defense"
-        />
-        <Line
-          type="monotone"
-          dataKey="takedowns"
-          stroke={RATING_COLORS.takedowns}
-          strokeWidth={2}
-          dot={{ r: 3 }}
-          name="takedowns"
-        />
-        <Line
-          type="monotone"
-          dataKey="ground_game"
-          stroke={RATING_COLORS.ground_game}
-          strokeWidth={2}
-          dot={{ r: 3 }}
-          name="ground_game"
-        />
+        {Array.from(allKeys).map((key) => (
+          <Line
+            key={key}
+            type="monotone"
+            dataKey={key}
+            stroke={RATING_COLORS[key] || '#3b82f6'}
+            strokeWidth={2}
+            dot={{ r: 3 }}
+            name={key}
+            connectNulls
+          />
+        ))}
       </LineChart>
     </ResponsiveContainer>
   );

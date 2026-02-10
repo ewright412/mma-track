@@ -1,7 +1,7 @@
 {
-  "name": "MMA Tracker",
-  "short_name": "MMA Tracker",
-  "description": "Track your MMA training progress across all disciplines — striking, grappling, wrestling, cardio, strength.",
+  "name": "Clinch",
+  "short_name": "Clinch",
+  "description": "Free training tracker for martial artists. Log sessions, track sparring, monitor PRs, and see your progress across all disciplines.",
   "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#0f0f13",

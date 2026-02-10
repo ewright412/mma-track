@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
+import { trackEvent, identifyUser } from '@/lib/analytics/posthog';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -48,6 +49,8 @@ export default function SignUpPage() {
 
       if (data.user) {
         setSuccess(true);
+        identifyUser(data.user.id, { email: data.user.email });
+        trackEvent('sign_up', { method: 'email' });
         // If email confirmation is disabled, redirect immediately
         if (data.session) {
           window.location.href = '/dashboard';

@@ -21,11 +21,24 @@ export interface CreateScheduleTemplateInput {
 // SCHEDULE ENTRY
 // ============================================================================
 
+export type ScheduleSessionType = 'training' | 'strength' | 'cardio';
+
+export type ScheduleMuscleGroup =
+  | 'upper_body'
+  | 'lower_body'
+  | 'full_body'
+  | 'push'
+  | 'pull'
+  | 'legs';
+
 export interface ScheduleEntry {
   id: string;
   template_id: string;
   day_of_week: number; // 0=Monday, 1=Tuesday, ..., 6=Sunday
-  discipline: MMADiscipline | null; // null for rest days
+  session_type: ScheduleSessionType;
+  discipline: MMADiscipline | null; // for training type
+  cardio_type: string | null; // for cardio type
+  muscle_group: ScheduleMuscleGroup | null; // for strength type
   start_time: string; // HH:MM format
   end_time: string;   // HH:MM format
   location: string | null;
@@ -37,7 +50,10 @@ export interface ScheduleEntry {
 export interface CreateScheduleEntryInput {
   template_id: string;
   day_of_week: number;
+  session_type?: ScheduleSessionType;
   discipline?: MMADiscipline;
+  cardio_type?: string;
+  muscle_group?: ScheduleMuscleGroup;
   start_time: string;
   end_time: string;
   location?: string;
@@ -46,7 +62,10 @@ export interface CreateScheduleEntryInput {
 }
 
 export interface UpdateScheduleEntryInput {
+  session_type?: ScheduleSessionType;
   discipline?: MMADiscipline | null;
+  cardio_type?: string | null;
+  muscle_group?: ScheduleMuscleGroup | null;
   start_time?: string;
   end_time?: string;
   location?: string | null;

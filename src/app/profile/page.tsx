@@ -42,6 +42,8 @@ import {
   Trophy,
   Check,
   Lock,
+  CreditCard,
+  Zap,
 } from 'lucide-react';
 import { getTrainingSessions, getTrainingStats } from '@/lib/supabase/queries';
 import { getCardioLogs } from '@/lib/supabase/cardioQueries';
@@ -70,6 +72,10 @@ import {
   createCompetition,
   deleteCompetition,
 } from '@/lib/supabase/competitionQueries';
+import { PaywallGate } from '@/components/billing/PaywallGate';
+import { PlanBadge } from '@/components/billing/PlanBadge';
+import { UpgradeModal } from '@/components/billing/UpgradeModal';
+import { useSubscription } from '@/lib/hooks/useSubscription';
 
 interface FighterProfile {
   displayName: string;
@@ -123,6 +129,8 @@ const DEFAULT_PROFILE: FighterProfile = {
 };
 
 export default function ProfilePage() {
+  const { plan, isPro, status: subStatus, currentPeriodEnd } = useSubscription();
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [user, setUser] = useState<{ email?: string } | null>(null);
   const [metrics, setMetrics] = useState<BodyMetric[]>([]);
   const [trendData, setTrendData] = useState<{ date: string; weight: number }[]>([]);
@@ -133,6 +141,7 @@ export default function ProfilePage() {
     latestBodyFat?: number;
   } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState<string | null>(null);
@@ -150,6 +159,7 @@ export default function ProfilePage() {
     target_weight: undefined,
     notes: '',
   });
+  const [savingCompetition, setSavingCompetition] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileStats, setProfileStats] = useState<ProfileStats | null>(null);
@@ -332,6 +342,7 @@ export default function ProfilePage() {
 
   const loadBodyMetrics = async () => {
     setLoading(true);
+    setLoadError(null);
     try {
       const [metricsRes, statsRes, trendRes] = await Promise.all([
         getBodyMetrics({ limit: 10 }),
@@ -342,8 +353,9 @@ export default function ProfilePage() {
       if (metricsRes.data) setMetrics(metricsRes.data);
       if (statsRes.data) setStats(statsRes.data);
       if (trendRes.data) setTrendData(trendRes.data);
-    } catch (error) {
-      console.error('Error loading body metrics:', error);
+    } catch (err) {
+      console.error('Error loading body metrics:', err);
+      setLoadError('Failed to load profile data. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -362,6 +374,7 @@ export default function ProfilePage() {
     e.preventDefault();
     if (!compForm.name || !compForm.competition_date) return;
 
+    setSavingCompetition(true);
     try {
       const { error } = await createCompetition(compForm);
       if (!error) {
@@ -374,6 +387,8 @@ export default function ProfilePage() {
     } catch (error) {
       console.error('Error adding competition:', error);
       alert('Error saving competition');
+    } finally {
+      setSavingCompetition(false);
     }
   };
 
@@ -528,6 +543,21 @@ export default function ProfilePage() {
         <div className="h-48 bg-[#1a1a24] rounded-lg animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />)}
+        </div>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="text-center">
+          <User className="w-12 h-12 text-red-400/40 mx-auto mb-3" />
+          <p className="text-red-400 mb-1">Failed to load profile</p>
+          <p className="text-gray-500 text-sm mb-4">{loadError}</p>
+          <Button variant="secondary" onClick={() => { loadUserData(); loadBodyMetrics(); }}>
+            Try Again
+          </Button>
         </div>
       </div>
     );
@@ -741,6 +771,7 @@ export default function ProfilePage() {
       </Card>
 
       {/* Achievements */}
+      <PaywallGate isPro={isPro} feature="Achievement badges — track your milestones">
       <Card className="p-6">
         <div className="flex items-center gap-3 mb-4">
           <Trophy className="w-5 h-5 text-[#f59e0b]" />
@@ -789,6 +820,7 @@ export default function ProfilePage() {
           })}
         </div>
       </Card>
+      </PaywallGate>
 
       {/* Competitions */}
       <Card className="p-6">
@@ -909,8 +941,8 @@ export default function ProfilePage() {
                 />
               </div>
               <div className="flex gap-3">
-                <Button type="submit" className="flex-1 px-4 py-2 text-sm font-medium">
-                  Save
+                <Button type="submit" disabled={savingCompetition} className="flex-1 px-4 py-2 text-sm font-medium">
+                  {savingCompetition ? 'Saving...' : 'Save'}
                 </Button>
                 <Button type="button" variant="ghost" onClick={() => setShowCompModal(false)} className="flex-1 px-4 py-2 text-sm font-medium">
                   Cancel
@@ -1064,6 +1096,7 @@ export default function ProfilePage() {
       </Card>
 
       {/* Export Data */}
+      <PaywallGate isPro={isPro} feature="Data export — download your training data as CSV">
       <Card className="p-6">
         <div className="flex items-center gap-3 mb-4">
           <Download className="w-6 h-6 text-accent-blue" />
@@ -1091,6 +1124,53 @@ export default function ProfilePage() {
             </button>
           ))}
         </div>
+      </Card>
+      </PaywallGate>
+
+      {/* Subscription Management */}
+      <Card className="p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <CreditCard className="w-5 h-5 text-gray-400" />
+          <h2 className="text-lg font-semibold text-white">Subscription</h2>
+          <PlanBadge plan={plan} className="ml-auto" />
+        </div>
+
+        {isPro ? (
+          <div className="space-y-3">
+            <p className="text-sm text-gray-400">
+              You&apos;re on the <span className="text-white font-medium">Pro</span> plan.
+              {subStatus === 'trialing' && ' (free trial)'}
+            </p>
+            {currentPeriodEnd && (
+              <p className="text-xs text-gray-500">
+                {subStatus === 'trialing' ? 'Trial ends' : 'Renews'}{' '}
+                {new Date(currentPeriodEnd).toLocaleDateString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
+              </p>
+            )}
+            <a
+              href={`${process.env.NEXT_PUBLIC_STRIPE_PORTAL_URL || '/api/stripe/portal'}`}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/[0.08] rounded-lg text-sm text-white/80 hover:border-white/20 hover:bg-white/10 transition-all duration-150"
+            >
+              <CreditCard className="w-4 h-4" />
+              Manage Subscription
+            </a>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <p className="text-sm text-gray-400">
+              You&apos;re on the <span className="text-white font-medium">Free</span> plan.
+              Upgrade to unlock all features.
+            </p>
+            <Button onClick={() => setShowUpgradeModal(true)} className="px-4 py-2 text-sm">
+              <Zap className="w-4 h-4 mr-2" />
+              Upgrade to Pro
+            </Button>
+          </div>
+        )}
       </Card>
 
       {/* Add Metric Modal */}
@@ -1211,6 +1291,9 @@ export default function ProfilePage() {
           <span className="text-sm font-medium">{toast}</span>
         </div>
       )}
+
+      {/* Upgrade Modal */}
+      <UpgradeModal isOpen={showUpgradeModal} onClose={() => setShowUpgradeModal(false)} />
     </div>
   );
 }

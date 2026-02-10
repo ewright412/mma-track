@@ -28,6 +28,8 @@ import { CompetitionCountdown } from '@/components/dashboard/CompetitionCountdow
 import { TrainingLoadCard } from '@/components/dashboard/TrainingLoadCard';
 import { TodaysPlanCard } from '@/components/dashboard/TodaysPlanCard';
 import { WeeklySummaryCard } from '@/components/dashboard/WeeklySummaryCard';
+import { PaywallGate } from '@/components/billing/PaywallGate';
+import { useSubscription } from '@/lib/hooks/useSubscription';
 
 // Lazy load heavy chart components for better initial load performance
 const DisciplineBreakdownChart = dynamic(
@@ -49,6 +51,7 @@ const DisciplineBalanceChart = dynamic(
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { isPro } = useSubscription();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<DashboardData | null>(null);
 
@@ -103,7 +106,19 @@ export default function DashboardPage() {
   if (!data) {
     return (
       <div className="min-h-screen bg-[#0f0f13] p-4 flex items-center justify-center">
-        <div className="text-gray-400">Failed to load dashboard data</div>
+        <div className="text-center">
+          <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+            <Zap className="w-8 h-8 text-red-400" />
+          </div>
+          <h2 className="text-lg font-semibold text-white mb-2">Failed to load dashboard</h2>
+          <p className="text-gray-400 text-sm mb-4">Something went wrong loading your data.</p>
+          <button
+            onClick={loadDashboardData}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
@@ -261,10 +276,12 @@ export default function DashboardPage() {
 
         {/* Training Load */}
         <div className="mb-6">
-          <TrainingLoadCard
-            loadThisWeek={data.trainingLoadThisWeek}
-            load4WeekAvg={data.trainingLoad4WeekAvg}
-          />
+          <PaywallGate isPro={isPro} feature="Training Load analytics">
+            <TrainingLoadCard
+              loadThisWeek={data.trainingLoadThisWeek}
+              load4WeekAvg={data.trainingLoad4WeekAvg}
+            />
+          </PaywallGate>
         </div>
 
         {/* Insights */}
@@ -298,18 +315,20 @@ export default function DashboardPage() {
           </Card>
 
           {/* Discipline Balance (Radar) */}
-          <Card className="p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <Target className="w-5 h-5 text-red-400" />
-              <h2 className="text-lg font-semibold text-white">
-                Discipline Balance
-              </h2>
-              <span className="text-xs text-gray-500">Last 30 days</span>
-            </div>
-            <DisciplineBalanceChart
-              sessionsByDiscipline={data.disciplineLast30Days}
-            />
-          </Card>
+          <PaywallGate isPro={isPro} feature="Discipline Balance chart">
+            <Card className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Target className="w-5 h-5 text-red-400" />
+                <h2 className="text-lg font-semibold text-white">
+                  Discipline Balance
+                </h2>
+                <span className="text-xs text-gray-500">Last 30 days</span>
+              </div>
+              <DisciplineBalanceChart
+                sessionsByDiscipline={data.disciplineLast30Days}
+              />
+            </Card>
+          </PaywallGate>
         </div>
 
         {/* Sparring Trends */}

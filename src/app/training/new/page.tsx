@@ -11,6 +11,7 @@ import { checkAndAwardBadges } from '@/lib/supabase/badgeQueries';
 import { BADGE_MAP } from '@/lib/constants/badges';
 import { supabase } from '@/lib/supabase/client';
 import { CreateTrainingSessionInput, MMADiscipline } from '@/lib/types/training';
+import { trackEvent } from '@/lib/analytics/posthog';
 import { X, Plus, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Technique {
@@ -91,6 +92,12 @@ export default function NewTrainingSessionPage() {
       }
 
       if (data) {
+        trackEvent('session_logged', {
+          discipline,
+          duration_minutes: durationMinutes,
+          intensity,
+          techniques_count: techniques.filter(t => t.technique_name.trim()).length,
+        });
         setSavedSessionId(data.id);
         setShowLearnPrompt(true);
         setIsSubmitting(false);

@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/lib/contexts/AuthContext";
 import { LayoutWrapper } from "@/components/layout/LayoutWrapper";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
+import { Providers } from "@/components/providers/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,13 +17,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "MMA Tracker",
-  description: "Track your MMA training progress across all disciplines",
+  title: "Clinch — Train Smarter. Fight Better.",
+  description: "Free training tracker for martial artists. Log sessions, track sparring, monitor PRs, and see your progress across all disciplines.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "MMA Tracker",
+    title: "Clinch",
   },
   icons: {
     icon: "/favicon.svg",
@@ -39,9 +40,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <OfflineIndicator />
-        <AuthProvider>
-          <LayoutWrapper>{children}</LayoutWrapper>
-        </AuthProvider>
+        <Providers>
+          <AuthProvider>
+            <LayoutWrapper>{children}</LayoutWrapper>
+          </AuthProvider>
+        </Providers>
       </body>
     </html>
   );

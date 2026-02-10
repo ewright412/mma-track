@@ -44,7 +44,7 @@ export function sendTrainingReminder(): void {
 
   if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
     navigator.serviceWorker.ready.then((registration) => {
-      registration.showNotification('MMA Tracker', {
+      registration.showNotification('Clinch', {
         body: message,
         icon: '/icons/icon-192x192.svg',
         badge: '/icons/icon-96x96.svg',
@@ -53,7 +53,7 @@ export function sendTrainingReminder(): void {
       });
     });
   } else {
-    new Notification('MMA Tracker', {
+    new Notification('Clinch', {
       body: message,
       icon: '/icons/icon-192x192.svg',
       tag: 'training-reminder',
@@ -61,7 +61,7 @@ export function sendTrainingReminder(): void {
   }
 }
 
-const REMINDER_KEY = 'mma-tracker-reminder-settings';
+const REMINDER_KEY = 'clinch-reminder-settings';
 
 interface ReminderSettings {
   enabled: boolean;

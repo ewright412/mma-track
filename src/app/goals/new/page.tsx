@@ -14,6 +14,7 @@ import {
 } from '@/lib/constants/goals';
 import { Select } from '@/components/ui/Select';
 import { Target, Calendar, TrendingUp, Type, FileText, Tag, Hash } from 'lucide-react';
+import { trackEvent } from '@/lib/analytics/posthog';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function NewGoalPage() {
@@ -56,6 +57,10 @@ export default function NewGoalPage() {
     try {
       const { error } = await createGoal(formData);
       if (!error) {
+        trackEvent('goal_created', {
+          category: formData.category,
+          has_target_date: !!formData.target_date,
+        });
         router.push('/goals');
       } else {
         alert('Error creating goal: ' + error.message);

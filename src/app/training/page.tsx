@@ -226,8 +226,13 @@ export default function TrainingPage() {
             ))}
           </div>
         ) : error ? (
-          <Card className="p-6 text-center">
-            <p className="text-red-500">{error}</p>
+          <Card className="p-8 text-center">
+            <TrendingUp className="w-12 h-12 text-red-400/40 mx-auto mb-3" />
+            <p className="text-red-400 mb-1">Failed to load sessions</p>
+            <p className="text-gray-500 text-sm mb-4">{error}</p>
+            <Button variant="secondary" onClick={loadSessions}>
+              Try Again
+            </Button>
           </Card>
         ) : sessions.length === 0 ? (
           <Card className="p-12 text-center">

@@ -20,7 +20,7 @@ import {
 } from '@/lib/types/sparring';
 import { Plus, Target, Users } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { RATING_COLORS } from '@/lib/constants/sparring';
+import { RATING_COLORS, SPARRING_TYPE_CATEGORIES } from '@/lib/constants/sparring';
 
 export default function SparringPage() {
   const router = useRouter();
@@ -105,6 +105,29 @@ export default function SparringPage() {
     }
   };
 
+  // Build dynamic stats cards from averageRatings
+  const ratingEntries = stats ? Object.entries(stats.averageRatings) : [];
+
+  // Build chart data: flatten trend ratings into flat keys for recharts
+  const allTrendKeys = new Set<string>();
+  if (trends) {
+    trends.forEach((t) => {
+      Object.keys(t.ratings).forEach((k) => allTrendKeys.add(k));
+    });
+  }
+
+  // Collect all categories for label/color lookup
+  const allCategories = [
+    ...SPARRING_TYPE_CATEGORIES.mma,
+    ...SPARRING_TYPE_CATEGORIES.striking,
+    ...SPARRING_TYPE_CATEGORIES.grappling,
+  ];
+
+  const chartData = trends?.map((t) => ({
+    date: t.date,
+    ...t.ratings,
+  }));
+
   return (
     <div className="min-h-screen bg-background p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
@@ -119,8 +142,8 @@ export default function SparringPage() {
 
         {/* Stats Cards */}
         {stats && stats.totalSessions > 0 && (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div className="mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
               <Card className="p-4">
                 <Users className="w-5 h-5 text-[#ef4444] mb-2" />
                 <p className="text-2xl font-bold text-white">{stats.totalSessions}</p>
@@ -133,57 +156,25 @@ export default function SparringPage() {
                 <p className="text-sm text-gray-400">total {stats.totalRounds === 1 ? 'round' : 'rounds'}</p>
               </Card>
 
-              {/* Striking Offense */}
-              <Card className="p-4">
-                <p className="text-sm text-gray-400 mb-2">Striking Offense</p>
-                <p className="text-2xl font-bold text-white">{stats.averageRatings.striking_offense}/10</p>
-                <div className="mt-2 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-[#ef4444]"
-                    style={{ width: `${stats.averageRatings.striking_offense * 10}%` }}
-                  />
-                </div>
-              </Card>
-
-              {/* Striking Defense */}
-              <Card className="p-4">
-                <p className="text-sm text-gray-400 mb-2">Striking Defense</p>
-                <p className="text-2xl font-bold text-white">{stats.averageRatings.striking_defense}/10</p>
-                <div className="mt-2 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-red-400"
-                    style={{ width: `${stats.averageRatings.striking_defense * 10}%` }}
-                  />
-                </div>
-              </Card>
+              {ratingEntries.map(([key, avg]) => {
+                const catDef = allCategories.find((c) => c.key === key);
+                const label = catDef?.label || key;
+                const color = RATING_COLORS[key] || '#3b82f6';
+                return (
+                  <Card key={key} className="p-4">
+                    <p className="text-sm text-gray-400 mb-2">{label}</p>
+                    <p className="text-2xl font-bold text-white">{avg}/10</p>
+                    <div className="mt-2 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${avg * 10}%`, backgroundColor: color }}
+                      />
+                    </div>
+                  </Card>
+                );
+              })}
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              {/* Takedowns */}
-              <Card className="p-4">
-                <p className="text-sm text-gray-400 mb-2">Takedowns</p>
-                <p className="text-2xl font-bold text-white">{stats.averageRatings.takedowns}/10</p>
-                <div className="mt-2 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-[#f59e0b]"
-                    style={{ width: `${stats.averageRatings.takedowns * 10}%` }}
-                  />
-                </div>
-              </Card>
-
-              {/* Ground Game */}
-              <Card className="p-4">
-                <p className="text-sm text-gray-400 mb-2">Ground Game</p>
-                <p className="text-2xl font-bold text-white">{stats.averageRatings.ground_game}/10</p>
-                <div className="mt-2 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-[#22c55e]"
-                    style={{ width: `${stats.averageRatings.ground_game * 10}%` }}
-                  />
-                </div>
-              </Card>
-            </div>
-          </>
+          </div>
         )}
 
         {/* Focus Areas */}
@@ -220,11 +211,11 @@ export default function SparringPage() {
         )}
 
         {/* Trend Chart */}
-        {trends && trends.length > 0 && (
+        {chartData && chartData.length > 0 && allTrendKeys.size > 0 && (
           <Card className="p-6 mb-6">
             <h2 className="text-xl font-semibold text-white mb-4">Performance Trends</h2>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={trends}>
+              <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis
                   dataKey="date"
@@ -244,34 +235,22 @@ export default function SparringPage() {
                   }}
                 />
                 <Legend wrapperStyle={{ color: '#fff' }} />
-                <Line
-                  type="monotone"
-                  dataKey="striking_offense"
-                  stroke={RATING_COLORS.striking_offense}
-                  name="Striking Offense"
-                  strokeWidth={2}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="striking_defense"
-                  stroke={RATING_COLORS.striking_defense}
-                  name="Striking Defense"
-                  strokeWidth={2}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="takedowns"
-                  stroke={RATING_COLORS.takedowns}
-                  name="Takedowns"
-                  strokeWidth={2}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="ground_game"
-                  stroke={RATING_COLORS.ground_game}
-                  name="Ground Game"
-                  strokeWidth={2}
-                />
+                {Array.from(allTrendKeys).map((key) => {
+                  const catDef = allCategories.find((c) => c.key === key);
+                  const color = RATING_COLORS[key] || '#3b82f6';
+                  const name = catDef?.label || key;
+                  return (
+                    <Line
+                      key={key}
+                      type="monotone"
+                      dataKey={key}
+                      stroke={color}
+                      name={name}
+                      strokeWidth={2}
+                      connectNulls
+                    />
+                  );
+                })}
               </LineChart>
             </ResponsiveContainer>
           </Card>
@@ -290,8 +269,13 @@ export default function SparringPage() {
               ))}
             </div>
           ) : error ? (
-            <Card className="p-6 text-center">
-              <p className="text-red-500">{error}</p>
+            <Card className="p-8 text-center">
+              <Users className="w-12 h-12 text-red-400/40 mx-auto mb-3" />
+              <p className="text-red-400 mb-1">Failed to load sessions</p>
+              <p className="text-gray-500 text-sm mb-4">{error}</p>
+              <Button variant="secondary" onClick={loadData}>
+                Try Again
+              </Button>
             </Card>
           ) : sessions.length === 0 ? (
             <Card className="p-12 text-center">

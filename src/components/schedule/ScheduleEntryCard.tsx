@@ -1,9 +1,18 @@
 'use client';
 
-import { Clock, MapPin, Coffee, Check, AlertCircle, Minus } from 'lucide-react';
-import { ScheduleEntryWithAdherence, AdherenceStatus } from '@/lib/types/schedule';
+import { Clock, MapPin, Coffee, Check, AlertCircle, Minus, Dumbbell, Heart } from 'lucide-react';
+import { ScheduleEntryWithAdherence, AdherenceStatus, ScheduleMuscleGroup } from '@/lib/types/schedule';
 import { DISCIPLINE_HEX_COLORS } from '@/lib/constants/disciplines';
 import { MMADiscipline } from '@/lib/types/training';
+
+const MUSCLE_GROUP_LABELS: Record<ScheduleMuscleGroup, string> = {
+  upper_body: 'Upper Body',
+  lower_body: 'Lower Body',
+  full_body: 'Full Body',
+  push: 'Push',
+  pull: 'Pull',
+  legs: 'Legs',
+};
 
 interface ScheduleEntryCardProps {
   entry: ScheduleEntryWithAdherence;
@@ -41,6 +50,43 @@ function AdherenceIcon({ status }: { status: AdherenceStatus }) {
   }
 }
 
+function getEntryDisplay(entry: ScheduleEntryWithAdherence): {
+  label: string;
+  color: string;
+  icon: React.ReactNode;
+} {
+  const sessionType = entry.session_type || 'training';
+
+  if (sessionType === 'strength') {
+    const label = entry.muscle_group
+      ? MUSCLE_GROUP_LABELS[entry.muscle_group as ScheduleMuscleGroup] || 'Strength'
+      : 'Strength';
+    return {
+      label,
+      color: '#9ca3af', // gray-400
+      icon: <Dumbbell className="w-3.5 h-3.5 text-gray-400" />,
+    };
+  }
+
+  if (sessionType === 'cardio') {
+    return {
+      label: entry.cardio_type || 'Cardio',
+      color: '#22c55e', // green-500
+      icon: <Heart className="w-3.5 h-3.5 text-green-400" />,
+    };
+  }
+
+  // Training (default)
+  const color = entry.discipline
+    ? DISCIPLINE_HEX_COLORS[entry.discipline as MMADiscipline] || '#6b7280'
+    : '#6b7280';
+  return {
+    label: entry.discipline || 'Training',
+    color,
+    icon: null,
+  };
+}
+
 export function ScheduleEntryCard({ entry, showAdherence = false, onClick }: ScheduleEntryCardProps) {
   if (entry.is_rest_day) {
     return (
@@ -61,9 +107,7 @@ export function ScheduleEntryCard({ entry, showAdherence = false, onClick }: Sch
     );
   }
 
-  const color = entry.discipline
-    ? DISCIPLINE_HEX_COLORS[entry.discipline as MMADiscipline] || '#6b7280'
-    : '#6b7280';
+  const { label, color, icon } = getEntryDisplay(entry);
 
   return (
     <button
@@ -75,8 +119,9 @@ export function ScheduleEntryCard({ entry, showAdherence = false, onClick }: Sch
       <div className="flex items-center justify-between">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
+            {icon}
             <span className="text-sm font-semibold text-white">
-              {entry.discipline}
+              {label}
             </span>
           </div>
           <div className="flex items-center gap-3 text-xs text-white/50">

@@ -295,7 +295,7 @@ export function WeeklySummaryCard({
                     letterSpacing: '0.05em',
                   }}
                 >
-                  MMA Tracker
+                  Clinch
                 </div>
                 <div
                   style={{

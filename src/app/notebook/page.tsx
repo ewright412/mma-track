@@ -11,9 +11,12 @@ import { MMADiscipline } from '@/lib/types/training';
 import { MMA_DISCIPLINES, DISCIPLINE_HEX_COLORS } from '@/lib/constants/disciplines';
 import { supabase } from '@/lib/supabase/client';
 import { Plus, Search, BookOpen, Tag } from 'lucide-react';
+import { PaywallGate } from '@/components/billing/PaywallGate';
+import { useSubscription } from '@/lib/hooks/useSubscription';
 
 export default function NotebookPage() {
   const router = useRouter();
+  const { isPro } = useSubscription();
   const [activeTab, setActiveTab] = useState<'notes' | 'techniques'>('notes');
   const [notes, setNotes] = useState<NoteWithTags[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
@@ -147,6 +150,7 @@ export default function NotebookPage() {
   return (
     <div className="min-h-screen bg-[#0f0f13] p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
+        <PaywallGate isPro={isPro} feature="Training Notebook — jot down techniques, drills, and insights">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -227,8 +231,13 @@ export default function NotebookPage() {
                 ))}
               </div>
             ) : error ? (
-              <Card className="p-6 text-center">
-                <p className="text-red-500">{error}</p>
+              <Card className="p-8 text-center">
+                <BookOpen className="w-12 h-12 text-red-400/40 mx-auto mb-3" />
+                <p className="text-red-400 mb-1">Failed to load notes</p>
+                <p className="text-gray-500 text-sm mb-4">{error}</p>
+                <Button variant="secondary" onClick={() => loadNotes(searchQuery)}>
+                  Try Again
+                </Button>
               </Card>
             ) : notes.length === 0 ? (
               <Card className="p-12 text-center">
@@ -342,6 +351,7 @@ export default function NotebookPage() {
             )}
           </>
         )}
+        </PaywallGate>
       </div>
     </div>
   );

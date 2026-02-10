@@ -23,7 +23,7 @@ import { MuscleGroup } from '../constants/exercises';
 /**
  * Calculate total volume from sets
  */
-function calculateTotalVolume(sets: { reps: number; weight: number; rpe: number }[]): number {
+function calculateTotalVolume(sets: { reps: number; weight: number }[]): number {
   return sets.reduce((total, set) => total + (set.reps * set.weight), 0);
 }
 

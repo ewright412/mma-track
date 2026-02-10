@@ -25,6 +25,7 @@ export default function StrengthPage() {
   const [logs, setLogs] = useState<StrengthLog[]>([]);
   const [filteredLogs, setFilteredLogs] = useState<StrengthLog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
 
   // Stats
@@ -110,8 +111,9 @@ export default function StrengthPage() {
       if (sortedExercises.length > 0 && !selectedProgressExercise) {
         setSelectedProgressExercise(sortedExercises[0]);
       }
-    } catch (error) {
-      console.error('Failed to load strength data:', error);
+    } catch (err) {
+      console.error('Failed to load strength data:', err);
+      setError('Failed to load strength data. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -166,8 +168,38 @@ export default function StrengthPage() {
 
   if (loading) {
     return (
+      <div className="min-h-screen bg-[#0f0f13] p-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between mb-6">
+            <div className="h-5 w-64 bg-white/5 rounded animate-pulse" />
+            <div className="h-9 w-32 bg-[#1a1a24] rounded-lg animate-pulse" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />
+            ))}
+          </div>
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-20 bg-[#1a1a24] rounded-lg animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
       <div className="min-h-screen bg-[#0f0f13] p-4 flex items-center justify-center">
-        <div className="text-gray-400">Loading...</div>
+        <div className="text-center">
+          <Dumbbell className="w-12 h-12 text-red-400/40 mx-auto mb-3" />
+          <p className="text-red-400 mb-1">Failed to load workouts</p>
+          <p className="text-gray-500 text-sm mb-4">{error}</p>
+          <Button variant="secondary" onClick={loadData}>
+            Try Again
+          </Button>
+        </div>
       </div>
     );
   }
@@ -369,18 +401,16 @@ export default function StrengthPage() {
                           {isExpanded && (
                             <div className="mt-4 pt-4 border-t border-white/10">
                               <div className="space-y-2 mb-4">
-                                <div className="grid grid-cols-4 gap-2 text-xs font-medium text-gray-400 px-2">
+                                <div className="grid grid-cols-3 gap-2 text-xs font-medium text-gray-400 px-2">
                                   <div>Set</div>
                                   <div>Reps</div>
                                   <div>Weight</div>
-                                  <div>RPE</div>
                                 </div>
                                 {log.sets.map((set, idx) => (
-                                  <div key={idx} className="grid grid-cols-4 gap-2 text-sm text-white px-2">
+                                  <div key={idx} className="grid grid-cols-3 gap-2 text-sm text-white px-2">
                                     <div>{idx + 1}</div>
                                     <div>{set.reps}</div>
-                                    <div>{set.weight} lbs</div>
-                                    <div>{set.rpe}/10</div>
+                                    <div>{set.weight ? `${set.weight} lbs` : 'BW'}</div>
                                   </div>
                                 ))}
                               </div>

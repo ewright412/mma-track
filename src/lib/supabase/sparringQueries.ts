@@ -9,8 +9,45 @@ import {
   SparringTrendData,
   FocusArea,
   SparringRound,
+  SparringType,
   OpponentSkillLevel,
 } from '../types/sparring';
+import { SPARRING_TYPE_CATEGORIES } from '../constants/sparring';
+
+// ============================================================================
+// HELPERS
+// ============================================================================
+
+/**
+ * Normalizes a round row from the DB into our SparringRound type.
+ * Legacy rows have fixed columns but no ratings JSONB — we build ratings from them.
+ */
+function normalizeRound(row: Record<string, unknown>, sessionType: SparringType): SparringRound {
+  let ratings = row.ratings as Record<string, number> | null;
+
+  // If no JSONB ratings, build from legacy columns (old MMA sessions)
+  if (!ratings) {
+    ratings = {
+      striking: (row.striking_offense as number) ?? 5,
+      wrestling: (row.takedowns as number) ?? 5,
+      grappling: (row.ground_game as number) ?? 5,
+      defense: (row.striking_defense as number) ?? 5,
+    };
+  }
+
+  return {
+    id: row.id as string,
+    session_id: row.session_id as string,
+    round_number: row.round_number as number,
+    ratings,
+    striking_offense: (row.striking_offense as number | null) ?? null,
+    striking_defense: (row.striking_defense as number | null) ?? null,
+    takedowns: (row.takedowns as number | null) ?? null,
+    ground_game: (row.ground_game as number | null) ?? null,
+    notes: (row.notes as string | null) ?? null,
+    created_at: row.created_at as string,
+  };
+}
 
 // ============================================================================
 // CREATE
@@ -38,6 +75,7 @@ export async function createSparringSession(
       .insert({
         user_id: user.id,
         session_date: input.session_date,
+        sparring_type: input.sparring_type,
         total_rounds: input.total_rounds,
         opponent_skill_level: input.opponent_skill_level,
         notes: input.notes || null,
@@ -51,16 +89,13 @@ export async function createSparringSession(
       return { data: null, error: sessionError || new Error('Failed to create session') };
     }
 
-    // Insert rounds
+    // Insert rounds with JSONB ratings
     let rounds: SparringRound[] = [];
     if (input.rounds && input.rounds.length > 0) {
       const roundsData = input.rounds.map((round) => ({
         session_id: session.id,
         round_number: round.round_number,
-        striking_offense: round.striking_offense,
-        striking_defense: round.striking_defense,
-        takedowns: round.takedowns,
-        ground_game: round.ground_game,
+        ratings: round.ratings,
         notes: round.notes || null,
       }));
 
@@ -71,8 +106,10 @@ export async function createSparringSession(
 
       if (roundsError) {
         console.error('Failed to insert rounds:', roundsError);
-      } else {
-        rounds = insertedRounds || [];
+      } else if (insertedRounds) {
+        rounds = insertedRounds.map((r: Record<string, unknown>) =>
+          normalizeRound(r, input.sparring_type)
+        );
       }
     }
 
@@ -124,6 +161,10 @@ export async function getSparringSessions(
         } else {
           query = query.eq('opponent_skill_level', filters.opponent_skill_level);
         }
+      }
+
+      if (filters.sparring_type) {
+        query = query.eq('sparring_type', filters.sparring_type);
       }
 
       if (filters.startDate) {
@@ -187,10 +228,15 @@ export async function getSparringSessionById(
       return { data: null, error: roundsError };
     }
 
+    const sparringType = (session.sparring_type as SparringType) || 'mma';
+
     return {
       data: {
         ...session,
-        rounds: rounds || [],
+        sparring_type: sparringType,
+        rounds: (rounds || []).map((r: Record<string, unknown>) =>
+          normalizeRound(r, sparringType)
+        ),
       },
       error: null,
     };
@@ -233,17 +279,17 @@ export async function getSparringStats(): Promise<{
         data: {
           totalSessions: 0,
           totalRounds: 0,
-          averageRatings: {
-            striking_offense: 0,
-            striking_defense: 0,
-            takedowns: 0,
-            ground_game: 0,
-          },
+          averageRatings: {},
           sessionsByOpponentLevel: {
             Beginner: 0,
             Intermediate: 0,
             Advanced: 0,
             Professional: 0,
+          },
+          sessionsBySparringType: {
+            mma: 0,
+            striking: 0,
+            grappling: 0,
           },
         },
         error: null,
@@ -252,10 +298,10 @@ export async function getSparringStats(): Promise<{
 
     const totalSessions = sessions.length;
     let totalRounds = 0;
-    let sumStrikingOffense = 0;
-    let sumStrikingDefense = 0;
-    let sumTakedowns = 0;
-    let sumGroundGame = 0;
+
+    // Accumulate sums per category key across all rounds
+    const ratingSums: Record<string, number> = {};
+    const ratingCounts: Record<string, number> = {};
 
     const sessionsByOpponentLevel: Record<OpponentSkillLevel, number> = {
       Beginner: 0,
@@ -264,31 +310,44 @@ export async function getSparringStats(): Promise<{
       Professional: 0,
     };
 
-    sessions.forEach((session: any) => {
-      sessionsByOpponentLevel[session.opponent_skill_level as OpponentSkillLevel]++;
+    const sessionsBySparringType: Record<SparringType, number> = {
+      mma: 0,
+      striking: 0,
+      grappling: 0,
+    };
 
-      if (session.sparring_rounds && session.sparring_rounds.length > 0) {
-        session.sparring_rounds.forEach((round: any) => {
+    sessions.forEach((session: Record<string, unknown>) => {
+      const oppLevel = session.opponent_skill_level as OpponentSkillLevel;
+      sessionsByOpponentLevel[oppLevel]++;
+
+      const sparringType = (session.sparring_type as SparringType) || 'mma';
+      sessionsBySparringType[sparringType]++;
+
+      const rawRounds = session.sparring_rounds as Record<string, unknown>[] | null;
+      if (rawRounds && rawRounds.length > 0) {
+        rawRounds.forEach((rawRound) => {
           totalRounds++;
-          sumStrikingOffense += round.striking_offense;
-          sumStrikingDefense += round.striking_defense;
-          sumTakedowns += round.takedowns;
-          sumGroundGame += round.ground_game;
+          const round = normalizeRound(rawRound, sparringType);
+          for (const [key, value] of Object.entries(round.ratings)) {
+            ratingSums[key] = (ratingSums[key] || 0) + value;
+            ratingCounts[key] = (ratingCounts[key] || 0) + 1;
+          }
         });
       }
     });
+
+    const averageRatings: Record<string, number> = {};
+    for (const key of Object.keys(ratingSums)) {
+      averageRatings[key] = Math.round((ratingSums[key] / ratingCounts[key]) * 10) / 10;
+    }
 
     return {
       data: {
         totalSessions,
         totalRounds,
-        averageRatings: {
-          striking_offense: totalRounds > 0 ? Math.round((sumStrikingOffense / totalRounds) * 10) / 10 : 0,
-          striking_defense: totalRounds > 0 ? Math.round((sumStrikingDefense / totalRounds) * 10) / 10 : 0,
-          takedowns: totalRounds > 0 ? Math.round((sumTakedowns / totalRounds) * 10) / 10 : 0,
-          ground_game: totalRounds > 0 ? Math.round((sumGroundGame / totalRounds) * 10) / 10 : 0,
-        },
+        averageRatings,
         sessionsByOpponentLevel,
+        sessionsBySparringType,
       },
       error: null,
     };
@@ -318,7 +377,7 @@ export async function getSparringTrends(
 
     const { data: sessions, error } = await supabase
       .from('sparring_sessions')
-      .select('session_date, sparring_rounds(*)')
+      .select('session_date, sparring_type, sparring_rounds(*)')
       .eq('user_id', user.id)
       .order('session_date', { ascending: true })
       .limit(limit);
@@ -331,24 +390,30 @@ export async function getSparringTrends(
       return { data: [], error: null };
     }
 
-    const trendData: SparringTrendData[] = sessions.map((session: any) => {
-      const rounds = session.sparring_rounds || [];
+    const trendData: SparringTrendData[] = sessions.map((session: Record<string, unknown>) => {
+      const sparringType = (session.sparring_type as SparringType) || 'mma';
+      const rawRounds = session.sparring_rounds as Record<string, unknown>[] | null;
+      const rounds = (rawRounds || []).map((r) => normalizeRound(r, sparringType));
       const roundCount = rounds.length;
 
+      // Average ratings across rounds for this session
+      const avgRatings: Record<string, number> = {};
+      if (roundCount > 0) {
+        const sums: Record<string, number> = {};
+        rounds.forEach((round) => {
+          for (const [key, value] of Object.entries(round.ratings)) {
+            sums[key] = (sums[key] || 0) + value;
+          }
+        });
+        for (const key of Object.keys(sums)) {
+          avgRatings[key] = Math.round((sums[key] / roundCount) * 10) / 10;
+        }
+      }
+
       return {
-        date: session.session_date,
-        striking_offense: roundCount > 0
-          ? Math.round((rounds.reduce((sum: number, r: any) => sum + r.striking_offense, 0) / roundCount) * 10) / 10
-          : 0,
-        striking_defense: roundCount > 0
-          ? Math.round((rounds.reduce((sum: number, r: any) => sum + r.striking_defense, 0) / roundCount) * 10) / 10
-          : 0,
-        takedowns: roundCount > 0
-          ? Math.round((rounds.reduce((sum: number, r: any) => sum + r.takedowns, 0) / roundCount) * 10) / 10
-          : 0,
-        ground_game: roundCount > 0
-          ? Math.round((rounds.reduce((sum: number, r: any) => sum + r.ground_game, 0) / roundCount) * 10) / 10
-          : 0,
+        date: session.session_date as string,
+        sparring_type: sparringType,
+        ratings: avgRatings,
       };
     });
 
@@ -362,7 +427,8 @@ export async function getSparringTrends(
 }
 
 /**
- * Detects focus areas based on rating patterns
+ * Detects focus areas based on rating patterns.
+ * Groups by sparring type and analyzes categories within each type.
  */
 export async function detectFocusAreas(): Promise<{
   data: FocusArea[] | null;
@@ -383,25 +449,44 @@ export async function detectFocusAreas(): Promise<{
 
     const focusAreas: FocusArea[] = [];
 
-    // Analyze each category
-    const categories = [
-      { key: 'striking_offense' as const, label: 'Striking Offense' },
-      { key: 'striking_defense' as const, label: 'Striking Defense' },
-      { key: 'takedowns' as const, label: 'Takedowns' },
-      { key: 'ground_game' as const, label: 'Ground Game' },
+    // Determine which sparring type the user does most, and analyze those categories
+    const primaryType: SparringType =
+      stats.sessionsBySparringType.mma >= stats.sessionsBySparringType.striking &&
+      stats.sessionsBySparringType.mma >= stats.sessionsBySparringType.grappling
+        ? 'mma'
+        : stats.sessionsBySparringType.striking >= stats.sessionsBySparringType.grappling
+        ? 'striking'
+        : 'grappling';
+
+    // Analyze all category keys that appear in averageRatings
+    // Map them to labels using the primary type's categories, falling back to all types
+    const allCategories = [
+      ...SPARRING_TYPE_CATEGORIES.mma,
+      ...SPARRING_TYPE_CATEGORIES.striking,
+      ...SPARRING_TYPE_CATEGORIES.grappling,
     ];
 
-    categories.forEach((category) => {
-      const avgRating = stats.averageRatings[category.key];
+    for (const [key, avgRating] of Object.entries(stats.averageRatings)) {
+      const catDef = allCategories.find((c) => c.key === key);
+      const categoryLabel = catDef ? catDef.label : key;
 
-      // Calculate trend
+      // Calculate trend from recent data
       let trend: 'improving' | 'declining' | 'stable' = 'stable';
       if (trends && trends.length >= 2) {
-        const recentAvg = trends.slice(-2).reduce((sum, t) => sum + t[category.key], 0) / 2;
-        const olderAvg = trends.slice(0, 2).reduce((sum, t) => sum + t[category.key], 0) / 2;
+        const recentSessions = trends.slice(-2);
+        const olderSessions = trends.slice(0, 2);
 
-        if (recentAvg > olderAvg + 0.5) trend = 'improving';
-        else if (recentAvg < olderAvg - 0.5) trend = 'declining';
+        const recentAvg =
+          recentSessions.reduce((sum, t) => sum + (t.ratings[key] || 0), 0) /
+          recentSessions.filter((t) => t.ratings[key] !== undefined).length || 0;
+        const olderAvg =
+          olderSessions.reduce((sum, t) => sum + (t.ratings[key] || 0), 0) /
+          olderSessions.filter((t) => t.ratings[key] !== undefined).length || 0;
+
+        if (recentAvg && olderAvg) {
+          if (recentAvg > olderAvg + 0.5) trend = 'improving';
+          else if (recentAvg < olderAvg - 0.5) trend = 'declining';
+        }
       }
 
       // Determine priority and message
@@ -410,16 +495,16 @@ export async function detectFocusAreas(): Promise<{
 
       if (avgRating < 4) {
         priority = 'high';
-        message = `Your ${category.label.toLowerCase()} needs significant improvement (avg ${avgRating}/10)`;
+        message = `Your ${categoryLabel.toLowerCase()} needs significant improvement (avg ${avgRating}/10)`;
       } else if (avgRating < 6) {
         priority = 'medium';
-        message = `Focus on improving ${category.label.toLowerCase()} (avg ${avgRating}/10)`;
+        message = `Focus on improving ${categoryLabel.toLowerCase()} (avg ${avgRating}/10)`;
       } else if (avgRating >= 8) {
         priority = 'low';
-        message = `Strong ${category.label.toLowerCase()} - keep it up! (avg ${avgRating}/10)`;
+        message = `Strong ${categoryLabel.toLowerCase()} - keep it up! (avg ${avgRating}/10)`;
       } else {
         priority = 'low';
-        message = `Good ${category.label.toLowerCase()} - room for growth (avg ${avgRating}/10)`;
+        message = `Good ${categoryLabel.toLowerCase()} - room for growth (avg ${avgRating}/10)`;
       }
 
       if (trend === 'declining' && priority !== 'high') {
@@ -430,14 +515,14 @@ export async function detectFocusAreas(): Promise<{
       }
 
       focusAreas.push({
-        category: category.key,
-        categoryLabel: category.label,
+        category: key,
+        categoryLabel,
         averageRating: avgRating,
         trend,
         message,
         priority,
       });
-    });
+    }
 
     // Sort by priority (high first)
     focusAreas.sort((a, b) => {
@@ -503,10 +588,7 @@ export async function updateSparringRounds(
   sessionId: string,
   rounds: Array<{
     round_number: number;
-    striking_offense: number;
-    striking_defense: number;
-    takedowns: number;
-    ground_game: number;
+    ratings: Record<string, number>;
     notes?: string;
   }>
 ): Promise<{ success: boolean; error: Error | null }> {
@@ -547,10 +629,7 @@ export async function updateSparringRounds(
       const roundsData = rounds.map((round) => ({
         session_id: sessionId,
         round_number: round.round_number,
-        striking_offense: round.striking_offense,
-        striking_defense: round.striking_defense,
-        takedowns: round.takedowns,
-        ground_game: round.ground_game,
+        ratings: round.ratings,
         notes: round.notes || null,
       }));
 

@@ -225,12 +225,21 @@ export default function CardioPage() {
           </div>
 
           {isLoading ? (
-            <Card className="p-8">
-              <p className="text-white/60 text-center">Loading cardio logs...</p>
-            </Card>
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <Card key={i} className="h-28 animate-pulse">
+                  <div className="h-full bg-white/5 rounded" />
+                </Card>
+              ))}
+            </div>
           ) : error ? (
-            <Card className="p-8 border-red-500/20 bg-red-500/5">
-              <p className="text-red-400 text-center">{error}</p>
+            <Card className="p-8 text-center">
+              <Activity className="w-12 h-12 text-red-400/40 mx-auto mb-3" />
+              <p className="text-red-400 mb-1">Failed to load cardio logs</p>
+              <p className="text-gray-500 text-sm mb-4">{error}</p>
+              <Button variant="secondary" onClick={loadData}>
+                Try Again
+              </Button>
             </Card>
           ) : logs.length === 0 ? (
             <Card className="p-8">
