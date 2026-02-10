@@ -26,8 +26,11 @@ export interface WeeklyDisciplineVolume {
 }
 
 export interface TrainingInsight {
+  id: string;
   type: 'warning' | 'info' | 'success';
+  icon: string; // lucide-react icon name
   message: string;
+  advice: string;
   category: 'training' | 'sparring' | 'cardio' | 'strength' | 'goals';
   priority: number; // higher = more important, used for sorting
 }
@@ -236,7 +239,7 @@ export async function getDashboardData(): Promise<{
     }
 
     // Generate insights
-    dashboardData.insights = generateInsights(dashboardData, cardioLastMonthRes);
+    dashboardData.insights = generateInsights(dashboardData, cardioLastMonthRes, allRecentSessions);
 
     return { data: dashboardData, error: null };
   } catch (error) {
@@ -354,39 +357,67 @@ function formatWeekLabel(weekStart: Date): string {
 
 function generateInsights(
   data: DashboardData,
-  cardioComparison: CardioComparisonResult | null
+  cardioComparison: CardioComparisonResult | null,
+  allRecentSessions: TrainingSession[]
 ): TrainingInsight[] {
   const insights: TrainingInsight[] = [];
+  const today = new Date();
 
-  // 1. Consecutive training days warning (6+ days straight)
-  if (data.trainingStats && data.trainingStats.currentStreak >= 6) {
+  // ── RECOVERY ──────────────────────────────────────────────────────────
+
+  // Consecutive training days (3+)
+  if (data.trainingStats && data.trainingStats.currentStreak >= 3) {
     insights.push({
+      id: 'rest-day-needed',
       type: 'warning',
-      message: `You've trained ${data.trainingStats.currentStreak} days straight \u2014 consider a rest day`,
+      icon: 'Moon',
+      message: `You've trained ${data.trainingStats.currentStreak} days straight.`,
+      advice: 'Consider a rest day to prevent overtraining.',
       category: 'training',
       priority: 90,
     });
   }
 
-  // 2. Discipline gaps — 14+ days since last session per discipline
+  // High intensity yesterday
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split('T')[0];
+  const highIntensityYesterday = allRecentSessions.find(
+    (s) => s.session_date === yesterdayStr && s.intensity >= 8
+  );
+  if (highIntensityYesterday) {
+    insights.push({
+      id: 'post-intensity-recovery',
+      type: 'info',
+      icon: 'Battery',
+      message: `Yesterday was intense (${highIntensityYesterday.intensity}/10).`,
+      advice: 'Today might be a good day for light technique work or mobility.',
+      category: 'training',
+      priority: 85,
+    });
+  }
+
+  // ── DISCIPLINE BALANCE ────────────────────────────────────────────────
+
+  // Discipline gap (14+ days since last session for a trained discipline)
   if (data.trainingStats && data.trainingStats.totalSessions > 0) {
-    const allSessions = [...data.sessionsThisWeek, ...data.sessionsLastWeek];
     const trainedDisciplines = Object.keys(
       data.trainingStats.sessionsByDiscipline
     ).filter(
       (d) => data.trainingStats!.sessionsByDiscipline[d as MMADiscipline] > 0
     );
 
-    if (trainedDisciplines.length > 0) {
-      const today = new Date();
-      const fourteenDaysAgo = new Date();
+    if (trainedDisciplines.length > 1) {
+      const fourteenDaysAgo = new Date(today);
       fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
       const fourteenDaysAgoStr = fourteenDaysAgo.toISOString().split('T')[0];
 
-      // Build a map of last session date per discipline
       const lastSessionByDiscipline: Record<string, string> = {};
-      allSessions.forEach((s) => {
-        if (!lastSessionByDiscipline[s.discipline] || s.session_date > lastSessionByDiscipline[s.discipline]) {
+      allRecentSessions.forEach((s) => {
+        if (
+          !lastSessionByDiscipline[s.discipline] ||
+          s.session_date > lastSessionByDiscipline[s.discipline]
+        ) {
           lastSessionByDiscipline[s.discipline] = s.session_date;
         }
       });
@@ -395,20 +426,200 @@ function generateInsights(
         const lastDate = lastSessionByDiscipline[discipline];
         if (!lastDate || lastDate < fourteenDaysAgoStr) {
           const daysSince = lastDate
-            ? Math.floor((today.getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24))
+            ? Math.floor(
+                (today.getTime() - new Date(lastDate).getTime()) /
+                  (1000 * 60 * 60 * 24)
+              )
             : 14;
           insights.push({
+            id: `discipline-gap-${discipline}`,
             type: 'warning',
-            message: `You haven't trained ${discipline} in ${daysSince} days`,
+            icon: 'Shuffle',
+            message: `You haven't trained ${discipline} in ${daysSince} days.`,
+            advice: 'Consider scheduling a session this week.',
             category: 'training',
-            priority: 80,
+            priority: 78,
           });
         }
       });
     }
   }
 
-  // 3. Cardio volume comparison
+  // Discipline dominance (>60% of last 30 days)
+  const totalLast30 = Object.values(data.disciplineLast30Days).reduce(
+    (sum, n) => sum + n,
+    0
+  );
+  if (totalLast30 >= 5) {
+    const sorted = Object.entries(data.disciplineLast30Days).sort(
+      ([, a], [, b]) => b - a
+    );
+    if (sorted.length > 1) {
+      const [topDiscipline, topCount] = sorted[0];
+      const percentage = Math.round((topCount / totalLast30) * 100);
+      if (percentage > 60) {
+        const leastTrained = sorted[sorted.length - 1][0];
+        insights.push({
+          id: 'discipline-dominance',
+          type: 'info',
+          icon: 'Scale',
+          message: `Your training is ${percentage}% ${topDiscipline}.`,
+          advice: `Mix in more ${leastTrained} for better balance.`,
+          category: 'training',
+          priority: 70,
+        });
+      }
+    }
+  }
+
+  // ── PROGRESSION ───────────────────────────────────────────────────────
+
+  // Recent PR celebration
+  if (data.recentPRs.length > 0) {
+    const latestPR = data.recentPRs[0];
+    insights.push({
+      id: `recent-pr-${latestPR.exercise_name}`,
+      type: 'success',
+      icon: 'Trophy',
+      message: `New PR on ${latestPR.exercise_name} \u2014 ${Math.round(latestPR.value)} lbs!`,
+      advice: 'Try progressive overload \u2014 add 5 lbs next session.',
+      category: 'strength',
+      priority: 75,
+    });
+  }
+
+  // No PRs in 30+ days (only if user has strength data)
+  if (
+    data.recentPRs.length === 0 &&
+    data.strengthStats &&
+    data.strengthStats.totalWorkouts > 0
+  ) {
+    insights.push({
+      id: 'no-recent-prs',
+      type: 'info',
+      icon: 'Dumbbell',
+      message: 'No new PRs this month.',
+      advice: 'Consider a deload week or changing your rep scheme.',
+      category: 'strength',
+      priority: 55,
+    });
+  }
+
+  // ── SPARRING ──────────────────────────────────────────────────────────
+
+  // Low sparring category (avg < 4)
+  const lowFocusArea = data.sparringFocusAreas.find(
+    (area) => area.averageRating < 4 && area.priority !== 'low'
+  );
+  if (lowFocusArea) {
+    insights.push({
+      id: `sparring-low-${lowFocusArea.category}`,
+      type: 'warning',
+      icon: 'Shield',
+      message: `Your ${lowFocusArea.categoryLabel.toLowerCase()} has been trending low (avg ${lowFocusArea.averageRating.toFixed(1)}/10).`,
+      advice: `Focus on ${lowFocusArea.categoryLabel.toLowerCase()} drills this week.`,
+      category: 'sparring',
+      priority: 65,
+    });
+  }
+
+  // Declining sparring area (catches areas that were fine but dropping)
+  const decliningArea = data.sparringFocusAreas.find(
+    (area) =>
+      area.trend === 'declining' &&
+      area.priority !== 'low' &&
+      area.averageRating >= 4
+  );
+  if (decliningArea) {
+    insights.push({
+      id: `sparring-declining-${decliningArea.category}`,
+      type: 'warning',
+      icon: 'Shield',
+      message: `Your sparring ${decliningArea.categoryLabel.toLowerCase()} ratings are trending down.`,
+      advice: 'Dedicate a few rounds to focused positional sparring.',
+      category: 'sparring',
+      priority: 62,
+    });
+  }
+
+  // Low sparring frequency
+  const thirtyDaysAgo = new Date(today);
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().split('T')[0];
+  const sparringThisMonth = data.sparringTrends.filter(
+    (s) => s.date >= thirtyDaysAgoStr
+  ).length;
+  if (sparringThisMonth > 0 && sparringThisMonth < 4) {
+    insights.push({
+      id: 'sparring-frequency-low',
+      type: 'info',
+      icon: 'Swords',
+      message: `You've only sparred ${sparringThisMonth} ${sparringThisMonth === 1 ? 'time' : 'times'} this month.`,
+      advice: 'More sparring = faster improvement. Try to get 2+ rounds per week.',
+      category: 'sparring',
+      priority: 60,
+    });
+  }
+
+  // ── GOALS ─────────────────────────────────────────────────────────────
+
+  // Goal deadline approaching + behind pace
+  data.activeGoals.forEach((goal) => {
+    if (!goal.target_date || !goal.target_value || goal.target_value === 0)
+      return;
+
+    const targetDate = new Date(goal.target_date);
+    const daysRemaining = Math.ceil(
+      (targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    if (daysRemaining <= 0 || daysRemaining > 30) return;
+
+    const currentValue = goal.current_value || 0;
+    const progressPercent = Math.round(
+      (currentValue / goal.target_value) * 100
+    );
+
+    const createdDate = new Date(goal.created_at);
+    const totalDays = Math.ceil(
+      (targetDate.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    const elapsed = totalDays - daysRemaining;
+    const expectedPercent =
+      totalDays > 0 ? Math.round((elapsed / totalDays) * 100) : 100;
+
+    if (progressPercent < expectedPercent * 0.75 && progressPercent < 90) {
+      insights.push({
+        id: `goal-behind-${goal.id}`,
+        type: 'warning',
+        icon: 'Flag',
+        message: `Your "${goal.title}" deadline is in ${daysRemaining} days but you're only ${progressPercent}% there.`,
+        advice: 'Time to accelerate \u2014 review your plan and increase consistency.',
+        category: 'goals',
+        priority: 88,
+      });
+    }
+  });
+
+  // Overdue goals
+  const overdueGoals = data.activeGoals.filter((g) => {
+    if (!g.target_date) return false;
+    return new Date(g.target_date) < today;
+  });
+  if (overdueGoals.length > 0) {
+    insights.push({
+      id: 'goals-overdue',
+      type: 'warning',
+      icon: 'Flag',
+      message: `${overdueGoals.length} goal${overdueGoals.length > 1 ? 's are' : ' is'} past the target date.`,
+      advice: 'Update your timeline or mark them complete if achieved.',
+      category: 'goals',
+      priority: 82,
+    });
+  }
+
+  // ── CARDIO ────────────────────────────────────────────────────────────
+
   if (cardioComparison && cardioComparison.lastMonthMinutes > 0) {
     const change =
       ((cardioComparison.thisMonthMinutes - cardioComparison.lastMonthMinutes) /
@@ -417,78 +628,44 @@ function generateInsights(
 
     if (change < -20) {
       insights.push({
+        id: 'cardio-volume-down',
         type: 'warning',
-        message: `Cardio volume down ${Math.abs(Math.round(change))}% from last month`,
+        icon: 'Heart',
+        message: `Cardio volume down ${Math.abs(Math.round(change))}% from last month.`,
+        advice: 'Try to fit in 2\u20133 steady-state sessions this week.',
         category: 'cardio',
-        priority: 70,
+        priority: 68,
       });
     } else if (change > 20) {
       insights.push({
+        id: 'cardio-volume-up',
         type: 'success',
-        message: `Cardio volume is up ${Math.round(change)}% compared to last month`,
+        icon: 'Heart',
+        message: `Cardio volume is up ${Math.round(change)}% compared to last month.`,
+        advice: 'Great consistency \u2014 keep it going!',
         category: 'cardio',
-        priority: 40,
+        priority: 35,
       });
     }
   }
 
-  // 4. Celebrate recent PRs individually (top 1)
-  if (data.recentPRs.length > 0) {
-    const latestPR = data.recentPRs[0];
-    insights.push({
-      type: 'success',
-      message: `New PR! You hit ${Math.round(latestPR.value)} lbs on ${latestPR.exercise_name}`,
-      category: 'strength',
-      priority: 85,
-    });
-  }
+  // ── POSITIVE MOMENTUM ─────────────────────────────────────────────────
 
-  // 5. Goal deadlines
-  const overdueGoals = data.activeGoals.filter((g) => {
-    if (!g.target_date) return false;
-    return new Date(g.target_date) < new Date();
-  });
-
-  if (overdueGoals.length > 0) {
-    insights.push({
-      type: 'warning',
-      message: `${overdueGoals.length} goal${overdueGoals.length > 1 ? 's are' : ' is'} past the target date`,
-      category: 'goals',
-      priority: 75,
-    });
-  }
-
-  // 6. Sparring focus areas with declining trends
-  const decliningArea = data.sparringFocusAreas.find(
-    (area) => area.trend === 'declining' && area.priority !== 'low'
-  );
-  if (decliningArea) {
-    insights.push({
-      type: 'warning',
-      message: `Your sparring ${decliningArea.categoryLabel.toLowerCase()} ratings are trending down`,
-      category: 'sparring',
-      priority: 60,
-    });
-  }
-
-  // 7. Training streak celebration (not same as rest warning)
-  if (data.trainingStats && data.trainingStats.currentStreak >= 7 && data.trainingStats.currentStreak < 6) {
-    // This case won't fire since >= 7 is always >= 6, but the rest day warning takes priority
-  }
-
-  // 8. Week-over-week improvement
   const thisWeekCount = data.sessionsThisWeek.length;
   const lastWeekCount = data.sessionsLastWeek.length;
   if (lastWeekCount > 0 && thisWeekCount > lastWeekCount) {
     insights.push({
+      id: 'week-over-week-up',
       type: 'success',
-      message: `Training up this week: ${thisWeekCount} sessions vs ${lastWeekCount} last week`,
+      icon: 'TrendingUp',
+      message: `Training up this week: ${thisWeekCount} sessions vs ${lastWeekCount} last week.`,
+      advice: 'Momentum is building \u2014 stay consistent.',
       category: 'training',
       priority: 30,
     });
   }
 
-  // Sort by priority (highest first) and return max 3
+  // Sort by priority (highest first), return pool of 6 so dismissing reveals next
   insights.sort((a, b) => b.priority - a.priority);
-  return insights.slice(0, 3);
+  return insights.slice(0, 6);
 }

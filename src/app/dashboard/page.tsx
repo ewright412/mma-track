@@ -19,7 +19,6 @@ import {
   Scale,
   Clock,
   Flame,
-  Lightbulb,
 } from 'lucide-react';
 import { getDashboardData, DashboardData } from '@/lib/supabase/dashboardQueries';
 import { TrainingInsights } from '@/components/charts/TrainingInsights';
