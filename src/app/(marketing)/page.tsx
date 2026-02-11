@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { TrackedUpgradeLink } from '@/components/marketing/TrackedUpgradeLink';
 
 /* ── Inline SVG Icons ── */
 
@@ -114,18 +113,11 @@ const features = [
   },
 ];
 
-const freeFeatures = [
+const allFeatures = [
   'Unlimited session logging',
   'All 6 disciplines',
   'Sparring round tracking',
   'Strength & cardio logs',
-  '3 active goals',
-  '1 schedule template',
-  'Basic dashboard',
-  'Mobile PWA',
-];
-
-const proFeatures = [
   'Unlimited goals & schedules',
   'Training notebook & technique library',
   'Achievement badges',
@@ -133,9 +125,117 @@ const proFeatures = [
   'Training load monitoring',
   'Discipline balance radar',
   'Data export (CSV)',
-  'Weekly share cards',
-  'Priority support',
+  'Mobile PWA',
 ];
+
+/* ── Dashboard Mockup (placeholder) ── */
+
+function DashboardMockup() {
+  return (
+    <div className="bg-[#1a1a24] rounded-xl border border-white/10 shadow-2xl shadow-black/50 overflow-hidden transform rotate-1 -mt-4 lg:-mt-8">
+      {/* Browser top bar */}
+      <div className="h-8 bg-[#252530] flex items-center gap-2 px-4">
+        <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
+        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
+        <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
+        <div className="mx-4 flex-1 bg-[#1a1a24] rounded-md h-4" />
+      </div>
+
+      {/* Dashboard content */}
+      <div className="bg-[#0f0f13] p-4">
+        {/* Stat cards row */}
+        <div className="grid grid-cols-4 gap-2 mb-3">
+          <div className="bg-[#1a1a24] rounded-lg p-2.5">
+            <div className="w-4 h-4 rounded bg-red-500/20 mb-1.5" />
+            <div className="text-white text-sm font-bold">24</div>
+            <div className="text-gray-500 text-[10px]">Sessions</div>
+          </div>
+          <div className="bg-[#1a1a24] rounded-lg p-2.5">
+            <div className="w-4 h-4 rounded bg-blue-500/20 mb-1.5" />
+            <div className="text-white text-sm font-bold">6</div>
+            <div className="text-gray-500 text-[10px]">Disciplines</div>
+          </div>
+          <div className="bg-[#1a1a24] rounded-lg p-2.5">
+            <div className="w-4 h-4 rounded bg-green-500/20 mb-1.5" />
+            <div className="text-white text-sm font-bold">12h</div>
+            <div className="text-gray-500 text-[10px]">This Week</div>
+          </div>
+          <div className="bg-[#1a1a24] rounded-lg p-2.5">
+            <div className="w-4 h-4 rounded bg-yellow-500/20 mb-1.5" />
+            <div className="text-white text-sm font-bold">3</div>
+            <div className="text-gray-500 text-[10px]">New PRs</div>
+          </div>
+        </div>
+
+        {/* Chart area */}
+        <div className="bg-[#1a1a24] rounded-lg p-3 mb-3">
+          <div className="text-[10px] text-gray-500 mb-2">Weekly Volume</div>
+          <div className="flex items-end gap-1.5 h-16">
+            <div className="flex-1 bg-red-500/30 rounded-t" style={{ height: '40%' }} />
+            <div className="flex-1 bg-red-500/40 rounded-t" style={{ height: '55%' }} />
+            <div className="flex-1 bg-red-500/30 rounded-t" style={{ height: '35%' }} />
+            <div className="flex-1 bg-red-500/50 rounded-t" style={{ height: '70%' }} />
+            <div className="flex-1 bg-red-500/60 rounded-t" style={{ height: '85%' }} />
+            <div className="flex-1 bg-red-500/40 rounded-t" style={{ height: '50%' }} />
+            <div className="flex-1 bg-red-500/70 rounded-t" style={{ height: '100%' }} />
+          </div>
+        </div>
+
+        {/* Recent sessions */}
+        <div className="bg-[#1a1a24] rounded-lg p-3">
+          <div className="text-[10px] text-gray-500 mb-2">Recent Sessions</div>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-red-500" />
+              <div className="text-[10px] text-gray-300 flex-1">Boxing Sparring</div>
+              <div className="text-[10px] text-gray-500">90 min</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-purple-500" />
+              <div className="text-[10px] text-gray-300 flex-1">BJJ No-Gi</div>
+              <div className="text-[10px] text-gray-500">60 min</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-orange-500" />
+              <div className="text-[10px] text-gray-300 flex-1">Muay Thai Pads</div>
+              <div className="text-[10px] text-gray-500">75 min</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Stat icons ── */
+
+function GridIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-400">
+      <rect width="7" height="7" x="3" y="3" rx="1" />
+      <rect width="7" height="7" x="14" y="3" rx="1" />
+      <rect width="7" height="7" x="3" y="14" rx="1" />
+      <rect width="7" height="7" x="14" y="14" rx="1" />
+    </svg>
+  );
+}
+
+function InfinityIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-400">
+      <path d="M12 12c-2-2.67-4-4-6-4a4 4 0 1 0 0 8c2 0 4-1.33 6-4Zm0 0c2 2.67 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.33-6 4Z" />
+    </svg>
+  );
+}
+
+function ShieldCheckIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-400">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <polyline points="9 12 11 14 15 10" />
+    </svg>
+  );
+}
 
 /* ── Page ── */
 
@@ -144,53 +244,79 @@ export default function LandingPage() {
     <>
       {/* ════════ HERO ════════ */}
       <section className="relative overflow-hidden">
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse at center, rgba(239,68,68,0.05) 0%, transparent 70%)',
-          }}
-        />
+        <div className="relative max-w-7xl mx-auto px-6 pt-28 pb-16">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+            {/* Left column — text */}
+            <div className="flex-1 lg:max-w-[55%] text-center lg:text-left">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1]">
+                Train Smarter.<br />
+                <span className="text-red-500">Fight Better.</span>
+              </h1>
 
-        <div className="relative max-w-6xl mx-auto px-4 pt-32 pb-20">
-          <div className="mb-6">
-            <span className="inline-block bg-red-500/10 text-red-400 text-xs px-3 py-1 rounded-full">
-              Free for fighters
-            </span>
-          </div>
+              <p className="text-lg text-gray-400 max-w-lg leading-relaxed mt-6 mx-auto lg:mx-0">
+                The free training tracker built for martial artists. Log sessions across every discipline, analyze sparring, track PRs, and see your progress over time.
+              </p>
 
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight max-w-4xl">
-            Track Your Training. Tighten Your Game.
-          </h1>
+              <div className="mt-8 flex flex-wrap gap-4 justify-center lg:justify-start">
+                <Link
+                  href="/signup"
+                  className="bg-red-500 hover:bg-red-600 text-white px-8 py-4 rounded-lg text-lg font-semibold shadow-lg shadow-red-500/20 transition-colors duration-150"
+                >
+                  Start Free &rarr;
+                </Link>
+                <a
+                  href="#features"
+                  className="text-gray-400 hover:text-white px-6 py-4 text-lg font-medium transition-colors duration-150"
+                >
+                  See Features &darr;
+                </a>
+              </div>
 
-          <p className="text-lg text-gray-400 max-w-xl mt-6">
-            The free training tracker built for fighters. Log sessions, analyze sparring, track PRs, and level up across every discipline.
-          </p>
+              <div className="mt-6 flex flex-wrap gap-6 items-center justify-center lg:justify-start text-sm text-gray-500">
+                <span className="flex items-center gap-1.5">
+                  <CheckIcon className="text-green-500" /> Free forever
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckIcon className="text-green-500" /> No credit card
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckIcon className="text-green-500" /> All 6 disciplines
+                </span>
+              </div>
+            </div>
 
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Link
-              href="/signup"
-              className="bg-red-500 hover:bg-red-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors duration-150"
-            >
-              Start Free &rarr;
-            </Link>
-            <a
-              href="#features"
-              className="border border-[rgba(255,255,255,0.15)] text-gray-400 hover:text-white px-6 py-4 rounded-lg text-lg transition-colors duration-150"
-            >
-              See Features &darr;
-            </a>
+            {/* Right column — app mockup */}
+            <div className="flex-1 lg:max-w-[45%] w-full max-w-md lg:max-w-none">
+              <DashboardMockup />
+            </div>
           </div>
         </div>
       </section>
 
       {/* ════════ TRUST BAR ════════ */}
-      <section className="py-12 border-y border-[rgba(255,255,255,0.06)]">
-        <div className="max-w-6xl mx-auto px-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-gray-500">
-          <span>6 Disciplines</span>
-          <span className="hidden sm:inline" aria-hidden="true">&middot;</span>
-          <span>Real-time Analytics</span>
-          <span className="hidden sm:inline" aria-hidden="true">&middot;</span>
-          <span>100% Free to Start</span>
+      <section className="py-8 border-y border-white/5">
+        <div className="max-w-7xl mx-auto px-6 flex flex-wrap justify-center gap-12">
+          <div className="flex items-center gap-3">
+            <GridIcon />
+            <div>
+              <div className="text-white font-bold text-2xl">6</div>
+              <div className="text-gray-500 text-sm">Disciplines</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <InfinityIcon />
+            <div>
+              <div className="text-white font-bold text-2xl">&infin;</div>
+              <div className="text-gray-500 text-sm">Sessions</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <ShieldCheckIcon />
+            <div>
+              <div className="text-white font-bold text-2xl">100%</div>
+              <div className="text-gray-500 text-sm">Free to Start</div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -268,67 +394,43 @@ export default function LandingPage() {
 
       {/* ════════ PRICING ════════ */}
       <section id="pricing" className="py-24">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-white text-center mb-12">
-            Simple, honest pricing
+        <div className="max-w-2xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-white text-center mb-4">
+            Free During Early Access
           </h2>
+          <p className="text-center text-gray-400 mb-12">
+            Everything. Every feature. Completely free.
+          </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Free */}
-            <div className="bg-[#1a1a24] border border-[rgba(255,255,255,0.06)] rounded-xl p-8">
-              <h3 className="text-xl font-bold text-white">Clinch Free</h3>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-5xl font-bold text-white">$0</span>
-                <span className="text-gray-500">/forever</span>
-              </div>
+          <div className="bg-[#1a1a24] border-2 border-red-500 rounded-xl p-8 relative">
+            <span className="absolute top-0 right-6 -translate-y-1/2 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
+              Early Access
+            </span>
 
-              <ul className="mt-8 space-y-3">
-                {freeFeatures.map((f) => (
-                  <li key={f} className="flex items-center gap-3 text-sm text-gray-300">
-                    <CheckIcon className="text-green-500 flex-shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <Link
-                href="/signup"
-                className="mt-8 block w-full text-center bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg transition-colors duration-150"
-              >
-                Get Started Free
-              </Link>
+            <h3 className="text-xl font-bold text-white">Clinch</h3>
+            <div className="mt-4 flex items-baseline gap-1">
+              <span className="text-5xl font-bold text-white">$0</span>
+              <span className="text-gray-500">/forever</span>
             </div>
 
-            {/* Pro */}
-            <div className="bg-[#1a1a24] border-2 border-red-500 rounded-xl p-8 relative">
-              <span className="absolute top-0 right-6 -translate-y-1/2 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                Most Popular
-              </span>
+            <ul className="mt-8 space-y-3">
+              {allFeatures.map((f) => (
+                <li key={f} className="flex items-center gap-3 text-sm text-gray-300">
+                  <CheckIcon className="text-green-500 flex-shrink-0" />
+                  {f}
+                </li>
+              ))}
+            </ul>
 
-              <h3 className="text-xl font-bold text-white">Clinch Pro</h3>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-5xl font-bold text-white">$7</span>
-                <span className="text-gray-500">/month</span>
-              </div>
-              <p className="text-sm text-gray-400 mt-2">Everything in Free, plus:</p>
-
-              <ul className="mt-6 space-y-3">
-                {proFeatures.map((f) => (
-                  <li key={f} className="flex items-center gap-3 text-sm text-gray-300">
-                    <CheckIcon className="text-red-400 flex-shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <TrackedUpgradeLink
-                href="/signup"
-                className="mt-8 block w-full text-center bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg transition-colors duration-150"
-              >
-                Start 7-Day Free Trial
-              </TrackedUpgradeLink>
-              <p className="text-xs text-gray-500 mt-2 text-center">Cancel anytime</p>
-            </div>
+            <Link
+              href="/signup"
+              className="mt-8 block w-full text-center bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg transition-colors duration-150"
+            >
+              Get Started Free &rarr;
+            </Link>
+            <p className="text-xs text-gray-500 mt-3 text-center">
+              We&apos;ll add Pro features later. Early users get the best deal.
+            </p>
           </div>
         </div>
       </section>

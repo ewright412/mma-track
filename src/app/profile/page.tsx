@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -588,7 +589,7 @@ export default function ProfilePage() {
               <div className="flex items-center gap-2 flex-wrap">
                 {profile.weightClass && (
                   <span className="text-xs font-medium text-[#f59e0b] bg-[#f59e0b]/10 px-2.5 py-1 rounded-md">
-                    {profile.weightClass}
+                    {profile.weightClass.replace(/\s+\d+$/, '')}
                   </span>
                 )}
                 {profile.stance && (
@@ -1000,12 +1001,12 @@ export default function ProfilePage() {
           ) : (
             <>
               <div className="text-2xl font-bold text-white">{'\u2014'}</div>
-              <a
+              <Link
                 href="/goals/new?category=weight"
-                className="text-sm text-red-400 hover:text-red-300 transition-colors"
+                className="text-sm text-red-400 hover:text-red-300 cursor-pointer transition-colors"
               >
                 Set a weight goal
-              </a>
+              </Link>
             </>
           )}
         </Card>
@@ -1127,51 +1128,7 @@ export default function ProfilePage() {
       </Card>
       </PaywallGate>
 
-      {/* Subscription Management */}
-      <Card className="p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <CreditCard className="w-5 h-5 text-gray-400" />
-          <h2 className="text-lg font-semibold text-white">Subscription</h2>
-          <PlanBadge plan={plan} className="ml-auto" />
-        </div>
-
-        {isPro ? (
-          <div className="space-y-3">
-            <p className="text-sm text-gray-400">
-              You&apos;re on the <span className="text-white font-medium">Pro</span> plan.
-              {subStatus === 'trialing' && ' (free trial)'}
-            </p>
-            {currentPeriodEnd && (
-              <p className="text-xs text-gray-500">
-                {subStatus === 'trialing' ? 'Trial ends' : 'Renews'}{' '}
-                {new Date(currentPeriodEnd).toLocaleDateString('en-US', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
-              </p>
-            )}
-            <a
-              href={`${process.env.NEXT_PUBLIC_STRIPE_PORTAL_URL || '/api/stripe/portal'}`}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/[0.08] rounded-lg text-sm text-white/80 hover:border-white/20 hover:bg-white/10 transition-all duration-150"
-            >
-              <CreditCard className="w-4 h-4" />
-              Manage Subscription
-            </a>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <p className="text-sm text-gray-400">
-              You&apos;re on the <span className="text-white font-medium">Free</span> plan.
-              Upgrade to unlock all features.
-            </p>
-            <Button onClick={() => setShowUpgradeModal(true)} className="px-4 py-2 text-sm">
-              <Zap className="w-4 h-4 mr-2" />
-              Upgrade to Pro
-            </Button>
-          </div>
-        )}
-      </Card>
+      {/* Subscription Management — hidden during early access (all features free) */}
 
       {/* Add Metric Modal */}
       {showAddModal && (
@@ -1292,8 +1249,7 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Upgrade Modal */}
-      <UpgradeModal isOpen={showUpgradeModal} onClose={() => setShowUpgradeModal(false)} />
+      {/* Upgrade Modal — hidden during early access */}
     </div>
   );
 }

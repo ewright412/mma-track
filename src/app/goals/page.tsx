@@ -222,7 +222,7 @@ export default function GoalsPage() {
             </Card>
           ) : (
             <div className="space-y-4">
-              {activeGoals.slice(0, isPro ? undefined : 3).map((goal) => (
+              {activeGoals.map((goal) => (
                 <GoalCard
                   key={goal.id}
                   goal={goal}
@@ -232,19 +232,6 @@ export default function GoalsPage() {
                   onDelete={handleDeleteGoal}
                 />
               ))}
-              {!isPro && activeGoals.length > 3 && (
-                <PaywallGate isPro={false} feature={`${activeGoals.length - 3} more goal${activeGoals.length - 3 > 1 ? 's' : ''} — unlimited with Pro`}>
-                  <div className="space-y-4">
-                    {activeGoals.slice(3).map((goal) => (
-                      <GoalCard
-                        key={goal.id}
-                        goal={goal}
-                        onDelete={handleDeleteGoal}
-                      />
-                    ))}
-                  </div>
-                </PaywallGate>
-              )}
             </div>
           )}
         </div>

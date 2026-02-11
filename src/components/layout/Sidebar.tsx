@@ -13,8 +13,6 @@ import {
   CalendarDays,
   BookOpen,
 } from "lucide-react";
-import { PlanBadge } from "@/components/billing/PlanBadge";
-import { useSubscription } from "@/lib/hooks/useSubscription";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -30,15 +28,12 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { plan } = useSubscription();
 
   return (
     <aside className="hidden md:flex md:flex-col w-64 bg-[#0f0f13] border-r border-border" role="navigation" aria-label="Main navigation">
       {/* Logo/Brand */}
       <div className="p-6 border-b border-border">
-        <h1 className="text-xl font-bold tracking-tight text-white">
-          Clinch<span className="text-red-500">.</span>
-        </h1>
+        <img src="/clinch-logo.png" alt="Clinch" className="h-8 w-auto" />
       </div>
 
       {/* Navigation */}
@@ -66,9 +61,8 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-border flex items-center justify-between">
+      <div className="p-4 border-t border-border">
         <p className="text-xs text-gray-500">Clinch v1.0</p>
-        <PlanBadge plan={plan} />
       </div>
     </aside>
   );
