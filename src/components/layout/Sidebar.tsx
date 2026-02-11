@@ -12,10 +12,12 @@ import {
   User,
   CalendarDays,
   BookOpen,
+  Brain,
 } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/coach", label: "AI Coach", icon: Brain },
   { href: "/training", label: "Training", icon: Dumbbell },
   { href: "/schedule", label: "Schedule", icon: CalendarDays },
   { href: "/notebook", label: "Notebook", icon: BookOpen },

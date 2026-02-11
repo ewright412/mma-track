@@ -14,6 +14,7 @@ import {
   CalendarDays,
   BookOpen,
   Target,
+  Brain,
   X,
 } from "lucide-react";
 
@@ -25,6 +26,7 @@ const mainItems = [
 ];
 
 const moreItems = [
+  { href: "/coach", label: "AI Coach", icon: Brain },
   { href: "/schedule", label: "Schedule", icon: CalendarDays },
   { href: "/notebook", label: "Notebook", icon: BookOpen },
   { href: "/sparring", label: "Sparring", icon: SwordsIcon },
