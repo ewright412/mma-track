@@ -13,6 +13,7 @@ import {
   CalendarDays,
   BookOpen,
   Brain,
+  Library,
 } from "lucide-react";
 
 const navItems = [
@@ -20,6 +21,7 @@ const navItems = [
   { href: "/coach", label: "AI Coach", icon: Brain },
   { href: "/training", label: "Training", icon: Dumbbell },
   { href: "/schedule", label: "Schedule", icon: CalendarDays },
+  { href: "/techniques", label: "Techniques", icon: Library },
   { href: "/notebook", label: "Notebook", icon: BookOpen },
   { href: "/sparring", label: "Sparring", icon: SwordsIcon },
   { href: "/cardio", label: "Cardio", icon: HeartPulse },
@@ -35,7 +37,7 @@ export function Sidebar() {
     <aside className="hidden md:flex md:flex-col w-64 bg-[#0f0f13] border-r border-border" role="navigation" aria-label="Main navigation">
       {/* Logo/Brand */}
       <div className="p-6 border-b border-border">
-        <img src="/clinch-logo.png" alt="Clinch" className="h-8 w-auto" />
+        <img src="/clinch-logo.png" alt="Clinch" className="h-10 w-auto" />
       </div>
 
       {/* Navigation */}
