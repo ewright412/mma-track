@@ -39,7 +39,7 @@ CREATE POLICY "Users can manage their own practice logs"
 -- Techniques table is public read (no RLS needed for read-only data)
 -- Users can read all techniques without auth
 
--- SEED DATA: 60+ Techniques
+-- SEED DATA: 200 Techniques
 
 -- BOXING (10)
 INSERT INTO techniques (name, discipline, category, position, difficulty, description, key_points, common_mistakes, related_techniques) VALUES

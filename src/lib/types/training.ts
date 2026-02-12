@@ -6,6 +6,7 @@ export type MMADiscipline =
   | 'Kickboxing'
   | 'Wrestling'
   | 'Brazilian Jiu-Jitsu'
+  | 'Judo'
   | 'MMA';
 
 export interface SessionTechnique {

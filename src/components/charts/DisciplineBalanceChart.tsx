@@ -82,6 +82,7 @@ function shortenName(discipline: MMADiscipline): string {
     'Kickboxing': 'Kickbox',
     'Wrestling': 'Wrestling',
     'Brazilian Jiu-Jitsu': 'BJJ',
+    'Judo': 'Judo',
     'MMA': 'MMA',
   };
   return SHORT_NAMES[discipline] || discipline;

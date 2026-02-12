@@ -8,9 +8,9 @@ import { Technique } from '@/lib/types/technique';
 import { DISCIPLINE_HEX_COLORS } from '@/lib/constants/disciplines';
 import { AuthGuard } from '@/components/auth/AuthGuard';
 
-const disciplines = ['All', 'Boxing', 'Muay Thai', 'Kickboxing', 'Wrestling', 'Brazilian Jiu-Jitsu', 'MMA'];
+const disciplines = ['All', 'Boxing', 'Muay Thai', 'Kickboxing', 'Wrestling', 'Brazilian Jiu-Jitsu', 'Judo', 'MMA'];
 const categories = ['All', 'Strikes', 'Takedowns', 'Submissions', 'Sweeps', 'Escapes', 'Defense', 'Clinch'];
-const positions = ['All', 'Standing', 'Ground (Top)', 'Ground (Bottom)', 'Clinch', 'Against Cage', 'Guard (Top)', 'Guard (Bottom)', 'Mount', 'Mount (Bottom)', 'Back', 'Turtle'];
+const positions = ['All', 'Standing', 'Ground (Top)', 'Ground (Bottom)', 'Clinch', 'Against Cage', 'Guard (Top)', 'Guard (Bottom)', 'Mount (Top)', 'Mount (Bottom)', 'Back', 'Turtle'];
 const difficulties = ['All', 'Beginner', 'Intermediate', 'Advanced'];
 
 const difficultyColors = {

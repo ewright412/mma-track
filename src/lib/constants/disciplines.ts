@@ -7,6 +7,7 @@ export const MMA_DISCIPLINES: MMADiscipline[] = [
   'Kickboxing',
   'Wrestling',
   'Brazilian Jiu-Jitsu',
+  'Judo',
   'MMA',
 ];
 
@@ -17,6 +18,7 @@ export const DISCIPLINE_HEX_COLORS: Record<MMADiscipline, string> = {
   'Kickboxing': '#f59e0b',
   'Wrestling': '#22c55e',
   'Brazilian Jiu-Jitsu': '#3b82f6',
+  'Judo': '#6366f1',
   'MMA': '#a855f7',
 };
 
@@ -27,6 +29,7 @@ export const DISCIPLINE_COLORS: Record<MMADiscipline, string> = {
   'Kickboxing': 'bg-amber-500',
   'Wrestling': 'bg-green-500',
   'Brazilian Jiu-Jitsu': 'bg-blue-500',
+  'Judo': 'bg-indigo-500',
   'MMA': 'bg-purple-500',
 };
 
@@ -37,6 +40,7 @@ export const DISCIPLINE_TEXT_COLORS: Record<MMADiscipline, string> = {
   'Kickboxing': 'text-amber-100',
   'Wrestling': 'text-green-100',
   'Brazilian Jiu-Jitsu': 'text-blue-100',
+  'Judo': 'text-indigo-100',
   'MMA': 'text-purple-100',
 };
 
