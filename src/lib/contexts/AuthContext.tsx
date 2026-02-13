@@ -32,19 +32,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Get initial session AND fresh user data
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
-      setUser(session?.user ?? null);
+
+      // CRITICAL FIX: Get fresh user data to ensure we have latest user_metadata
+      // This prevents stale onboarding_complete status
+      if (session?.user) {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+
       setLoading(false);
     });
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
-      setUser(session?.user ?? null);
+
+      // CRITICAL FIX: Get fresh user data on auth state change
+      // This ensures user_metadata is always up-to-date
+      if (session?.user) {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+
       setLoading(false);
     });
 

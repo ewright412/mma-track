@@ -14,10 +14,14 @@ export async function isOnboardingComplete(): Promise<boolean> {
   try {
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user) return false;
+    if (!user) {
+      console.log('🔍 Onboarding check: No user');
+      return false;
+    }
 
     // If metadata explicitly says onboarding is complete
     if (user.user_metadata?.onboarding_complete === true) {
+      console.log('✅ Onboarding complete via user_metadata');
       localStorage.setItem(ONBOARDING_KEY, 'true');
       return true;
     }
@@ -25,11 +29,13 @@ export async function isOnboardingComplete(): Promise<boolean> {
     // Check localStorage fallback
     const localStorageComplete = localStorage.getItem(ONBOARDING_KEY) === 'true';
     if (localStorageComplete) {
+      console.log('✅ Onboarding complete via localStorage, syncing to user_metadata');
       // Sync to user metadata if not already there
       if (!user.user_metadata?.onboarding_complete) {
         await supabase.auth.updateUser({
           data: { onboarding_complete: true }
         });
+        await supabase.auth.refreshSession();
       }
       return true;
     }
@@ -43,13 +49,16 @@ export async function isOnboardingComplete(): Promise<boolean> {
       .limit(1);
 
     if (!error && sessions && sessions.length > 0) {
+      console.log('✅ Existing user with training data detected, auto-completing onboarding');
       // Existing user with data - auto-complete onboarding
       await markOnboardingComplete();
       return true;
     }
 
+    console.log('❌ Onboarding not complete - no metadata, no localStorage, no training data');
     return false;
   } catch (error) {
+    console.error('⚠️ Error checking onboarding status:', error);
     // Fallback to localStorage if Supabase check fails
     return localStorage.getItem(ONBOARDING_KEY) === 'true';
   }
@@ -73,11 +82,19 @@ export async function markOnboardingComplete(): Promise<void> {
 
   // Save to Supabase user metadata (source of truth)
   try {
-    await supabase.auth.updateUser({
+    const { error } = await supabase.auth.updateUser({
       data: {
         onboarding_complete: true,
       }
     });
+
+    if (error) throw error;
+
+    // CRITICAL: Refresh the session to get updated user metadata
+    // This ensures the AuthContext receives the latest user data
+    await supabase.auth.refreshSession();
+
+    console.log('✅ Onboarding marked complete, session refreshed');
   } catch (error) {
     console.error('Failed to save onboarding status to Supabase:', error);
     // Continue anyway - localStorage will work as fallback

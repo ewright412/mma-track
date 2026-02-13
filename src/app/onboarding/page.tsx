@@ -115,7 +115,13 @@ export default function OnboardingPage() {
       );
     }
 
+    // Mark onboarding complete and wait for session to refresh
     await markOnboardingComplete();
+
+    // Small delay to ensure session refresh has propagated
+    // This prevents race condition where redirect happens before AuthContext updates
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     setSaving(false);
     router.push('/dashboard');
   };

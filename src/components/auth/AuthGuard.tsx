@@ -28,6 +28,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       }
 
       const completed = await isOnboardingComplete();
+      console.log('🔍 Onboarding check result:', completed, 'User metadata:', user.user_metadata);
       setOnboardingComplete(completed);
       setCheckingOnboarding(false);
     }
