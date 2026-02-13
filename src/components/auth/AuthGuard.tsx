@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { isOnboardingComplete } from '@/lib/utils/onboarding';
@@ -9,6 +9,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const [checkingOnboarding, setCheckingOnboarding] = useState(true);
+  const [onboardingComplete, setOnboardingComplete] = useState(false);
 
   const isAuthRoute = pathname.startsWith('/signin') ||
                       pathname.startsWith('/signup') ||
@@ -17,8 +19,24 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const isOnboardingRoute = pathname.startsWith('/onboarding');
   const isPublicRoute = pathname === '/';
 
+  // Check onboarding status from Supabase
   useEffect(() => {
-    if (loading) return; // Wait for auth to load
+    async function checkOnboarding() {
+      if (!user) {
+        setCheckingOnboarding(false);
+        return;
+      }
+
+      const completed = await isOnboardingComplete();
+      setOnboardingComplete(completed);
+      setCheckingOnboarding(false);
+    }
+
+    checkOnboarding();
+  }, [user]);
+
+  useEffect(() => {
+    if (loading || checkingOnboarding) return; // Wait for auth and onboarding check to load
 
     // If on auth route and logged in, redirect to dashboard
     if (isAuthRoute && user) {
@@ -36,13 +54,13 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
 
     // If logged in and hasn't completed onboarding, redirect to onboarding
-    if (user && !isAuthRoute && !isOnboardingRoute && !isPublicRoute && !isOnboardingComplete()) {
+    if (user && !isAuthRoute && !isOnboardingRoute && !isPublicRoute && !onboardingComplete) {
       router.replace('/onboarding');
     }
-  }, [user, loading, pathname, isAuthRoute, isOnboardingRoute, isPublicRoute, router]);
+  }, [user, loading, checkingOnboarding, onboardingComplete, pathname, isAuthRoute, isOnboardingRoute, isPublicRoute, router]);
 
-  // Show loading state while checking auth
-  if (loading) {
+  // Show loading state while checking auth and onboarding
+  if (loading || checkingOnboarding) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-white">Loading...</div>

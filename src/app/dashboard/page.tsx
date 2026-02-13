@@ -27,6 +27,7 @@ import { CompetitionCountdown } from '@/components/dashboard/CompetitionCountdow
 import { TrainingLoadCard } from '@/components/dashboard/TrainingLoadCard';
 import { TodaysPlanCard } from '@/components/dashboard/TodaysPlanCard';
 import { WeeklySummaryCard } from '@/components/dashboard/WeeklySummaryCard';
+import { DailyChallengeCard } from '@/components/dashboard/DailyChallengeCard';
 import { PaywallGate } from '@/components/billing/PaywallGate';
 import { useSubscription } from '@/lib/hooks/useSubscription';
 
@@ -194,6 +195,9 @@ export default function DashboardPage() {
             <span className="text-sm font-medium text-white">Log Cardio</span>
           </button>
         </div>
+
+        {/* Daily Challenge */}
+        <DailyChallengeCard />
 
         {/* Competition Countdown */}
         <CompetitionCountdown

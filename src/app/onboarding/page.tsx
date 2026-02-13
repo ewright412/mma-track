@@ -115,7 +115,7 @@ export default function OnboardingPage() {
       );
     }
 
-    markOnboardingComplete();
+    await markOnboardingComplete();
     setSaving(false);
     router.push('/dashboard');
   };

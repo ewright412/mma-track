@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   Dumbbell,
@@ -14,7 +15,9 @@ import {
   BookOpen,
   Brain,
   Library,
+  Flame,
 } from "lucide-react";
+import { getTodaysChallenge } from "@/lib/utils/dailyChallenge";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -22,6 +25,7 @@ const navItems = [
   { href: "/training", label: "Training", icon: Dumbbell },
   { href: "/schedule", label: "Schedule", icon: CalendarDays },
   { href: "/techniques", label: "Techniques", icon: Library },
+  { href: "/challenge", label: "Challenge", icon: Flame, hasIndicator: true },
   { href: "/notebook", label: "Notebook", icon: BookOpen },
   { href: "/sparring", label: "Sparring", icon: SwordsIcon },
   { href: "/cardio", label: "Cardio", icon: HeartPulse },
@@ -32,6 +36,21 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [challengeCompleted, setChallengeCompleted] = useState(false);
+  const [loadingChallenge, setLoadingChallenge] = useState(true);
+
+  useEffect(() => {
+    loadChallengeStatus();
+  }, []);
+
+  const loadChallengeStatus = async () => {
+    setLoadingChallenge(true);
+    const { data } = await getTodaysChallenge();
+    if (data) {
+      setChallengeCompleted(data.completed);
+    }
+    setLoadingChallenge(false);
+  };
 
   return (
     <aside className="hidden md:flex md:flex-col w-64 bg-[#0f0f13] border-r border-border" role="navigation" aria-label="Main navigation">
@@ -45,13 +64,14 @@ export function Sidebar() {
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
+          const showIndicator = item.hasIndicator && !challengeCompleted && !loadingChallenge;
 
           return (
             <Link
               key={item.href}
               href={item.href}
               aria-current={isActive ? "page" : undefined}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-button transition-default ${
+              className={`flex items-center space-x-3 px-4 py-3 rounded-button transition-default relative ${
                 isActive
                   ? "bg-[rgba(239,68,68,0.15)] border-l-[3px] border-red-500 text-white"
                   : "text-gray-400 hover:text-white hover:bg-white/5"
@@ -59,6 +79,9 @@ export function Sidebar() {
             >
               <Icon size={20} />
               <span className="font-medium">{item.label}</span>
+              {showIndicator && (
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+              )}
             </Link>
           );
         })}
