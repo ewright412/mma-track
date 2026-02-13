@@ -28,6 +28,7 @@ import { TrainingLoadCard } from '@/components/dashboard/TrainingLoadCard';
 import { TodaysPlanCard } from '@/components/dashboard/TodaysPlanCard';
 import { WeeklySummaryCard } from '@/components/dashboard/WeeklySummaryCard';
 import { DailyChallengeCard } from '@/components/dashboard/DailyChallengeCard';
+import { ReviewReminderCard } from '@/components/dashboard/ReviewReminderCard';
 import { PaywallGate } from '@/components/billing/PaywallGate';
 import { useSubscription } from '@/lib/hooks/useSubscription';
 
@@ -198,6 +199,9 @@ export default function DashboardPage() {
 
         {/* Daily Challenge */}
         <DailyChallengeCard />
+
+        {/* Review Reminder */}
+        <ReviewReminderCard />
 
         {/* Competition Countdown */}
         <CompetitionCountdown
