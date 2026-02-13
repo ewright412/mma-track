@@ -25,13 +25,16 @@ CREATE TABLE IF NOT EXISTS challenge_completions (
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   challenge_id UUID NOT NULL REFERENCES daily_challenges(id) ON DELETE CASCADE,
   completed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  notes TEXT,
-  UNIQUE(user_id, challenge_id, (completed_at::date))
+  notes TEXT
 );
 
 CREATE INDEX idx_challenge_completions_user_id ON challenge_completions(user_id);
 CREATE INDEX idx_challenge_completions_challenge_id ON challenge_completions(challenge_id);
 CREATE INDEX idx_challenge_completions_completed_at ON challenge_completions(completed_at);
+
+-- Unique constraint: one completion per user per challenge per day
+CREATE UNIQUE INDEX idx_challenge_completions_user_challenge_date
+  ON challenge_completions(user_id, challenge_id, (completed_at::date));
 
 -- RLS Policies
 ALTER TABLE challenge_completions ENABLE ROW LEVEL SECURITY;
