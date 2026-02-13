@@ -12,41 +12,30 @@ export async function isOnboardingComplete(): Promise<boolean> {
   if (typeof window === 'undefined') return true;
 
   try {
-    // CRITICAL FIX: Force refresh session to get latest user metadata
-    // This ensures we always have the most up-to-date onboarding status
-    await supabase.auth.refreshSession();
-
+    // Get current user WITHOUT refreshing session (performance optimization)
+    // The AuthGuard already has the latest user from AuthContext
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      console.log('🔍 Onboarding check: No user');
       return false;
     }
 
-    console.log('🔍 Onboarding check - User metadata:', {
-      userId: user.id,
-      email: user.email,
-      onboarding_complete: user.user_metadata?.onboarding_complete,
-      fullMetadata: user.user_metadata
-    });
-
     // If metadata explicitly says onboarding is complete
     if (user.user_metadata?.onboarding_complete === true) {
-      console.log('✅ Onboarding complete via user_metadata');
       localStorage.setItem(ONBOARDING_KEY, 'true');
       return true;
     }
 
-    // Check localStorage fallback
+    // Check localStorage fallback (fast path)
     const localStorageComplete = localStorage.getItem(ONBOARDING_KEY) === 'true';
     if (localStorageComplete) {
-      console.log('✅ Onboarding complete via localStorage, syncing to user_metadata');
-      // Sync to user metadata if not already there
+      // Sync to user metadata in background (don't wait)
       if (!user.user_metadata?.onboarding_complete) {
-        await supabase.auth.updateUser({
+        supabase.auth.updateUser({
           data: { onboarding_complete: true }
+        }).then(() => {
+          console.log('✅ Synced localStorage to user metadata');
         });
-        await supabase.auth.refreshSession();
       }
       return true;
     }
@@ -66,7 +55,6 @@ export async function isOnboardingComplete(): Promise<boolean> {
       return true;
     }
 
-    console.log('❌ Onboarding not complete - no metadata, no localStorage, no training data');
     return false;
   } catch (error) {
     console.error('⚠️ Error checking onboarding status:', error);
