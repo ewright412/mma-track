@@ -88,26 +88,37 @@ export function isOnboardingCompleteSync(): boolean {
  * Marks onboarding as complete in both Supabase and localStorage
  */
 export async function markOnboardingComplete(): Promise<void> {
-  // Save to localStorage immediately
+  // Save to localStorage immediately (fast, synchronous fallback)
   localStorage.setItem(ONBOARDING_KEY, 'true');
+  console.log('✅ Onboarding saved to localStorage');
 
   // Save to Supabase user metadata (source of truth)
   try {
-    const { error } = await supabase.auth.updateUser({
+    const { error: updateError } = await supabase.auth.updateUser({
       data: {
         onboarding_complete: true,
       }
     });
 
-    if (error) throw error;
+    if (updateError) {
+      console.error('⚠️ Failed to update user metadata:', updateError);
+      throw updateError;
+    }
 
-    // CRITICAL: Refresh the session to get updated user metadata
-    // This ensures the AuthContext receives the latest user data
-    await supabase.auth.refreshSession();
+    console.log('✅ User metadata updated');
 
-    console.log('✅ Onboarding marked complete, session refreshed');
+    // Refresh the session to get updated user metadata
+    // Use a timeout to prevent hanging
+    const refreshPromise = supabase.auth.refreshSession();
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Session refresh timeout')), 3000)
+    );
+
+    await Promise.race([refreshPromise, timeoutPromise]);
+    console.log('✅ Session refreshed successfully');
   } catch (error) {
-    console.error('Failed to save onboarding status to Supabase:', error);
-    // Continue anyway - localStorage will work as fallback
+    console.error('⚠️ Warning during onboarding completion:', error);
+    // Don't throw - localStorage fallback will work
+    // The session will eventually sync on next page load
   }
 }

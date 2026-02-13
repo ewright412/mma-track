@@ -14,7 +14,19 @@
       "Bash(NODE_OPTIONS=\"--max-old-space-size=4096\" npm run build:*)",
       "Bash(npm ls:*)",
       "Bash(npx tsc:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(npx supabase:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(grep:*)",
+      "Bash(node scripts/fix-database.js:*)",
+      "Bash(node scripts/mark-existing-users-onboarded.js:*)",
+      "Bash(node scripts/debug-user-metadata.js:*)",
+      "Bash(node scripts/check-user-data.js:*)",
+      "Bash(node scripts/mark-user-onboarded.js:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill:*)",
+      "Bash(npm run dev:*)"
     ]
   }
 }

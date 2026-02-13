@@ -98,32 +98,50 @@ export default function OnboardingPage() {
   const handleFinish = async () => {
     setSaving(true);
 
-    // Save selected goals
-    for (const goal of selectedGoals) {
-      await createGoal({
-        title: goal.title,
-        category: goal.category,
-        unit: goal.unit || undefined,
-      });
-    }
-
-    // Save discipline preferences
-    if (selectedDisciplines.length > 0) {
-      localStorage.setItem(
-        'clinch-preferred-disciplines',
-        JSON.stringify(selectedDisciplines)
+    try {
+      // Save selected goals with timeout protection
+      const goalPromises = selectedGoals.map((goal) =>
+        createGoal({
+          title: goal.title,
+          category: goal.category,
+          unit: goal.unit || undefined,
+        })
       );
+      await Promise.all(goalPromises);
+
+      // Save discipline preferences
+      if (selectedDisciplines.length > 0) {
+        localStorage.setItem(
+          'clinch-preferred-disciplines',
+          JSON.stringify(selectedDisciplines)
+        );
+      }
+
+      // Mark onboarding complete with timeout protection
+      const onboardingPromise = markOnboardingComplete();
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Onboarding completion timeout')), 5000)
+      );
+
+      try {
+        await Promise.race([onboardingPromise, timeoutPromise]);
+        console.log('✅ Onboarding marked complete successfully');
+      } catch (error) {
+        console.error('⚠️ Onboarding completion warning:', error);
+        // Continue anyway - localStorage fallback will work
+      }
+
+      // Navigate immediately - don't wait for session refresh
+      // The AuthGuard will handle the session update asynchronously
+      console.log('🚀 Navigating to dashboard...');
+      router.replace('/dashboard');
+    } catch (error) {
+      console.error('❌ Error completing onboarding:', error);
+      // Even if something failed, try to navigate anyway
+      router.replace('/dashboard');
+    } finally {
+      setSaving(false);
     }
-
-    // Mark onboarding complete and wait for session to refresh
-    await markOnboardingComplete();
-
-    // Small delay to ensure session refresh has propagated
-    // This prevents race condition where redirect happens before AuthContext updates
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    setSaving(false);
-    router.push('/dashboard');
   };
 
   return (
