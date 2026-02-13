@@ -30,10 +30,10 @@ export function Header() {
   };
 
   return (
-    <header className="bg-[#0f0f13] border-b border-border px-4 py-4 md:px-6">
+    <header className="bg-[#0f0f13] border-b border-border px-4 py-3 md:px-6">
       <div className="flex items-center justify-between">
         {/* Left: Page Title */}
-        <h2 className="text-xl md:text-2xl font-semibold text-white">
+        <h2 className="text-lg font-semibold text-white">
           {getPageTitle()}
         </h2>
 

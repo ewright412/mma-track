@@ -80,7 +80,7 @@ export function TrainingLoadCard({ loadThisWeek, load4WeekAvg }: TrainingLoadCar
       </div>
 
       {/* Visual bar */}
-      <div className="relative h-3 bg-white/5 rounded-full overflow-hidden mb-2">
+      <div className="relative h-2 bg-white/5 rounded-full overflow-hidden mb-2">
         {/* Optimal zone markers */}
         <div
           className="absolute top-0 bottom-0 bg-white/5"

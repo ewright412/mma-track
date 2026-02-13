@@ -93,8 +93,7 @@ export function ScheduleEntryCard({ entry, showAdherence = false, onClick }: Sch
       <button
         type="button"
         onClick={onClick}
-        className="w-full text-left p-3 bg-[#1a1a24] border border-white/[0.08] rounded-lg border-l-4 hover:brightness-110 transition-all duration-150"
-        style={{ borderLeftColor: '#4b5563' }}
+        className="w-full text-left p-3 bg-[#1a1a24] border border-white/[0.08] rounded-xl hover:bg-[#1f1f2a] transition-all duration-150"
       >
         <div className="flex items-center gap-2">
           <Coffee className="w-4 h-4 text-green-400/70" />
@@ -113,12 +112,12 @@ export function ScheduleEntryCard({ entry, showAdherence = false, onClick }: Sch
     <button
       type="button"
       onClick={onClick}
-      className="w-full text-left p-3 bg-[#1a1a24] border border-white/[0.08] rounded-lg border-l-4 hover:brightness-110 transition-all duration-150"
-      style={{ borderLeftColor: color }}
+      className="w-full text-left p-3 bg-[#1a1a24] border border-white/[0.08] rounded-xl hover:bg-[#1f1f2a] transition-all duration-150"
     >
       <div className="flex items-center justify-between">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
+            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
             {icon}
             <span className="text-sm font-semibold text-white">
               {label}

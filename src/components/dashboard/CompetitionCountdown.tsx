@@ -46,7 +46,7 @@ export function CompetitionCountdown({ competition, currentWeight }: Competition
     : null;
 
   return (
-    <Card className={`p-5 border-l-4 ${colorClass} mb-6`}>
+    <Card className="p-5 mb-4">
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">
           <div className={`p-2 rounded-lg ${bgAccent}`}>

@@ -107,8 +107,8 @@ export function MobileNav() {
                   isActive ? "text-red-500" : "text-gray-500"
                 }`}
               >
-                <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
-                <span className="text-xs font-medium">{item.label}</span>
+                <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                <span className="text-[10px] font-medium">{item.label}</span>
               </Link>
             );
           })}
@@ -119,8 +119,8 @@ export function MobileNav() {
               isMoreActive || showMore ? "text-red-500" : "text-gray-500"
             }`}
           >
-            {showMore ? <X size={24} strokeWidth={2} /> : <MoreHorizontal size={24} strokeWidth={2} />}
-            <span className="text-xs font-medium">More</span>
+            {showMore ? <X size={22} strokeWidth={2} /> : <MoreHorizontal size={22} strokeWidth={2} />}
+            <span className="text-[10px] font-medium">More</span>
           </button>
         </div>
       </nav>

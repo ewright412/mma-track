@@ -188,7 +188,7 @@ export default function SparringPage() {
                 return (
                   <Card
                     key={area.category}
-                    className={`p-4 border-l-4 ${ratingStyle.border}`}
+                    className="p-4"
                   >
                     <div className="flex items-start justify-between mb-2">
                       <h3 className="font-semibold text-white">{area.categoryLabel}</h3>

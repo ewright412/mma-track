@@ -6,8 +6,6 @@ import { Header } from './Header';
 import { MobileNav } from './MobileNav';
 import { PageTransition } from './PageTransition';
 import { AuthGuard } from '../auth/AuthGuard';
-import { QuickLogFAB } from '../dashboard/QuickLogFAB';
-
 export function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
@@ -52,9 +50,6 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
 
           {/* Mobile Bottom Navigation */}
           <MobileNav />
-
-          {/* Mobile Quick Log FAB */}
-          <QuickLogFAB />
         </>
       )}
     </AuthGuard>

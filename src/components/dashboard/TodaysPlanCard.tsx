@@ -30,7 +30,7 @@ export function TodaysPlanCard({ entries }: TodaysPlanCardProps) {
   const allDone = trainingEntries.length > 0 && completedCount === trainingEntries.length;
 
   return (
-    <Card className="p-4 mb-6">
+    <Card className="p-4 mb-4">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <CalendarDays className="w-5 h-5 text-accent" />
@@ -70,15 +70,15 @@ export function TodaysPlanCard({ entries }: TodaysPlanCardProps) {
             return (
               <div
                 key={entry.id}
-                className={`flex items-center gap-3 p-2.5 rounded-lg border-l-3 transition-all ${
+                className={`flex items-center gap-3 p-2.5 rounded-lg transition-all ${
                   isCompleted
                     ? 'bg-green-500/5 border border-green-500/10'
                     : isPartial
                     ? 'bg-yellow-500/5 border border-yellow-500/10'
                     : 'bg-white/[0.02] border border-white/[0.06]'
                 }`}
-                style={{ borderLeftColor: color, borderLeftWidth: '3px' }}
               >
+                <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span

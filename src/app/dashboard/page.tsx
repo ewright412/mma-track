@@ -26,7 +26,6 @@ import { GoalProgressIndicator } from '@/components/metrics/GoalProgressIndicato
 import { CompetitionCountdown } from '@/components/dashboard/CompetitionCountdown';
 import { TrainingLoadCard } from '@/components/dashboard/TrainingLoadCard';
 import { TodaysPlanCard } from '@/components/dashboard/TodaysPlanCard';
-import { WeeklySummaryCard } from '@/components/dashboard/WeeklySummaryCard';
 import { DailyChallengeCard } from '@/components/dashboard/DailyChallengeCard';
 import { PaywallGate } from '@/components/billing/PaywallGate';
 import { useSubscription } from '@/lib/hooks/useSubscription';
@@ -75,29 +74,23 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0f0f13] p-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-6">
-            <div className="h-8 w-48 bg-white/5 rounded animate-pulse mb-2" />
-            <div className="h-4 w-64 bg-white/5 rounded animate-pulse" />
-          </div>
-          {/* Quick Actions Skeleton */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-20 bg-[#1a1a24] rounded-xl animate-pulse" />
-            ))}
-          </div>
-          {/* Stats Skeleton */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-24 bg-[#1a1a24] rounded-xl animate-pulse" />
-            ))}
-          </div>
-          {/* Charts Skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div className="h-72 bg-[#1a1a24] rounded-xl animate-pulse" />
-            <div className="h-72 bg-[#1a1a24] rounded-xl animate-pulse" />
-          </div>
+      <div className="max-w-7xl mx-auto">
+        {/* Quick Actions Skeleton */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-[72px] bg-[#1a1a24] rounded-xl animate-pulse" />
+          ))}
+        </div>
+        {/* Stats Skeleton */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-24 bg-[#1a1a24] rounded-xl animate-pulse" />
+          ))}
+        </div>
+        {/* Charts Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="h-72 bg-[#1a1a24] rounded-xl animate-pulse" />
+          <div className="h-72 bg-[#1a1a24] rounded-xl animate-pulse" />
         </div>
       </div>
     );
@@ -105,7 +98,7 @@ export default function DashboardPage() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-[#0f0f13] p-4 flex items-center justify-center">
+      <div className="flex items-center justify-center min-h-[50vh]">
         <div className="text-center">
           <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
             <Zap className="w-8 h-8 text-red-400" />
@@ -124,78 +117,53 @@ export default function DashboardPage() {
   }
 
   const thisWeekCount = data.sessionsThisWeek.length;
-  const lastWeekCount = data.sessionsLastWeek.length;
   const thisWeekMinutes = data.sessionsThisWeek.reduce(
     (sum, s) => sum + s.duration_minutes,
     0
   );
 
-  // Compute week date range for share card
-  const today = new Date();
-  const dayOfWeek = today.getDay();
-  const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-  const weekStart = new Date(today);
-  weekStart.setDate(today.getDate() + diffToMonday);
-  const weekEnd = new Date(weekStart);
-  weekEnd.setDate(weekStart.getDate() + 6);
-  const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  const weekLabel = `${fmt(weekStart)} – ${fmt(weekEnd)}`;
-
-  // Unique disciplines trained this week
-  const weekDisciplines = [...new Set(data.sessionsThisWeek.map((s) => s.discipline))];
-
-  // Best PR this week (if any)
-  const bestPR = data.recentPRs.length > 0
-    ? { exercise: data.recentPRs[0].exercise_name, value: data.recentPRs[0].value }
-    : null;
-
   return (
-    <div className="min-h-screen bg-[#0f0f13] p-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Share Week button */}
-        <div className="flex justify-end mb-3">
-          <WeeklySummaryCard
-            weekLabel={weekLabel}
-            sessionsCount={thisWeekCount}
-            totalMinutes={thisWeekMinutes}
-            disciplines={weekDisciplines}
-            streak={data.trainingStats?.currentStreak || 0}
-            bestPR={bestPR}
-          />
-        </div>
-
+    <div className="max-w-7xl mx-auto">
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
           <button
             onClick={() => router.push('/training/new')}
-            className="flex items-center gap-3 p-3 min-h-[60px] bg-[#1a1a24] border-l-4 border-l-red-500 border border-white/5 rounded-xl hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
+            className="flex items-center gap-3 bg-[#1a1a24] rounded-xl p-4 hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
             style={{ touchAction: 'manipulation' }}
           >
-            <Target className="w-5 h-5 text-red-500" />
+            <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
+              <Target className="w-5 h-5 text-red-500" />
+            </div>
             <span className="text-sm font-medium text-white">Log Training</span>
           </button>
           <button
             onClick={() => router.push('/strength/new')}
-            className="flex items-center gap-3 p-3 min-h-[60px] bg-[#1a1a24] border-l-4 border-l-red-400 border border-white/5 rounded-xl hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
+            className="flex items-center gap-3 bg-[#1a1a24] rounded-xl p-4 hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
             style={{ touchAction: 'manipulation' }}
           >
-            <Dumbbell className="w-5 h-5 text-red-400" />
+            <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
+              <Dumbbell className="w-5 h-5 text-red-400" />
+            </div>
             <span className="text-sm font-medium text-white">Log Workout</span>
           </button>
           <button
             onClick={() => router.push('/sparring/new')}
-            className="flex items-center gap-3 p-3 min-h-[60px] bg-[#1a1a24] border-l-4 border-l-warning border border-white/5 rounded-xl hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
+            className="flex items-center gap-3 bg-[#1a1a24] rounded-xl p-4 hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
             style={{ touchAction: 'manipulation' }}
           >
-            <Activity className="w-5 h-5 text-warning" />
+            <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+              <Activity className="w-5 h-5 text-amber-500" />
+            </div>
             <span className="text-sm font-medium text-white">Log Sparring</span>
           </button>
           <button
             onClick={() => router.push('/cardio/new')}
-            className="flex items-center gap-3 p-3 min-h-[60px] bg-[#1a1a24] border-l-4 border-l-success border border-white/5 rounded-xl hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
+            className="flex items-center gap-3 bg-[#1a1a24] rounded-xl p-4 hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
             style={{ touchAction: 'manipulation' }}
           >
-            <Heart className="w-5 h-5 text-success" />
+            <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0">
+              <Heart className="w-5 h-5 text-green-500" />
+            </div>
             <span className="text-sm font-medium text-white">Log Cardio</span>
           </button>
         </div>
@@ -212,77 +180,55 @@ export default function DashboardPage() {
         {/* Today's Plan */}
         <TodaysPlanCard entries={data.todaysSchedule} />
 
-        {/* Key Stats Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {/* Sessions This Week */}
-          <Card className="p-4">
-            <Calendar className="w-5 h-5 text-blue-400 mb-2" />
-            <div className="text-2xl font-bold text-white">{thisWeekCount}</div>
-            <div className="text-sm text-gray-400">
-              {thisWeekCount === 1 ? 'session' : 'sessions'} this week
-              {lastWeekCount > 0 && (
-                <span
-                  className={
-                    thisWeekCount >= lastWeekCount
-                      ? ' text-green-400'
-                      : ' text-orange-400'
-                  }
-                >
-                  {' '}
-                  ({thisWeekCount >= lastWeekCount ? '+' : ''}
-                  {thisWeekCount - lastWeekCount} vs last)
-                </span>
-              )}
+        {/* Key Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          <div className="bg-[#1a1a24] rounded-xl p-4">
+            <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center mb-2">
+              <Calendar className="w-4 h-4 text-blue-400" />
             </div>
-          </Card>
+            <div className="text-2xl font-bold text-white">{thisWeekCount}</div>
+            <div className="text-xs text-gray-500">
+              {thisWeekCount === 1 ? 'session' : 'sessions'} this week
+            </div>
+          </div>
 
-          {/* Training Time */}
-          <Card className="p-4">
-            <Clock className="w-5 h-5 text-purple-400 mb-2" />
+          <div className="bg-[#1a1a24] rounded-xl p-4">
+            <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center mb-2">
+              <Clock className="w-4 h-4 text-purple-400" />
+            </div>
             <div className="text-2xl font-bold text-white">
               {thisWeekMinutes >= 60
                 ? `${Math.floor(thisWeekMinutes / 60)}h ${thisWeekMinutes % 60}m`
                 : `${thisWeekMinutes}m`}
             </div>
-            <div className="text-sm text-gray-400">training this week</div>
-          </Card>
+            <div className="text-xs text-gray-500">training time</div>
+          </div>
 
-          {/* Streak */}
-          <Card className="p-4">
-            <Flame className="w-5 h-5 text-orange-400 mb-2" />
+          <div className="bg-[#1a1a24] rounded-xl p-4">
+            <div className="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center mb-2">
+              <Flame className="w-4 h-4 text-orange-400" />
+            </div>
             <div className="text-2xl font-bold text-white">
               {data.trainingStats?.currentStreak || 0}
             </div>
-            <div className="text-sm text-gray-400">
+            <div className="text-xs text-gray-500">
               {(data.trainingStats?.currentStreak || 0) === 1 ? 'day' : 'days'} streak
-              {data.trainingStats && data.trainingStats.longestStreak > 0 && (
-                <span className="text-gray-500">
-                  {' '}(best: {data.trainingStats.longestStreak})
-                </span>
-              )}
             </div>
-          </Card>
+          </div>
 
-          {/* PRs This Month */}
-          <Card className="p-4">
-            <Award className="w-5 h-5 text-yellow-400 mb-2" />
+          <div className="bg-[#1a1a24] rounded-xl p-4">
+            <div className="w-8 h-8 rounded-full bg-yellow-500/10 flex items-center justify-center mb-2">
+              <Award className="w-4 h-4 text-yellow-400" />
+            </div>
             <div className="text-2xl font-bold text-white">
               {data.recentPRs.length}
             </div>
-            <div className="text-sm text-gray-400">
-              {data.recentPRs.length > 0 ? (
-                <span className="text-yellow-400 truncate block">
-                  Latest: {data.recentPRs[0].exercise_name}
-                </span>
-              ) : (
-                data.recentPRs.length === 1 ? 'personal record' : 'personal records'
-              )}
-            </div>
-          </Card>
+            <div className="text-xs text-gray-500">personal records</div>
+          </div>
         </div>
 
         {/* Training Load */}
-        <div className="mb-6">
+        <div className="mb-4">
           <PaywallGate isPro={isPro} feature="Training Load analytics">
             <TrainingLoadCard
               loadThisWeek={data.trainingLoadThisWeek}
@@ -293,15 +239,15 @@ export default function DashboardPage() {
 
         {/* Insights */}
         {data.insights.length > 0 && (
-          <div className="mb-6">
+          <div className="mb-4">
             <TrainingInsights insights={data.insights} />
           </div>
         )}
 
         {/* Training Overview + Discipline Breakdown */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
           {/* Weekly Volume Chart */}
-          <Card className="p-6">
+          <Card className="p-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <Zap className="w-5 h-5 text-blue-400" />
@@ -323,7 +269,7 @@ export default function DashboardPage() {
 
           {/* Discipline Balance (Radar) */}
           <PaywallGate isPro={isPro} feature="Discipline Balance chart">
-            <Card className="p-6">
+            <Card className="p-5">
               <div className="flex items-center gap-3 mb-4">
                 <Target className="w-5 h-5 text-red-400" />
                 <h2 className="text-lg font-semibold text-white">
@@ -339,7 +285,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Sparring Trends */}
-        <Card className="p-6 mb-6">
+        <Card className="p-5 mb-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <Activity className="w-5 h-5 text-purple-400" />
@@ -360,9 +306,9 @@ export default function DashboardPage() {
         </Card>
 
         {/* Strength + Cardio Highlights */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
           {/* Strength Highlights */}
-          <Card className="p-6">
+          <Card className="p-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <Dumbbell className="w-5 h-5 text-red-400" />
@@ -437,7 +383,7 @@ export default function DashboardPage() {
           </Card>
 
           {/* Cardio Highlights */}
-          <Card className="p-6">
+          <Card className="p-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <Heart className="w-5 h-5 text-green-400" />
@@ -519,9 +465,9 @@ export default function DashboardPage() {
         </div>
 
         {/* Body Metrics + Goals */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Body Metrics Snapshot */}
-          <Card className="p-6">
+          <Card className="p-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <Scale className="w-5 h-5 text-blue-500" />
@@ -582,7 +528,6 @@ export default function DashboardPage() {
           {/* Goals */}
           <GoalProgressIndicator goals={data.activeGoals} maxDisplay={3} />
         </div>
-      </div>
     </div>
   );
 }
