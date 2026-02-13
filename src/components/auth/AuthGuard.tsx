@@ -27,6 +27,15 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         return;
       }
 
+      // Direct check: if user_metadata already has onboarding_complete, trust it
+      // This prevents the need for async check on every render
+      if (user.user_metadata?.onboarding_complete === true) {
+        console.log('✅ Fast path: User metadata shows onboarding complete');
+        setOnboardingComplete(true);
+        setCheckingOnboarding(false);
+        return;
+      }
+
       const completed = await isOnboardingComplete();
       console.log('🔍 Onboarding check result:', completed, 'User metadata:', user.user_metadata);
       setOnboardingComplete(completed);

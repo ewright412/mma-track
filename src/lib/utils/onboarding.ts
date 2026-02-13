@@ -12,12 +12,23 @@ export async function isOnboardingComplete(): Promise<boolean> {
   if (typeof window === 'undefined') return true;
 
   try {
+    // CRITICAL FIX: Force refresh session to get latest user metadata
+    // This ensures we always have the most up-to-date onboarding status
+    await supabase.auth.refreshSession();
+
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
       console.log('🔍 Onboarding check: No user');
       return false;
     }
+
+    console.log('🔍 Onboarding check - User metadata:', {
+      userId: user.id,
+      email: user.email,
+      onboarding_complete: user.user_metadata?.onboarding_complete,
+      fullMetadata: user.user_metadata
+    });
 
     // If metadata explicitly says onboarding is complete
     if (user.user_metadata?.onboarding_complete === true) {
