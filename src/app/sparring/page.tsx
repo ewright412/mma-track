@@ -92,15 +92,15 @@ export default function SparringPage() {
 
   const getRatingStyle = (area: FocusArea) => {
     const rating = area.averageRating;
-    if (rating >= 7) return { border: 'border-l-[#22c55e]', label: 'Strong', labelColor: 'text-[#22c55e]' };
-    if (rating >= 4) return { border: 'border-l-[#f59e0b]', label: 'Developing', labelColor: 'text-[#f59e0b]' };
-    return { border: 'border-l-[#ef4444]', label: 'Needs Work', labelColor: 'text-[#ef4444]' };
+    if (rating >= 7) return { border: 'border-l-success', label: 'Strong', labelColor: 'text-success' };
+    if (rating >= 4) return { border: 'border-l-warning', label: 'Developing', labelColor: 'text-warning' };
+    return { border: 'border-l-red-500', label: 'Needs Work', labelColor: 'text-red-500' };
   };
 
   const getTrendLabel = (trend: 'improving' | 'declining' | 'stable') => {
     switch (trend) {
-      case 'improving': return { text: 'Improved', icon: '↑', color: 'text-[#22c55e]' };
-      case 'declining': return { text: 'Declining', icon: '↓', color: 'text-[#ef4444]' };
+      case 'improving': return { text: 'Improved', icon: '↑', color: 'text-success' };
+      case 'declining': return { text: 'Declining', icon: '↓', color: 'text-red-500' };
       case 'stable': return { text: 'Stable', icon: '→', color: 'text-gray-400' };
     }
   };
@@ -133,8 +133,8 @@ export default function SparringPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <p className="text-white/60">Track and analyze your sparring performance</p>
-          <Button onClick={() => router.push('/sparring/new')} className="px-4 py-2 text-sm font-medium">
+          <p className="text-gray-400 text-sm">Track and analyze your sparring performance</p>
+          <Button onClick={() => router.push('/sparring/new')}>
             <Plus className="w-4 h-4 mr-2" />
             Log Session
           </Button>
@@ -145,15 +145,15 @@ export default function SparringPage() {
           <div className="mb-6">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
               <Card className="p-4">
-                <Users className="w-5 h-5 text-[#ef4444] mb-2" />
+                <Users className="w-5 h-5 text-red-500 mb-2" />
                 <p className="text-2xl font-bold text-white">{stats.totalSessions}</p>
-                <p className="text-sm text-gray-400">total {stats.totalSessions === 1 ? 'session' : 'sessions'}</p>
+                <p className="text-sm text-gray-500">total {stats.totalSessions === 1 ? 'session' : 'sessions'}</p>
               </Card>
 
               <Card className="p-4">
-                <Target className="w-5 h-5 text-red-400 mb-2" />
+                <Target className="w-5 h-5 text-purple-400 mb-2" />
                 <p className="text-2xl font-bold text-white">{stats.totalRounds}</p>
-                <p className="text-sm text-gray-400">total {stats.totalRounds === 1 ? 'round' : 'rounds'}</p>
+                <p className="text-sm text-gray-500">total {stats.totalRounds === 1 ? 'round' : 'rounds'}</p>
               </Card>
 
               {ratingEntries.map(([key, avg]) => {
@@ -162,9 +162,9 @@ export default function SparringPage() {
                 const color = RATING_COLORS[key] || '#3b82f6';
                 return (
                   <Card key={key} className="p-4">
-                    <p className="text-sm text-gray-400 mb-2">{label}</p>
+                    <p className="text-sm text-gray-500 mb-2">{label}</p>
                     <p className="text-2xl font-bold text-white">{avg}/10</p>
-                    <div className="mt-2 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                    <div className="mt-2 h-1.5 bg-white/5 rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full"
                         style={{ width: `${avg * 10}%`, backgroundColor: color }}
@@ -230,8 +230,8 @@ export default function SparringPage() {
                 <Tooltip
                   contentStyle={{
                     backgroundColor: '#1a1a24',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    borderRadius: '8px',
+                    border: '1px solid rgba(255,255,255,0.05)',
+                    borderRadius: '12px',
                   }}
                 />
                 <Legend wrapperStyle={{ color: '#fff' }} />
@@ -279,9 +279,9 @@ export default function SparringPage() {
             </Card>
           ) : sessions.length === 0 ? (
             <Card className="p-12 text-center">
-              <Users className="w-16 h-16 text-white/20 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">No sparring sessions yet</h3>
-              <p className="text-white/60 mb-6">
+              <Users className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+              <h3 className="text-lg text-gray-400 mb-2">No sparring sessions yet</h3>
+              <p className="text-sm text-gray-500 mb-6">
                 Start tracking your sparring to analyze your performance over time
               </p>
               <Button onClick={() => router.push('/sparring/new')}>

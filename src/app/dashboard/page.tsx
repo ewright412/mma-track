@@ -28,7 +28,6 @@ import { TrainingLoadCard } from '@/components/dashboard/TrainingLoadCard';
 import { TodaysPlanCard } from '@/components/dashboard/TodaysPlanCard';
 import { WeeklySummaryCard } from '@/components/dashboard/WeeklySummaryCard';
 import { DailyChallengeCard } from '@/components/dashboard/DailyChallengeCard';
-import { ReviewReminderCard } from '@/components/dashboard/ReviewReminderCard';
 import { PaywallGate } from '@/components/billing/PaywallGate';
 import { useSubscription } from '@/lib/hooks/useSubscription';
 
@@ -85,19 +84,19 @@ export default function DashboardPage() {
           {/* Quick Actions Skeleton */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-20 bg-[#1a1a24] rounded-lg animate-pulse" />
+              <div key={i} className="h-20 bg-[#1a1a24] rounded-xl animate-pulse" />
             ))}
           </div>
           {/* Stats Skeleton */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />
+              <div key={i} className="h-24 bg-[#1a1a24] rounded-xl animate-pulse" />
             ))}
           </div>
           {/* Charts Skeleton */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div className="h-72 bg-[#1a1a24] rounded-lg animate-pulse" />
-            <div className="h-72 bg-[#1a1a24] rounded-lg animate-pulse" />
+            <div className="h-72 bg-[#1a1a24] rounded-xl animate-pulse" />
+            <div className="h-72 bg-[#1a1a24] rounded-xl animate-pulse" />
           </div>
         </div>
       </div>
@@ -169,39 +168,40 @@ export default function DashboardPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
           <button
             onClick={() => router.push('/training/new')}
-            className="flex items-center gap-3 p-3 bg-[#1a1a24] border-l-4 border-l-[#ef4444] border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
+            className="flex items-center gap-3 p-3 min-h-[60px] bg-[#1a1a24] border-l-4 border-l-red-500 border border-white/5 rounded-xl hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
+            style={{ touchAction: 'manipulation' }}
           >
-            <Target className="w-5 h-5 text-[#ef4444]" />
+            <Target className="w-5 h-5 text-red-500" />
             <span className="text-sm font-medium text-white">Log Training</span>
           </button>
           <button
             onClick={() => router.push('/strength/new')}
-            className="flex items-center gap-3 p-3 bg-[#1a1a24] border-l-4 border-l-red-400 border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
+            className="flex items-center gap-3 p-3 min-h-[60px] bg-[#1a1a24] border-l-4 border-l-red-400 border border-white/5 rounded-xl hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
+            style={{ touchAction: 'manipulation' }}
           >
             <Dumbbell className="w-5 h-5 text-red-400" />
             <span className="text-sm font-medium text-white">Log Workout</span>
           </button>
           <button
             onClick={() => router.push('/sparring/new')}
-            className="flex items-center gap-3 p-3 bg-[#1a1a24] border-l-4 border-l-[#f59e0b] border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
+            className="flex items-center gap-3 p-3 min-h-[60px] bg-[#1a1a24] border-l-4 border-l-warning border border-white/5 rounded-xl hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
+            style={{ touchAction: 'manipulation' }}
           >
-            <Activity className="w-5 h-5 text-[#f59e0b]" />
+            <Activity className="w-5 h-5 text-warning" />
             <span className="text-sm font-medium text-white">Log Sparring</span>
           </button>
           <button
             onClick={() => router.push('/cardio/new')}
-            className="flex items-center gap-3 p-3 bg-[#1a1a24] border-l-4 border-l-[#22c55e] border border-white/[0.08] rounded-lg hover:brightness-110 transition-all duration-150"
+            className="flex items-center gap-3 p-3 min-h-[60px] bg-[#1a1a24] border-l-4 border-l-success border border-white/5 rounded-xl hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
+            style={{ touchAction: 'manipulation' }}
           >
-            <Heart className="w-5 h-5 text-[#22c55e]" />
+            <Heart className="w-5 h-5 text-success" />
             <span className="text-sm font-medium text-white">Log Cardio</span>
           </button>
         </div>
 
         {/* Daily Challenge */}
         <DailyChallengeCard />
-
-        {/* Review Reminder */}
-        <ReviewReminderCard />
 
         {/* Competition Countdown */}
         <CompetitionCountdown

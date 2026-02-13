@@ -22,9 +22,9 @@ const config: Config = {
         warning: "#f59e0b",
       },
       borderRadius: {
-        card: "8px",
-        button: "6px",
-        input: "4px",
+        card: "12px",
+        button: "8px",
+        input: "8px",
       },
       fontFamily: {
         sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"],

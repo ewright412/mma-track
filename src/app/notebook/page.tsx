@@ -156,7 +156,7 @@ export default function NotebookPage() {
           <div>
             <p className="text-gray-500 text-sm">Jot down techniques, observations, and insights</p>
           </div>
-          <Button onClick={() => router.push('/notebook/new')} className="px-4 py-2 text-sm font-medium">
+          <Button onClick={() => router.push('/notebook/new')}>
             <Plus className="w-4 h-4 mr-2" />
             New Note
           </Button>
@@ -197,7 +197,8 @@ export default function NotebookPage() {
                 placeholder="Search notes..."
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="w-full bg-[#1a1a24] border border-white/10 rounded-lg pl-10 pr-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors"
+                className="w-full bg-[#252530] border border-white/5 rounded-lg pl-10 pr-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/20 transition-default min-h-[44px]"
+                style={{ touchAction: 'manipulation' }}
               />
             </div>
 
@@ -241,9 +242,9 @@ export default function NotebookPage() {
               </Card>
             ) : notes.length === 0 ? (
               <Card className="p-12 text-center">
-                <BookOpen className="w-16 h-16 text-white/20 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-white mb-2">No notes yet</h3>
-                <p className="text-white/60 mb-6">
+                <BookOpen className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+                <h3 className="text-lg text-gray-400 mb-2">No notes yet</h3>
+                <p className="text-sm text-gray-500 mb-6">
                   Jot down what you learned after your next session.
                 </p>
                 <Button onClick={() => router.push('/notebook/new')}>

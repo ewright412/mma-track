@@ -16,17 +16,14 @@ import {
   Brain,
   Library,
   Flame,
-  Trophy,
 } from "lucide-react";
 import { getTodaysChallenge } from "@/lib/utils/dailyChallenge";
-import { getReviewsDueCount } from "@/lib/supabase/reviewQueries";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/coach", label: "AI Coach", icon: Brain },
   { href: "/training", label: "Training", icon: Dumbbell },
   { href: "/schedule", label: "Schedule", icon: CalendarDays },
-  { href: "/learn", label: "Learn", icon: Trophy, hasBadge: true },
   { href: "/techniques", label: "Techniques", icon: Library },
   { href: "/challenge", label: "Challenge", icon: Flame, hasIndicator: true },
   { href: "/notebook", label: "Notebook", icon: BookOpen },
@@ -41,11 +38,9 @@ export function Sidebar() {
   const pathname = usePathname();
   const [challengeCompleted, setChallengeCompleted] = useState(false);
   const [loadingChallenge, setLoadingChallenge] = useState(true);
-  const [reviewsDueCount, setReviewsDueCount] = useState(0);
 
   useEffect(() => {
     loadChallengeStatus();
-    loadReviewsCount();
   }, []);
 
   const loadChallengeStatus = async () => {
@@ -55,13 +50,6 @@ export function Sidebar() {
       setChallengeCompleted(data.completed);
     }
     setLoadingChallenge(false);
-  };
-
-  const loadReviewsCount = async () => {
-    const { data } = await getReviewsDueCount();
-    if (data !== null) {
-      setReviewsDueCount(data);
-    }
   };
 
   return (
@@ -77,7 +65,6 @@ export function Sidebar() {
           const Icon = item.icon;
           const isActive = pathname === item.href;
           const showIndicator = item.hasIndicator && !challengeCompleted && !loadingChallenge;
-          const showBadge = item.hasBadge && reviewsDueCount > 0;
 
           return (
             <Link
@@ -94,11 +81,6 @@ export function Sidebar() {
               <span className="font-medium">{item.label}</span>
               {showIndicator && (
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-              )}
-              {showBadge && (
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-orange-500 text-white text-xs font-bold rounded-full">
-                  {reviewsDueCount}
-                </span>
               )}
             </Link>
           );

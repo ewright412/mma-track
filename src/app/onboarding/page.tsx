@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { MMA_DISCIPLINES, DISCIPLINE_HEX_COLORS } from '@/lib/constants/disciplines';
 import { createGoal } from '@/lib/supabase/goalsQueries';
@@ -10,7 +10,8 @@ import {
   requestNotificationPermission,
   saveReminderSettings,
 } from '@/lib/utils/notifications';
-import { markOnboardingComplete } from '@/lib/utils/onboarding';
+import { markOnboardingComplete, isOnboardingComplete } from '@/lib/utils/onboarding';
+import { supabase } from '@/lib/supabase/client';
 import {
   ChevronRight,
   ChevronLeft,
@@ -45,8 +46,40 @@ export default function OnboardingPage() {
   const [customGoalCategory, setCustomGoalCategory] = useState<GoalCategory>('other');
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [checking, setChecking] = useState(true);
 
   const totalSteps = 4;
+
+  // Fallback check: If user has already completed onboarding, redirect to dashboard
+  useEffect(() => {
+    async function checkOnboardingStatus() {
+      try {
+        // Check user metadata directly
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (user?.user_metadata?.onboarding_complete === true) {
+          console.log('⚠️ User already completed onboarding, redirecting to dashboard');
+          router.replace('/dashboard');
+          return;
+        }
+
+        // Also check via the full onboarding check (includes localStorage fallback)
+        const completed = await isOnboardingComplete();
+        if (completed) {
+          console.log('⚠️ Onboarding already complete (localStorage), redirecting to dashboard');
+          router.replace('/dashboard');
+          return;
+        }
+      } catch (error) {
+        console.error('Error checking onboarding status:', error);
+        // Continue to show onboarding on error (safe default)
+      } finally {
+        setChecking(false);
+      }
+    }
+
+    checkOnboardingStatus();
+  }, [router]);
 
   const toggleDiscipline = (discipline: MMADiscipline) => {
     setSelectedDisciplines((prev) =>
@@ -143,6 +176,15 @@ export default function OnboardingPage() {
       setSaving(false);
     }
   };
+
+  // Show loading state while checking onboarding status
+  if (checking) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">

@@ -29,11 +29,24 @@ export default function SignInPage() {
 
       if (error) throw error;
 
-      if (data.session) {
-        console.log('Session created, redirecting to dashboard...');
+      if (data.session && data.user) {
+        console.log('Session created');
+
+        // Check onboarding status BEFORE redirecting
+        const onboardingComplete = data.user.user_metadata?.onboarding_complete === true;
+        console.log('Onboarding complete:', onboardingComplete);
+
         // Small delay to ensure cookies are set before redirect
         await new Promise(resolve => setTimeout(resolve, 100));
-        window.location.href = '/dashboard';
+
+        // Redirect based on onboarding status
+        if (onboardingComplete) {
+          console.log('Redirecting to dashboard...');
+          window.location.href = '/dashboard';
+        } else {
+          console.log('Redirecting to onboarding...');
+          window.location.href = '/onboarding';
+        }
       } else {
         console.log('No session in response');
         setError('Sign in succeeded but no session was created. Please try again.');

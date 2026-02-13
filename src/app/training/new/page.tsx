@@ -175,18 +175,21 @@ export default function NewTrainingSessionPage() {
                     key={d}
                     type="button"
                     onClick={() => setDiscipline(d)}
-                    className={`relative p-3 rounded-lg text-sm font-medium transition-all text-left ${
+                    className={`relative p-3 rounded-xl text-sm font-medium transition-all text-left min-h-[44px] active:scale-[0.97] ${
                       isSelected
                         ? 'text-white'
-                        : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
+                        : 'bg-[#1a1a24] border border-white/5 text-gray-400 hover:text-white'
                     }`}
-                    style={isSelected ? {
-                      backgroundColor: `${color}20`,
-                      borderWidth: '1px',
-                      borderStyle: 'solid',
-                      borderColor: color,
-                      color: color,
-                    } : undefined}
+                    style={{
+                      ...(isSelected ? {
+                        backgroundColor: `${color}20`,
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                        borderColor: color,
+                        color: color,
+                      } : {}),
+                      touchAction: 'manipulation'
+                    }}
                   >
                     <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ backgroundColor: color }} />
                     {d}
@@ -198,27 +201,29 @@ export default function NewTrainingSessionPage() {
             {/* BJJ Gi/No-Gi Toggle */}
             {discipline === 'Brazilian Jiu-Jitsu' && (
               <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-300 mb-1.5">Type</label>
+                <label className="block text-sm text-gray-400 mb-1">Type</label>
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => setBjjType('gi')}
-                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all min-h-[44px] active:scale-[0.97] ${
                       bjjType === 'gi'
                         ? 'bg-red-500/20 border border-red-500 text-red-400'
-                        : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
+                        : 'bg-[#1a1a24] border border-white/5 text-gray-400 hover:text-white'
                     }`}
+                    style={{ touchAction: 'manipulation' }}
                   >
                     Gi
                   </button>
                   <button
                     type="button"
                     onClick={() => setBjjType('nogi')}
-                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all min-h-[44px] active:scale-[0.97] ${
                       bjjType === 'nogi'
                         ? 'bg-red-500/20 border border-red-500 text-red-400'
-                        : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
+                        : 'bg-[#1a1a24] border border-white/5 text-gray-400 hover:text-white'
                     }`}
+                    style={{ touchAction: 'manipulation' }}
                   >
                     No-Gi
                   </button>
@@ -236,11 +241,12 @@ export default function NewTrainingSessionPage() {
                   key={preset}
                   type="button"
                   onClick={() => setDurationMinutes(preset)}
-                  className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-sm transition-all min-h-[40px] active:scale-[0.97] ${
                     durationMinutes === preset
                       ? 'bg-red-500/20 border border-red-500 text-red-400 font-medium'
-                      : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
+                      : 'bg-[#1a1a24] border border-white/5 text-gray-400 hover:text-white'
                   }`}
+                  style={{ touchAction: 'manipulation' }}
                 >
                   {preset} min
                 </button>
@@ -303,7 +309,8 @@ export default function NewTrainingSessionPage() {
               onChange={(e) => setNotes(e.target.value)}
               placeholder="How did the session go?"
               rows={3}
-              className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-[#252530] border border-white/5 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/20 transition-default resize-none"
+              style={{ touchAction: 'manipulation' }}
             />
           </div>
 
@@ -330,7 +337,7 @@ export default function NewTrainingSessionPage() {
                 {techniques.map((technique) => (
                   <div
                     key={technique.id}
-                    className="bg-[#1a1a24] border border-white/10 rounded-lg p-3"
+                    className="bg-[#1a1a24] border border-white/5 rounded-xl p-3"
                   >
                     <div className="flex gap-2 mb-2">
                       <Input
@@ -344,7 +351,8 @@ export default function NewTrainingSessionPage() {
                       <button
                         type="button"
                         onClick={() => handleRemoveTechnique(technique.id)}
-                        className="p-2 text-gray-500 hover:text-red-400 transition-colors"
+                        className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-500 hover:text-red-400 transition-colors active:scale-[0.97]"
+                        style={{ touchAction: 'manipulation' }}
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -362,7 +370,7 @@ export default function NewTrainingSessionPage() {
 
           {/* Error */}
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
               <p className="text-red-400 text-sm">{error}</p>
             </div>
           )}
@@ -388,7 +396,7 @@ export default function NewTrainingSessionPage() {
 
         {/* Post-save: What did you learn? */}
         {showLearnPrompt && (
-          <div className="mt-6 bg-[#1a1a24] border border-white/10 rounded-lg overflow-hidden">
+          <div className="mt-6 bg-[#1a1a24] border border-white/5 rounded-xl overflow-hidden">
             <button
               type="button"
               onClick={() => setShowLearnPrompt(true)}
@@ -407,7 +415,8 @@ export default function NewTrainingSessionPage() {
                 placeholder="Quick takeaway — a technique tip, something to drill next time..."
                 rows={3}
                 autoFocus
-                className="w-full px-4 py-3 bg-[#0f0f13] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none text-sm"
+                className="w-full px-4 py-3 bg-[#252530] border border-white/5 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/20 transition-default resize-none text-sm"
+                style={{ touchAction: 'manipulation' }}
               />
               <div className="flex gap-3 mt-3">
                 <Button

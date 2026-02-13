@@ -120,8 +120,8 @@ export default function TrainingPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <p className="text-white/60">Track and review your training sessions</p>
-          <Button onClick={() => router.push('/training/new')} className="px-4 py-2 text-sm font-medium">
+          <p className="text-gray-400 text-sm">Track and review your training sessions</p>
+          <Button onClick={() => router.push('/training/new')}>
             <Plus className="w-4 h-4 mr-2" />
             Log Session
           </Button>
@@ -131,27 +131,27 @@ export default function TrainingPage() {
         {stats && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <Card className="p-4">
-              <TrendingUp className="w-5 h-5 text-[#ef4444] mb-2" />
+              <TrendingUp className="w-5 h-5 text-red-500 mb-2" />
               <p className="text-2xl font-bold text-white">{stats.totalSessions}</p>
-              <p className="text-sm text-gray-400">total {stats.totalSessions === 1 ? 'session' : 'sessions'}</p>
+              <p className="text-sm text-gray-500">total {stats.totalSessions === 1 ? 'session' : 'sessions'}</p>
             </Card>
 
             <Card className="p-4">
-              <Clock className="w-5 h-5 text-red-400 mb-2" />
+              <Clock className="w-5 h-5 text-purple-400 mb-2" />
               <p className="text-2xl font-bold text-white">{Math.floor(stats.totalMinutes / 60)}h</p>
-              <p className="text-sm text-gray-400">total time</p>
+              <p className="text-sm text-gray-500">total time</p>
             </Card>
 
             <Card className="p-4">
-              <Flame className="w-5 h-5 text-[#f59e0b] mb-2" />
+              <Flame className="w-5 h-5 text-warning mb-2" />
               <p className="text-2xl font-bold text-white">{stats.averageIntensity}/10</p>
-              <p className="text-sm text-gray-400">avg intensity</p>
+              <p className="text-sm text-gray-500">avg intensity</p>
             </Card>
 
             <Card className="p-4">
-              <Flame className="w-5 h-5 text-[#22c55e] mb-2" />
+              <Flame className="w-5 h-5 text-success mb-2" />
               <p className="text-2xl font-bold text-white">{stats.currentStreak}</p>
-              <p className="text-sm text-gray-400">{stats.currentStreak === 1 ? 'day' : 'days'} streak</p>
+              <p className="text-sm text-gray-500">{stats.currentStreak === 1 ? 'day' : 'days'} streak</p>
             </Card>
           </div>
         )}
@@ -165,7 +165,8 @@ export default function TrainingPage() {
         <Card className="p-4 mb-6">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 text-white font-medium"
+            className="flex items-center gap-2 text-white font-medium min-h-[44px] w-full justify-start active:scale-[0.97] transition-transform"
+            style={{ touchAction: 'manipulation' }}
           >
             <Filter className="w-5 h-5" />
             <span>Filters</span>
@@ -184,7 +185,7 @@ export default function TrainingPage() {
               />
 
               <div>
-                <label className="block text-sm font-medium text-white/80 mb-1.5">
+                <label className="block text-sm text-gray-400 mb-1">
                   Min Intensity
                 </label>
                 <input
@@ -194,12 +195,13 @@ export default function TrainingPage() {
                   placeholder="1"
                   value={intensityMinFilter}
                   onChange={(e) => setIntensityMinFilter(e.target.value)}
-                  className="w-full bg-background border border-border rounded-input px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-accent transition-default"
+                  className="w-full bg-[#252530] border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/20 transition-default min-h-[44px]"
+                  style={{ touchAction: 'manipulation' }}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white/80 mb-1.5">
+                <label className="block text-sm text-gray-400 mb-1">
                   Max Intensity
                 </label>
                 <input
@@ -209,7 +211,8 @@ export default function TrainingPage() {
                   placeholder="10"
                   value={intensityMaxFilter}
                   onChange={(e) => setIntensityMaxFilter(e.target.value)}
-                  className="w-full bg-background border border-border rounded-input px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-accent transition-default"
+                  className="w-full bg-[#252530] border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/20 transition-default min-h-[44px]"
+                  style={{ touchAction: 'manipulation' }}
                 />
               </div>
             </div>
@@ -236,9 +239,9 @@ export default function TrainingPage() {
           </Card>
         ) : sessions.length === 0 ? (
           <Card className="p-12 text-center">
-            <TrendingUp className="w-16 h-16 text-white/20 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">No sessions yet</h3>
-            <p className="text-white/60 mb-6">
+            <TrendingUp className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+            <h3 className="text-lg text-gray-400 mb-2">No sessions yet</h3>
+            <p className="text-sm text-gray-500 mb-6">
               Start tracking your training by logging your first session
             </p>
             <Button onClick={() => router.push('/training/new')}>
