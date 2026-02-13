@@ -19,9 +19,11 @@ import { StrengthLog, PersonalRecord } from '@/lib/types/strength';
 import { ALL_EXERCISES, MUSCLE_GROUP_LABELS, MuscleGroup } from '@/lib/constants/exercises';
 import { VolumeChart } from '@/components/strength/VolumeChart';
 import { StrengthProgressChart } from '@/components/strength/StrengthProgressChart';
+import { useToast } from '@/components/ui/Toast';
 
 export default function StrengthPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [logs, setLogs] = useState<StrengthLog[]>([]);
   const [filteredLogs, setFilteredLogs] = useState<StrengthLog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -141,7 +143,7 @@ export default function StrengthPage() {
       await loadData();
     } catch (error) {
       console.error('Failed to delete workout:', error);
-      alert('Failed to delete workout');
+      showToast('Failed to delete workout. Try again.', 'error');
     }
   }
 

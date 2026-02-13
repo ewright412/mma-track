@@ -17,8 +17,10 @@ import { GOAL_CATEGORIES, GOAL_CATEGORY_LABELS } from '@/lib/constants/goals';
 import { Select } from '@/components/ui/Select';
 import { Plus, Target, CheckCircle2, AlertCircle, Filter } from 'lucide-react';
 import Link from 'next/link';
+import { useToast } from '@/components/ui/Toast';
 
 export default function GoalsPage() {
+  const { showToast } = useToast();
   const [goals, setGoals] = useState<Goal[]>([]);
   const [stats, setStats] = useState<GoalsStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -58,7 +60,7 @@ export default function GoalsPage() {
     if (!error) {
       loadGoals();
     } else {
-      alert('Error updating progress: ' + error.message);
+      showToast('Error updating progress. Try again.', 'error');
     }
   };
 
@@ -69,7 +71,7 @@ export default function GoalsPage() {
     if (!error) {
       loadGoals();
     } else {
-      alert('Error completing goal: ' + error.message);
+      showToast('Error completing goal. Try again.', 'error');
     }
   };
 
@@ -80,7 +82,7 @@ export default function GoalsPage() {
     if (!error) {
       loadGoals();
     } else {
-      alert('Error abandoning goal: ' + error.message);
+      showToast('Error abandoning goal. Try again.', 'error');
     }
   };
 
@@ -91,7 +93,7 @@ export default function GoalsPage() {
     if (!error) {
       loadGoals();
     } else {
-      alert('Error deleting goal: ' + error.message);
+      showToast('Error deleting goal. Try again.', 'error');
     }
   };
 

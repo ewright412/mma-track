@@ -90,7 +90,7 @@ export default function SparringPage() {
   };
 
   const handleEdit = (sessionId: string) => {
-    alert('Edit functionality coming soon!');
+    showToast('Edit functionality coming soon!');
   };
 
   const getRatingStyle = (area: FocusArea) => {

@@ -23,9 +23,11 @@ import {
 } from '@/lib/types/cardio';
 import { CARDIO_TYPES } from '@/lib/constants/cardio';
 import { Plus, Activity, Clock, Route, Heart, Flame, TrendingUp, Filter } from 'lucide-react';
+import { useToast } from '@/components/ui/Toast';
 
 export default function CardioPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [logs, setLogs] = useState<CardioLog[]>([]);
   const [stats, setStats] = useState<CardioStats | null>(null);
   const [weeklySummary, setWeeklySummary] = useState<WeeklyCardioSummary | null>(null);
@@ -89,7 +91,7 @@ export default function CardioPage() {
     const { success, error: deleteError } = await deleteCardioLog(logId);
 
     if (deleteError) {
-      alert('Failed to delete log: ' + deleteError.message);
+      showToast('Failed to delete log. Try again.', 'error');
       return;
     }
 

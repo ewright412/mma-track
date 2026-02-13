@@ -23,6 +23,7 @@ import { scheduleReview } from '@/lib/supabase/reviewQueries';
 import { SkillTreeNode, LessonContent, UserNodeProgress } from '@/lib/types/learn';
 import { DISCIPLINE_HEX_COLORS } from '@/lib/constants/disciplines';
 import { AuthGuard } from '@/components/auth/AuthGuard';
+import { useToast } from '@/components/ui/Toast';
 
 const difficultyColors = {
   Beginner: 'bg-green-500/10 text-green-400 border-green-500/20',
@@ -33,6 +34,7 @@ const difficultyColors = {
 export default function LessonPlayerPage() {
   const params = useParams();
   const router = useRouter();
+  const { showToast } = useToast();
   const nodeId = params.nodeId as string;
 
   const [node, setNode] = useState<SkillTreeNode | null>(null);
@@ -115,7 +117,7 @@ export default function LessonPlayerPage() {
         }, 1000);
       }
     } else {
-      alert('Failed to complete lesson. Please try again.');
+      showToast('Failed to complete lesson. Try again.', 'error');
     }
   };
 

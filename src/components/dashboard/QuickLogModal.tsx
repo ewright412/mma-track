@@ -11,6 +11,7 @@ import { BADGE_MAP } from '@/lib/constants/badges';
 import { supabase } from '@/lib/supabase/client';
 import { MMADiscipline } from '@/lib/types/training';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ui/Toast';
 
 type LogType = 'training' | 'strength' | 'cardio' | 'note';
 
@@ -22,6 +23,7 @@ interface QuickLogModalProps {
 
 export function QuickLogModal({ isOpen, onClose, onSaved }: QuickLogModalProps) {
   const router = useRouter();
+  const { showToast } = useToast();
   const [step, setStep] = useState<1 | 2>(1);
   const [logType, setLogType] = useState<LogType | null>(null);
 
@@ -60,15 +62,16 @@ export function QuickLogModal({ isOpen, onClose, onSaved }: QuickLogModalProps) 
       });
 
       if (error) {
-        alert('Error saving session: ' + error.message);
+        showToast('Error saving session. Try again.', 'error');
       } else {
+        showToast('Session logged!');
         // Check badges in background
         const { data: { user: authUser } } = await supabase.auth.getUser();
         if (authUser) {
           checkAndAwardBadges(authUser.id).then((newBadges) => {
             if (newBadges.length > 0) {
               const name = BADGE_MAP[newBadges[0]]?.name || newBadges[0];
-              alert(`🏆 Achievement Unlocked: ${name}!`);
+              showToast(`Achievement Unlocked: ${name}!`);
             }
           });
         }
@@ -77,7 +80,7 @@ export function QuickLogModal({ isOpen, onClose, onSaved }: QuickLogModalProps) 
         onClose();
       }
     } catch {
-      alert('Error saving session');
+      showToast('Error saving session. Try again.', 'error');
     } finally {
       setSaving(false);
     }

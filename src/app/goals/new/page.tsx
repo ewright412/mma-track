@@ -16,10 +16,12 @@ import { Select } from '@/components/ui/Select';
 import { Target, Calendar, TrendingUp, Type, FileText, Tag, Hash } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics/posthog';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useToast } from '@/components/ui/Toast';
 
 export default function NewGoalPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { showToast } = useToast();
   const initialCategory = (searchParams.get('category') as GoalCategory) || 'other';
   const [saving, setSaving] = useState(false);
   const [latestWeight, setLatestWeight] = useState<number | null>(null);
@@ -63,11 +65,11 @@ export default function NewGoalPage() {
         });
         router.push('/goals');
       } else {
-        alert('Error creating goal: ' + error.message);
+        showToast('Error creating goal. Try again.', 'error');
       }
     } catch (error) {
       console.error('Error creating goal:', error);
-      alert('Error creating goal');
+      showToast('Error creating goal. Try again.', 'error');
     } finally {
       setSaving(false);
     }

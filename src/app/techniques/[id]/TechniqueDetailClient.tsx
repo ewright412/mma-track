@@ -18,6 +18,7 @@ import { createNote } from '@/lib/supabase/notebookQueries';
 import { Technique } from '@/lib/types/technique';
 import { DISCIPLINE_HEX_COLORS } from '@/lib/constants/disciplines';
 import { AuthGuard } from '@/components/auth/AuthGuard';
+import { useToast } from '@/components/ui/Toast';
 
 const difficultyColors = {
   Beginner: 'bg-green-500/10 text-green-400 border-green-500/20',
@@ -28,6 +29,7 @@ const difficultyColors = {
 export default function TechniqueDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { showToast } = useToast();
   const techniqueId = params.id as string;
 
   const [technique, setTechnique] = useState<Technique | null>(null);
@@ -81,7 +83,7 @@ export default function TechniqueDetailPage() {
       setNotebookSuccess(true);
       setTimeout(() => setNotebookSuccess(false), 3000);
     } else {
-      alert('Failed to save to notebook. Please try again.');
+      showToast('Failed to save to notebook. Try again.', 'error');
     }
   };
 
@@ -102,7 +104,7 @@ export default function TechniqueDetailPage() {
       loadLastPracticed(); // Reload last practiced date
       setTimeout(() => setPracticedSuccess(false), 3000);
     } else {
-      alert('Failed to mark as practiced. Please try again.');
+      showToast('Failed to mark as practiced. Try again.', 'error');
     }
   };
 

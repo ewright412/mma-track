@@ -41,7 +41,6 @@ import {
   Clock,
   Flame,
   Trophy,
-  Check,
   Lock,
   CreditCard,
   Zap,
@@ -77,6 +76,7 @@ import { PaywallGate } from '@/components/billing/PaywallGate';
 import { PlanBadge } from '@/components/billing/PlanBadge';
 import { UpgradeModal } from '@/components/billing/UpgradeModal';
 import { useSubscription } from '@/lib/hooks/useSubscription';
+import { useToast } from '@/components/ui/Toast';
 
 interface FighterProfile {
   displayName: string;
@@ -131,6 +131,7 @@ const DEFAULT_PROFILE: FighterProfile = {
 
 export default function ProfilePage() {
   const { plan, isPro, status: subStatus, currentPeriodEnd } = useSubscription();
+  const { showToast } = useToast();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [user, setUser] = useState<{ email?: string } | null>(null);
   const [metrics, setMetrics] = useState<BodyMetric[]>([]);
@@ -161,7 +162,6 @@ export default function ProfilePage() {
     notes: '',
   });
   const [savingCompetition, setSavingCompetition] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileStats, setProfileStats] = useState<ProfileStats | null>(null);
   const [badges, setBadges] = useState<UserBadge[]>([]);
@@ -202,17 +202,16 @@ export default function ProfilePage() {
       });
 
       if (error) {
-        alert('Error updating profile: ' + error.message);
+        showToast('Error updating profile. Try again.', 'error');
         return;
       }
 
       setProfile(profileDraft);
       setEditingProfile(false);
-      setToast('Profile updated!');
-      setTimeout(() => setToast(null), 3000);
+      showToast('Profile updated!');
     } catch (err) {
       console.error('Error saving profile:', err);
-      alert('Error saving profile. Please try again.');
+      showToast('Error saving profile. Try again.', 'error');
     } finally {
       setSavingProfile(false);
     }
@@ -379,15 +378,16 @@ export default function ProfilePage() {
     try {
       const { error } = await createCompetition(compForm);
       if (!error) {
+        showToast('Competition added!');
         setShowCompModal(false);
         setCompForm({ name: '', competition_date: '', weight_class: '', target_weight: undefined, notes: '' });
         loadCompetitions();
       } else {
-        alert('Error saving competition: ' + error.message);
+        showToast('Error saving competition. Try again.', 'error');
       }
     } catch (error) {
       console.error('Error adding competition:', error);
-      alert('Error saving competition');
+      showToast('Error saving competition. Try again.', 'error');
     } finally {
       setSavingCompetition(false);
     }
@@ -399,7 +399,7 @@ export default function ProfilePage() {
     if (!error) {
       loadCompetitions();
     } else {
-      alert('Error deleting competition: ' + error.message);
+      showToast('Error deleting competition. Try again.', 'error');
     }
   };
 
@@ -411,6 +411,7 @@ export default function ProfilePage() {
     try {
       const { error } = await createBodyMetric(formData);
       if (!error) {
+        showToast('Metric saved!');
         setShowAddModal(false);
         setFormData({
           metric_date: new Date().toISOString().split('T')[0],
@@ -420,11 +421,11 @@ export default function ProfilePage() {
         });
         loadBodyMetrics();
       } else {
-        alert('Error saving metric: ' + error.message);
+        showToast('Error saving metric. Try again.', 'error');
       }
     } catch (error) {
       console.error('Error adding metric:', error);
-      alert('Error saving metric');
+      showToast('Error saving metric. Try again.', 'error');
     } finally {
       setSaving(false);
     }
@@ -437,7 +438,7 @@ export default function ProfilePage() {
     if (!error) {
       loadBodyMetrics();
     } else {
-      alert('Error deleting metric: ' + error.message);
+      showToast('Error deleting metric. Try again.', 'error');
     }
   };
 
@@ -448,13 +449,13 @@ export default function ProfilePage() {
         case 'training': {
           const { data } = await getTrainingSessions({});
           if (data && data.length > 0) exportTrainingSessions(data);
-          else alert('No training sessions to export.');
+          else showToast('No training sessions to export.', 'error');
           break;
         }
         case 'cardio': {
           const { data } = await getCardioLogs({});
           if (data && data.length > 0) exportCardioLogs(data);
-          else alert('No cardio logs to export.');
+          else showToast('No cardio logs to export.', 'error');
           break;
         }
         case 'strength': {
@@ -462,26 +463,26 @@ export default function ProfilePage() {
           if (authUser) {
             const logs = await getStrengthLogs(authUser.id);
             if (logs && logs.length > 0) exportStrengthLogs(logs);
-            else alert('No strength logs to export.');
+            else showToast('No strength logs to export.', 'error');
           }
           break;
         }
         case 'metrics': {
           const { data } = await getBodyMetrics({});
           if (data && data.length > 0) exportBodyMetrics(data);
-          else alert('No body metrics to export.');
+          else showToast('No body metrics to export.', 'error');
           break;
         }
         case 'goals': {
           const { data } = await getGoals({});
           if (data && data.length > 0) exportGoals(data);
-          else alert('No goals to export.');
+          else showToast('No goals to export.', 'error');
           break;
         }
       }
     } catch (error) {
       console.error('Export error:', error);
-      alert('Error exporting data. Please try again.');
+      showToast('Error exporting data. Try again.', 'error');
     } finally {
       setExporting(null);
     }
@@ -491,7 +492,7 @@ export default function ProfilePage() {
     if (!reminderEnabled) {
       const granted = await requestNotificationPermission();
       if (!granted) {
-        alert('Please allow notifications in your browser settings to enable reminders.');
+        showToast('Please allow notifications in browser settings.', 'error');
         return;
       }
     }
@@ -1238,14 +1239,6 @@ export default function ProfilePage() {
               </div>
             </form>
           </Card>
-        </div>
-      )}
-
-      {/* Success Toast */}
-      {toast && (
-        <div className="fixed bottom-6 right-6 bg-[#22c55e] text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50">
-          <Check className="w-4 h-4" />
-          <span className="text-sm font-medium">{toast}</span>
         </div>
       )}
 

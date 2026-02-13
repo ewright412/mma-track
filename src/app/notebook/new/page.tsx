@@ -11,10 +11,12 @@ import { MMADiscipline, TrainingSession } from '@/lib/types/training';
 import { MMA_DISCIPLINES, DISCIPLINE_HEX_COLORS } from '@/lib/constants/disciplines';
 import { supabase } from '@/lib/supabase/client';
 import { X } from 'lucide-react';
+import { useToast } from '@/components/ui/Toast';
 
 export default function NewNotePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { showToast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -131,10 +133,12 @@ export default function NewNotePage() {
 
     if (submitError) {
       setError(submitError.message);
+      showToast('Error saving note. Try again.', 'error');
       setIsSubmitting(false);
       return;
     }
 
+    showToast('Note saved!');
     router.push('/notebook');
   };
 

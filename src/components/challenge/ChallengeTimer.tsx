@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Play, CheckCircle, Loader2 } from 'lucide-react';
 import { DailyChallenge } from '@/lib/types/challenge';
 import { createChallengeCompletion } from '@/lib/supabase/challengeQueries';
+import { useToast } from '@/components/ui/Toast';
 
 interface ChallengeTimerProps {
   challenge: DailyChallenge;
@@ -16,6 +17,7 @@ export function ChallengeTimer({
   completed,
   onCompleted,
 }: ChallengeTimerProps) {
+  const { showToast } = useToast();
   const [timerActive, setTimerActive] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(challenge.duration_minutes * 60);
   const [showCompletion, setShowCompletion] = useState(false);
@@ -69,7 +71,7 @@ export function ChallengeTimer({
         onCompleted();
       }, 2000);
     } else {
-      alert('Failed to save completion. Please try again.');
+      showToast('Failed to save completion. Try again.', 'error');
     }
 
     setSubmitting(false);

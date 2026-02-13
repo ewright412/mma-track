@@ -19,9 +19,11 @@ import { getLessonsForNode } from '@/lib/supabase/nodeQueries';
 import { ReviewWithNode, LessonContent } from '@/lib/types/learn';
 import { DISCIPLINE_HEX_COLORS } from '@/lib/constants/disciplines';
 import { AuthGuard } from '@/components/auth/AuthGuard';
+import { useToast } from '@/components/ui/Toast';
 
 export default function ReviewPage() {
   const router = useRouter();
+  const { showToast } = useToast();
 
   const [reviews, setReviews] = useState<ReviewWithNode[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -99,7 +101,7 @@ export default function ReviewPage() {
         loadNextReviewDate();
       }
     } else {
-      alert('Failed to submit review. Please try again.');
+      showToast('Failed to submit review. Try again.', 'error');
     }
   };
 

@@ -7,7 +7,15 @@ const config: CapacitorConfig = {
   server: {
     url: 'https://mma-track-jlno.vercel.app',
     cleartext: true
-  }
+  },
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 0,
+    },
+    StatusBar: {
+      style: 'dark' as const,
+    },
+  },
 };
 
 export default config;

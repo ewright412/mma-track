@@ -41,7 +41,7 @@ export async function isOnboardingComplete(): Promise<boolean> {
     }
 
     // For existing users without metadata, check if they have any data
-    // If they have training sessions, they're an existing user
+    // If they have training sessions or sparring sessions, they're an existing user
     const { data: sessions, error } = await supabase
       .from('training_sessions')
       .select('id')
@@ -50,7 +50,19 @@ export async function isOnboardingComplete(): Promise<boolean> {
 
     if (!error && sessions && sessions.length > 0) {
       console.log('✅ Existing user with training data detected, auto-completing onboarding');
-      // Existing user with data - auto-complete onboarding
+      await markOnboardingComplete();
+      return true;
+    }
+
+    // Also check sparring sessions as fallback
+    const { data: sparringSessions, error: sparringError } = await supabase
+      .from('sparring_sessions')
+      .select('id')
+      .eq('user_id', user.id)
+      .limit(1);
+
+    if (!sparringError && sparringSessions && sparringSessions.length > 0) {
+      console.log('✅ Existing user with sparring data detected, auto-completing onboarding');
       await markOnboardingComplete();
       return true;
     }
