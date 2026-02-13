@@ -33,8 +33,9 @@ CREATE INDEX idx_challenge_completions_challenge_id ON challenge_completions(cha
 CREATE INDEX idx_challenge_completions_completed_at ON challenge_completions(completed_at);
 
 -- Unique constraint: one completion per user per challenge per day
+-- Using date() function which is IMMUTABLE (required for index expressions)
 CREATE UNIQUE INDEX idx_challenge_completions_user_challenge_date
-  ON challenge_completions(user_id, challenge_id, (completed_at::date));
+  ON challenge_completions(user_id, challenge_id, date(completed_at));
 
 -- RLS Policies
 ALTER TABLE challenge_completions ENABLE ROW LEVEL SECURITY;
