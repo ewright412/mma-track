@@ -58,7 +58,6 @@ export default function OnboardingPage() {
         const { data: { user } } = await supabase.auth.getUser();
 
         if (user?.user_metadata?.onboarding_complete === true) {
-          console.log('⚠️ User already completed onboarding, redirecting to dashboard');
           router.replace('/dashboard');
           return;
         }
@@ -66,7 +65,6 @@ export default function OnboardingPage() {
         // Also check via the full onboarding check (includes localStorage fallback)
         const completed = await isOnboardingComplete();
         if (completed) {
-          console.log('⚠️ Onboarding already complete (localStorage), redirecting to dashboard');
           router.replace('/dashboard');
           return;
         }
@@ -158,18 +156,14 @@ export default function OnboardingPage() {
 
       try {
         await Promise.race([onboardingPromise, timeoutPromise]);
-        console.log('✅ Onboarding marked complete successfully');
       } catch (error) {
-        console.error('⚠️ Onboarding completion warning:', error);
+        // Continue anyway - localStorage fallback will work
         // Continue anyway - localStorage fallback will work
       }
 
       // Navigate immediately - don't wait for session refresh
-      // The AuthGuard will handle the session update asynchronously
-      console.log('🚀 Navigating to dashboard...');
       router.replace('/dashboard');
     } catch (error) {
-      console.error('❌ Error completing onboarding:', error);
       // Even if something failed, try to navigate anyway
       router.replace('/dashboard');
     } finally {

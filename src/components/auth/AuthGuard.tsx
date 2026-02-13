@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { Capacitor } from '@capacitor/core';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { isOnboardingComplete } from '@/lib/utils/onboarding';
 
@@ -16,8 +17,12 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
                       pathname.startsWith('/signup') ||
                       pathname.startsWith('/forgot-password') ||
                       pathname.startsWith('/reset-password');
-  const isOnboardingRoute = pathname.startsWith('/onboarding');
-  const isPublicRoute = pathname === '/';
+  const isOnboardingRoute = pathname.startsWith('/onboarding') ||
+                            pathname === '/force-onboard-complete';
+  const isPublicRoute = pathname === '/' ||
+                        pathname === '/privacy' ||
+                        pathname === '/terms';
+  const isNative = Capacitor.isNativePlatform();
 
   // Check onboarding status from Supabase
   useEffect(() => {
@@ -56,6 +61,12 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (loading || checkingOnboarding) return; // Wait for auth and onboarding check to load
 
+    // In native Capacitor app, skip marketing pages entirely
+    if (isNative && isPublicRoute) {
+      router.replace(user ? '/dashboard' : '/signin');
+      return;
+    }
+
     // If on auth route and logged in, redirect to dashboard
     if (isAuthRoute && user) {
       router.replace('/dashboard');
@@ -75,7 +86,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     if (user && !isAuthRoute && !isOnboardingRoute && !isPublicRoute && !onboardingComplete) {
       router.replace('/onboarding');
     }
-  }, [user, loading, checkingOnboarding, onboardingComplete, pathname, isAuthRoute, isOnboardingRoute, isPublicRoute, router]);
+  }, [user, loading, checkingOnboarding, onboardingComplete, pathname, isAuthRoute, isOnboardingRoute, isPublicRoute, isNative, router]);
 
   // Show loading state while checking auth and onboarding
   if (loading || checkingOnboarding) {
@@ -84,6 +95,11 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         <div className="text-white">Loading...</div>
       </div>
     );
+  }
+
+  // In native app, don't render marketing pages (redirect is in progress)
+  if (isNative && isPublicRoute) {
+    return null;
   }
 
   // Don't render protected content if not authenticated

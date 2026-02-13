@@ -34,19 +34,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Get initial session AND fresh user data
     supabase.auth.getSession().then(async ({ data: { session } }) => {
-      console.log('🔐 AuthContext: Got session', { hasSession: !!session });
       setSession(session);
 
-      // CRITICAL FIX: Get fresh user data to ensure we have latest user_metadata
-      // This prevents stale onboarding_complete status
+      // Get fresh user data to ensure we have latest user_metadata
       if (session?.user) {
         const { data: { user } } = await supabase.auth.getUser();
-        console.log('👤 AuthContext: Got fresh user data', {
-          userId: user?.id,
-          hasMetadata: !!user?.user_metadata,
-          onboardingComplete: user?.user_metadata?.onboarding_complete,
-          fullMetadata: user?.user_metadata
-        });
         setUser(user);
       } else {
         setUser(null);
@@ -59,19 +51,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('🔔 AuthContext: Auth state changed', { event, hasSession: !!session });
       setSession(session);
 
-      // CRITICAL FIX: Get fresh user data on auth state change
-      // This ensures user_metadata is always up-to-date
+      // Get fresh user data on auth state change
       if (session?.user) {
         const { data: { user } } = await supabase.auth.getUser();
-        console.log('👤 AuthContext: Got fresh user after state change', {
-          event,
-          userId: user?.id,
-          onboardingComplete: user?.user_metadata?.onboarding_complete,
-          fullMetadata: user?.user_metadata
-        });
         setUser(user);
       } else {
         setUser(null);

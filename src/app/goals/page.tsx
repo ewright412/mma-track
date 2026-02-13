@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { GoalCard } from '@/components/metrics/GoalCard';
-import { Goal, GoalCategory, GoalStatus } from '@/lib/types/metrics';
+import { Goal, GoalCategory, GoalStatus, GoalsStats } from '@/lib/types/metrics';
 import {
   getGoals,
   getGoalsStats,
@@ -17,13 +17,10 @@ import { GOAL_CATEGORIES, GOAL_CATEGORY_LABELS } from '@/lib/constants/goals';
 import { Select } from '@/components/ui/Select';
 import { Plus, Target, CheckCircle2, AlertCircle, Filter } from 'lucide-react';
 import Link from 'next/link';
-import { PaywallGate } from '@/components/billing/PaywallGate';
-import { useSubscription } from '@/lib/hooks/useSubscription';
 
 export default function GoalsPage() {
-  const { isPro } = useSubscription();
   const [goals, setGoals] = useState<Goal[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<GoalsStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<GoalCategory | 'all'>('all');
