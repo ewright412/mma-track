@@ -31,8 +31,8 @@ CREATE TABLE IF NOT EXISTS public.sparring_rounds (
 );
 
 -- Create indexes for performance
-CREATE INDEX idx_sparring_sessions_user_date ON public.sparring_sessions(user_id, session_date DESC);
-CREATE INDEX idx_sparring_rounds_session ON public.sparring_rounds(session_id, round_number);
+CREATE INDEX IF NOT EXISTS idx_sparring_sessions_user_date ON public.sparring_sessions(user_id, session_date DESC);
+CREATE INDEX IF NOT EXISTS idx_sparring_rounds_session ON public.sparring_rounds(session_id, round_number);
 
 -- Enable Row Level Security
 ALTER TABLE public.sparring_sessions ENABLE ROW LEVEL SECURITY;
@@ -120,6 +120,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS update_sparring_sessions_updated_at ON public.sparring_sessions;
 CREATE TRIGGER update_sparring_sessions_updated_at
     BEFORE UPDATE ON public.sparring_sessions
     FOR EACH ROW

@@ -18,9 +18,9 @@ CREATE TABLE IF NOT EXISTS public.strength_logs (
 );
 
 -- Create indexes for performance
-CREATE INDEX idx_strength_logs_user_date ON public.strength_logs(user_id, workout_date DESC);
-CREATE INDEX idx_strength_logs_exercise ON public.strength_logs(user_id, exercise_name);
-CREATE INDEX idx_strength_logs_muscle_group ON public.strength_logs(user_id, muscle_group);
+CREATE INDEX IF NOT EXISTS idx_strength_logs_user_date ON public.strength_logs(user_id, workout_date DESC);
+CREATE INDEX IF NOT EXISTS idx_strength_logs_exercise ON public.strength_logs(user_id, exercise_name);
+CREATE INDEX IF NOT EXISTS idx_strength_logs_muscle_group ON public.strength_logs(user_id, muscle_group);
 
 -- Enable Row Level Security
 ALTER TABLE public.strength_logs ENABLE ROW LEVEL SECURITY;
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS public.workout_templates (
 );
 
 -- Create index for performance
-CREATE INDEX idx_workout_templates_user ON public.workout_templates(user_id);
+CREATE INDEX IF NOT EXISTS idx_workout_templates_user ON public.workout_templates(user_id);
 
 -- Enable Row Level Security
 ALTER TABLE public.workout_templates ENABLE ROW LEVEL SECURITY;
@@ -62,9 +62,9 @@ CREATE TABLE IF NOT EXISTS public.personal_records (
 );
 
 -- Create indexes for performance
-CREATE INDEX idx_personal_records_user ON public.personal_records(user_id);
-CREATE INDEX idx_personal_records_exercise ON public.personal_records(user_id, exercise_name);
-CREATE INDEX idx_personal_records_date ON public.personal_records(user_id, achieved_date DESC);
+CREATE INDEX IF NOT EXISTS idx_personal_records_user ON public.personal_records(user_id);
+CREATE INDEX IF NOT EXISTS idx_personal_records_exercise ON public.personal_records(user_id, exercise_name);
+CREATE INDEX IF NOT EXISTS idx_personal_records_date ON public.personal_records(user_id, achieved_date DESC);
 
 -- Enable Row Level Security
 ALTER TABLE public.personal_records ENABLE ROW LEVEL SECURITY;
@@ -136,6 +136,7 @@ CREATE POLICY "Users can delete their own personal records"
 -- Trigger for updated_at timestamp
 -- ============================================================================
 
+DROP TRIGGER IF EXISTS update_strength_logs_updated_at ON public.strength_logs;
 CREATE TRIGGER update_strength_logs_updated_at
     BEFORE UPDATE ON public.strength_logs
     FOR EACH ROW

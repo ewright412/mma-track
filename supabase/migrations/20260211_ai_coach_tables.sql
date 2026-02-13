@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS ai_coach_conversations (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE INDEX idx_ai_coach_conversations_user_id ON ai_coach_conversations(user_id);
+CREATE INDEX IF NOT EXISTS idx_ai_coach_conversations_user_id ON ai_coach_conversations(user_id);
 
 -- AI Usage Tracking (rate limiting)
 CREATE TABLE IF NOT EXISTS ai_usage_tracking (
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS ai_usage_tracking (
   UNIQUE(user_id, date)
 );
 
-CREATE INDEX idx_ai_usage_tracking_user_date ON ai_usage_tracking(user_id, date);
+CREATE INDEX IF NOT EXISTS idx_ai_usage_tracking_user_date ON ai_usage_tracking(user_id, date);
 
 -- RLS Policies
 ALTER TABLE ai_coach_conversations ENABLE ROW LEVEL SECURITY;

@@ -31,8 +31,8 @@ CREATE TABLE IF NOT EXISTS public.cardio_logs (
 );
 
 -- Create indexes for performance
-CREATE INDEX idx_cardio_logs_user_date ON public.cardio_logs(user_id, session_date DESC);
-CREATE INDEX idx_cardio_logs_type ON public.cardio_logs(user_id, cardio_type);
+CREATE INDEX IF NOT EXISTS idx_cardio_logs_user_date ON public.cardio_logs(user_id, session_date DESC);
+CREATE INDEX IF NOT EXISTS idx_cardio_logs_type ON public.cardio_logs(user_id, cardio_type);
 
 -- Enable Row Level Security
 ALTER TABLE public.cardio_logs ENABLE ROW LEVEL SECURITY;
@@ -62,6 +62,7 @@ CREATE POLICY "Users can delete their own cardio logs"
 -- Trigger for updated_at timestamp
 -- ============================================================================
 
+DROP TRIGGER IF EXISTS update_cardio_logs_updated_at ON public.cardio_logs;
 CREATE TRIGGER update_cardio_logs_updated_at
     BEFORE UPDATE ON public.cardio_logs
     FOR EACH ROW

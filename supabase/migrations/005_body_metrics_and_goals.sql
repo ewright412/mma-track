@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS public.body_metrics (
 );
 
 -- Create indexes for performance
-CREATE INDEX idx_body_metrics_user_date ON public.body_metrics(user_id, metric_date DESC);
+CREATE INDEX IF NOT EXISTS idx_body_metrics_user_date ON public.body_metrics(user_id, metric_date DESC);
 
 -- Enable Row Level Security
 ALTER TABLE public.body_metrics ENABLE ROW LEVEL SECURITY;
@@ -43,9 +43,9 @@ CREATE TABLE IF NOT EXISTS public.goals (
 );
 
 -- Create indexes for performance
-CREATE INDEX idx_goals_user_status ON public.goals(user_id, status);
-CREATE INDEX idx_goals_user_date ON public.goals(user_id, target_date);
-CREATE INDEX idx_goals_category ON public.goals(user_id, category);
+CREATE INDEX IF NOT EXISTS idx_goals_user_status ON public.goals(user_id, status);
+CREATE INDEX IF NOT EXISTS idx_goals_user_date ON public.goals(user_id, target_date);
+CREATE INDEX IF NOT EXISTS idx_goals_category ON public.goals(user_id, category);
 
 -- Enable Row Level Security
 ALTER TABLE public.goals ENABLE ROW LEVEL SECURITY;
@@ -96,11 +96,13 @@ CREATE POLICY "Users can delete their own goals"
 -- Triggers for updated_at timestamp
 -- ============================================================================
 
+DROP TRIGGER IF EXISTS update_body_metrics_updated_at ON public.body_metrics;
 CREATE TRIGGER update_body_metrics_updated_at
     BEFORE UPDATE ON public.body_metrics
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_goals_updated_at ON public.goals;
 CREATE TRIGGER update_goals_updated_at
     BEFORE UPDATE ON public.goals
     FOR EACH ROW

@@ -26,4 +26,4 @@ CREATE POLICY "Users can delete own competitions" ON competitions
   FOR DELETE USING (auth.uid() = user_id);
 
 -- Index for faster queries
-CREATE INDEX idx_competitions_user_date ON competitions(user_id, competition_date);
+CREATE INDEX IF NOT EXISTS idx_competitions_user_date ON competitions(user_id, competition_date);

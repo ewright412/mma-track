@@ -6,6 +6,7 @@ const ONBOARDING_KEY = 'clinch-onboarding-complete';
  * Checks if user has completed onboarding
  * First checks Supabase user metadata (source of truth)
  * Falls back to localStorage for backwards compatibility
+ * For existing users, checks if they have any data (training sessions, etc.)
  */
 export async function isOnboardingComplete(): Promise<boolean> {
   if (typeof window === 'undefined') return true;
@@ -13,14 +14,41 @@ export async function isOnboardingComplete(): Promise<boolean> {
   try {
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (user?.user_metadata?.onboarding_complete === true) {
-      // Sync to localStorage for faster subsequent checks
+    if (!user) return false;
+
+    // If metadata explicitly says onboarding is complete
+    if (user.user_metadata?.onboarding_complete === true) {
       localStorage.setItem(ONBOARDING_KEY, 'true');
       return true;
     }
 
-    // Fallback to localStorage for backwards compatibility
-    return localStorage.getItem(ONBOARDING_KEY) === 'true';
+    // Check localStorage fallback
+    const localStorageComplete = localStorage.getItem(ONBOARDING_KEY) === 'true';
+    if (localStorageComplete) {
+      // Sync to user metadata if not already there
+      if (!user.user_metadata?.onboarding_complete) {
+        await supabase.auth.updateUser({
+          data: { onboarding_complete: true }
+        });
+      }
+      return true;
+    }
+
+    // For existing users without metadata, check if they have any data
+    // If they have training sessions, they're an existing user
+    const { data: sessions, error } = await supabase
+      .from('training_sessions')
+      .select('id')
+      .eq('user_id', user.id)
+      .limit(1);
+
+    if (!error && sessions && sessions.length > 0) {
+      // Existing user with data - auto-complete onboarding
+      await markOnboardingComplete();
+      return true;
+    }
+
+    return false;
   } catch (error) {
     // Fallback to localStorage if Supabase check fails
     return localStorage.getItem(ONBOARDING_KEY) === 'true';

@@ -1,6 +1,6 @@
 -- Achievement badges for users
 
-CREATE TABLE user_badges (
+CREATE TABLE IF NOT EXISTS user_badges (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   badge_key TEXT NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE user_badges (
   UNIQUE(user_id, badge_key)
 );
 
-CREATE INDEX idx_user_badges_user ON user_badges(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_badges_user ON user_badges(user_id);
 
 ALTER TABLE user_badges ENABLE ROW LEVEL SECURITY;
 

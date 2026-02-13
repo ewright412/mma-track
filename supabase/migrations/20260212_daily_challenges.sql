@@ -15,9 +15,9 @@ CREATE TABLE IF NOT EXISTS daily_challenges (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE INDEX idx_daily_challenges_category ON daily_challenges(category);
-CREATE INDEX idx_daily_challenges_difficulty ON daily_challenges(difficulty);
-CREATE INDEX idx_daily_challenges_discipline ON daily_challenges(discipline);
+CREATE INDEX IF NOT EXISTS idx_daily_challenges_category ON daily_challenges(category);
+CREATE INDEX IF NOT EXISTS idx_daily_challenges_difficulty ON daily_challenges(difficulty);
+CREATE INDEX IF NOT EXISTS idx_daily_challenges_discipline ON daily_challenges(discipline);
 
 -- Challenge Completions Table
 CREATE TABLE IF NOT EXISTS challenge_completions (
@@ -28,14 +28,20 @@ CREATE TABLE IF NOT EXISTS challenge_completions (
   notes TEXT
 );
 
-CREATE INDEX idx_challenge_completions_user_id ON challenge_completions(user_id);
-CREATE INDEX idx_challenge_completions_challenge_id ON challenge_completions(challenge_id);
-CREATE INDEX idx_challenge_completions_completed_at ON challenge_completions(completed_at);
+CREATE INDEX IF NOT EXISTS idx_challenge_completions_user_id ON challenge_completions(user_id);
+CREATE INDEX IF NOT EXISTS idx_challenge_completions_challenge_id ON challenge_completions(challenge_id);
+CREATE INDEX IF NOT EXISTS idx_challenge_completions_completed_at ON challenge_completions(completed_at);
+
+-- Create IMMUTABLE function to extract date from timestamp
+CREATE OR REPLACE FUNCTION immutable_date(ts TIMESTAMPTZ)
+RETURNS DATE AS $$
+  SELECT ts::DATE;
+$$ LANGUAGE SQL IMMUTABLE;
 
 -- Unique constraint: one completion per user per challenge per day
--- Using date() function which is IMMUTABLE (required for index expressions)
-CREATE UNIQUE INDEX idx_challenge_completions_user_challenge_date
-  ON challenge_completions(user_id, challenge_id, date(completed_at));
+-- Using immutable_date function (required for index expressions)
+CREATE UNIQUE INDEX IF NOT EXISTS idx_challenge_completions_user_challenge_date
+  ON challenge_completions(user_id, challenge_id, immutable_date(completed_at));
 
 -- RLS Policies
 ALTER TABLE challenge_completions ENABLE ROW LEVEL SECURITY;
