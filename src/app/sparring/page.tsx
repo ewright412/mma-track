@@ -19,11 +19,13 @@ import {
   FocusArea,
 } from '@/lib/types/sparring';
 import { Plus, Target, Users } from 'lucide-react';
+import { useToast } from '@/components/ui/Toast';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { RATING_COLORS, SPARRING_TYPE_CATEGORIES } from '@/lib/constants/sparring';
 
 export default function SparringPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [sessions, setSessions] = useState<SparringSessionWithRounds[]>([]);
   const [stats, setStats] = useState<SparringStats | null>(null);
   const [trends, setTrends] = useState<SparringTrendData[] | null>(null);
@@ -77,11 +79,12 @@ export default function SparringPage() {
     const { success, error: deleteError } = await deleteSparringSession(sessionId);
 
     if (deleteError) {
-      alert('Failed to delete session: ' + deleteError.message);
+      showToast('Failed to delete session', 'error');
       return;
     }
 
     if (success) {
+      showToast('Session deleted');
       loadData();
     }
   };
@@ -131,6 +134,8 @@ export default function SparringPage() {
   return (
     <div className="min-h-screen bg-background p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
+        <h1 className="text-xl font-bold text-white mb-4 md:hidden">Sparring</h1>
+
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <p className="text-gray-400 text-sm">Track and analyze your sparring performance</p>

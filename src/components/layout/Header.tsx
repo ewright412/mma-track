@@ -30,7 +30,7 @@ export function Header() {
   };
 
   return (
-    <header className="bg-[#0f0f13] border-b border-border px-4 py-3 md:px-6">
+    <header className="hidden md:block bg-[#0f0f13] border-b border-border px-4 py-3 md:px-6">
       <div className="flex items-center justify-between">
         {/* Left: Page Title */}
         <h2 className="text-lg font-semibold text-white">
@@ -41,7 +41,7 @@ export function Header() {
         <div className="flex items-center space-x-3">
           <button
             onClick={() => setShowQuickLog(true)}
-            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 transition-all duration-150"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 transition-all duration-150"
           >
             <Plus size={16} />
             Quick Log

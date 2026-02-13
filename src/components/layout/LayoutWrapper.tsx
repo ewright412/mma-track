@@ -41,7 +41,10 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
                 role="main"
                 aria-label="Main content"
                 className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 pb-24 md:pb-8"
-                style={{ paddingBottom: 'max(6rem, calc(6rem + var(--safe-area-inset-bottom)))' }}
+                style={{
+                  paddingTop: 'max(1rem, env(safe-area-inset-top))',
+                  paddingBottom: 'max(6rem, calc(6rem + var(--safe-area-inset-bottom)))',
+                }}
               >
                 <PageTransition>{children}</PageTransition>
               </main>

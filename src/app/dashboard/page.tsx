@@ -29,6 +29,7 @@ import { TodaysPlanCard } from '@/components/dashboard/TodaysPlanCard';
 import { DailyChallengeCard } from '@/components/dashboard/DailyChallengeCard';
 import { PaywallGate } from '@/components/billing/PaywallGate';
 import { useSubscription } from '@/lib/hooks/useSubscription';
+import { CountUp } from '@/components/ui/CountUp';
 
 // Lazy load heavy chart components for better initial load performance
 const DisciplineBreakdownChart = dynamic(
@@ -123,46 +124,48 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto space-y-3">
+        <h1 className="text-xl font-bold text-white md:hidden">Dashboard</h1>
+
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           <button
             onClick={() => router.push('/training/new')}
-            className="flex items-center gap-3 bg-[#1a1a24] rounded-xl p-4 hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
+            className="flex items-center gap-3 bg-[#1a1a24] rounded-xl h-14 px-4 hover:bg-[#1f1f2a] active:scale-[0.97] active:bg-white/5 transition-all duration-150"
             style={{ touchAction: 'manipulation' }}
           >
-            <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
-              <Target className="w-5 h-5 text-red-500" />
+            <div className="w-9 h-9 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
+              <Target className="w-4 h-4 text-red-500" />
             </div>
             <span className="text-sm font-medium text-white">Log Training</span>
           </button>
           <button
             onClick={() => router.push('/strength/new')}
-            className="flex items-center gap-3 bg-[#1a1a24] rounded-xl p-4 hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
+            className="flex items-center gap-3 bg-[#1a1a24] rounded-xl h-14 px-4 hover:bg-[#1f1f2a] active:scale-[0.97] active:bg-white/5 transition-all duration-150"
             style={{ touchAction: 'manipulation' }}
           >
-            <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
-              <Dumbbell className="w-5 h-5 text-red-400" />
+            <div className="w-9 h-9 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
+              <Dumbbell className="w-4 h-4 text-red-400" />
             </div>
             <span className="text-sm font-medium text-white">Log Workout</span>
           </button>
           <button
             onClick={() => router.push('/sparring/new')}
-            className="flex items-center gap-3 bg-[#1a1a24] rounded-xl p-4 hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
+            className="flex items-center gap-3 bg-[#1a1a24] rounded-xl h-14 px-4 hover:bg-[#1f1f2a] active:scale-[0.97] active:bg-white/5 transition-all duration-150"
             style={{ touchAction: 'manipulation' }}
           >
-            <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-              <Activity className="w-5 h-5 text-amber-500" />
+            <div className="w-9 h-9 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+              <Activity className="w-4 h-4 text-amber-500" />
             </div>
             <span className="text-sm font-medium text-white">Log Sparring</span>
           </button>
           <button
             onClick={() => router.push('/cardio/new')}
-            className="flex items-center gap-3 bg-[#1a1a24] rounded-xl p-4 hover:bg-[#1f1f2a] active:scale-[0.97] transition-all duration-150"
+            className="flex items-center gap-3 bg-[#1a1a24] rounded-xl h-14 px-4 hover:bg-[#1f1f2a] active:scale-[0.97] active:bg-white/5 transition-all duration-150"
             style={{ touchAction: 'manipulation' }}
           >
-            <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0">
-              <Heart className="w-5 h-5 text-green-500" />
+            <div className="w-9 h-9 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0">
+              <Heart className="w-4 h-4 text-green-500" />
             </div>
             <span className="text-sm font-medium text-white">Log Cardio</span>
           </button>
@@ -181,77 +184,73 @@ export default function DashboardPage() {
         <TodaysPlanCard entries={data.todaysSchedule} />
 
         {/* Key Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-          <div className="bg-[#1a1a24] rounded-xl p-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="bg-[#1a1a24] rounded-xl p-3">
             <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center mb-2">
               <Calendar className="w-4 h-4 text-blue-400" />
             </div>
-            <div className="text-2xl font-bold text-white">{thisWeekCount}</div>
+            <div className="text-xl font-bold text-white"><CountUp end={thisWeekCount} /></div>
             <div className="text-xs text-gray-500">
               {thisWeekCount === 1 ? 'session' : 'sessions'} this week
             </div>
           </div>
 
-          <div className="bg-[#1a1a24] rounded-xl p-4">
+          <div className="bg-[#1a1a24] rounded-xl p-3">
             <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center mb-2">
               <Clock className="w-4 h-4 text-purple-400" />
             </div>
-            <div className="text-2xl font-bold text-white">
+            <div className="text-xl font-bold text-white">
               {thisWeekMinutes >= 60
-                ? `${Math.floor(thisWeekMinutes / 60)}h ${thisWeekMinutes % 60}m`
-                : `${thisWeekMinutes}m`}
+                ? <><CountUp end={Math.floor(thisWeekMinutes / 60)} />h <CountUp end={thisWeekMinutes % 60} />m</>
+                : <><CountUp end={thisWeekMinutes} />m</>}
             </div>
             <div className="text-xs text-gray-500">training time</div>
           </div>
 
-          <div className="bg-[#1a1a24] rounded-xl p-4">
+          <div className="bg-[#1a1a24] rounded-xl p-3">
             <div className="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center mb-2">
               <Flame className="w-4 h-4 text-orange-400" />
             </div>
-            <div className="text-2xl font-bold text-white">
-              {data.trainingStats?.currentStreak || 0}
+            <div className="text-xl font-bold text-white">
+              <CountUp end={data.trainingStats?.currentStreak || 0} />
             </div>
             <div className="text-xs text-gray-500">
               {(data.trainingStats?.currentStreak || 0) === 1 ? 'day' : 'days'} streak
             </div>
           </div>
 
-          <div className="bg-[#1a1a24] rounded-xl p-4">
+          <div className="bg-[#1a1a24] rounded-xl p-3">
             <div className="w-8 h-8 rounded-full bg-yellow-500/10 flex items-center justify-center mb-2">
               <Award className="w-4 h-4 text-yellow-400" />
             </div>
-            <div className="text-2xl font-bold text-white">
-              {data.recentPRs.length}
+            <div className="text-xl font-bold text-white">
+              <CountUp end={data.recentPRs.length} />
             </div>
             <div className="text-xs text-gray-500">personal records</div>
           </div>
         </div>
 
         {/* Training Load */}
-        <div className="mb-4">
-          <PaywallGate isPro={isPro} feature="Training Load analytics">
-            <TrainingLoadCard
-              loadThisWeek={data.trainingLoadThisWeek}
-              load4WeekAvg={data.trainingLoad4WeekAvg}
-            />
-          </PaywallGate>
-        </div>
+        <PaywallGate isPro={isPro} feature="Training Load analytics">
+          <TrainingLoadCard
+            loadThisWeek={data.trainingLoadThisWeek}
+            load4WeekAvg={data.trainingLoad4WeekAvg}
+          />
+        </PaywallGate>
 
         {/* Insights */}
         {data.insights.length > 0 && (
-          <div className="mb-4">
-            <TrainingInsights insights={data.insights} />
-          </div>
+          <TrainingInsights insights={data.insights} />
         )}
 
         {/* Training Overview + Discipline Breakdown */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           {/* Weekly Volume Chart */}
-          <Card className="p-5">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <Zap className="w-5 h-5 text-blue-400" />
-                <h2 className="text-lg font-semibold text-white">
+          <Card className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Zap className="w-4 h-4 text-blue-400" />
+                <h2 className="text-base font-semibold text-white">
                   Weekly Training Volume
                 </h2>
               </div>
@@ -269,10 +268,10 @@ export default function DashboardPage() {
 
           {/* Discipline Balance (Radar) */}
           <PaywallGate isPro={isPro} feature="Discipline Balance chart">
-            <Card className="p-5">
-              <div className="flex items-center gap-3 mb-4">
-                <Target className="w-5 h-5 text-red-400" />
-                <h2 className="text-lg font-semibold text-white">
+            <Card className="p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Target className="w-4 h-4 text-red-400" />
+                <h2 className="text-base font-semibold text-white">
                   Discipline Balance
                 </h2>
                 <span className="text-xs text-gray-500">Last 30 days</span>
@@ -285,11 +284,11 @@ export default function DashboardPage() {
         </div>
 
         {/* Sparring Trends */}
-        <Card className="p-5 mb-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <Activity className="w-5 h-5 text-purple-400" />
-              <h2 className="text-lg font-semibold text-white">
+        <Card className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Activity className="w-4 h-4 text-purple-400" />
+              <h2 className="text-base font-semibold text-white">
                 Sparring Trends
               </h2>
             </div>
@@ -306,13 +305,13 @@ export default function DashboardPage() {
         </Card>
 
         {/* Strength + Cardio Highlights */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           {/* Strength Highlights */}
-          <Card className="p-5">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <Dumbbell className="w-5 h-5 text-red-400" />
-                <h2 className="text-lg font-semibold text-white">
+          <Card className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Dumbbell className="w-4 h-4 text-red-400" />
+                <h2 className="text-base font-semibold text-white">
                   Strength Highlights
                 </h2>
               </div>
@@ -383,11 +382,11 @@ export default function DashboardPage() {
           </Card>
 
           {/* Cardio Highlights */}
-          <Card className="p-5">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <Heart className="w-5 h-5 text-green-400" />
-                <h2 className="text-lg font-semibold text-white">
+          <Card className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Heart className="w-4 h-4 text-green-400" />
+                <h2 className="text-base font-semibold text-white">
                   Cardio Highlights
                 </h2>
               </div>
@@ -465,13 +464,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Body Metrics + Goals */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           {/* Body Metrics Snapshot */}
-          <Card className="p-5">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <Scale className="w-5 h-5 text-blue-500" />
-                <h2 className="text-lg font-semibold text-white">
+          <Card className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Scale className="w-4 h-4 text-blue-500" />
+                <h2 className="text-base font-semibold text-white">
                   Body Metrics
                 </h2>
               </div>

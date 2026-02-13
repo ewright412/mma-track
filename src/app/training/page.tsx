@@ -11,9 +11,11 @@ import { getTrainingSessions, deleteTrainingSession, getTrainingStats, createTra
 import { TrainingSessionWithTechniques, TrainingSessionFilters, TrainingStats } from '@/lib/types/training';
 import { MMA_DISCIPLINES } from '@/lib/constants/disciplines';
 import { Plus, Filter, Flame, Clock, TrendingUp } from 'lucide-react';
+import { useToast } from '@/components/ui/Toast';
 
 export default function TrainingPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [sessions, setSessions] = useState<TrainingSessionWithTechniques[]>([]);
   const [stats, setStats] = useState<TrainingStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -78,12 +80,12 @@ export default function TrainingPage() {
     const { success, error: deleteError } = await deleteTrainingSession(sessionId);
 
     if (deleteError) {
-      alert('Failed to delete session: ' + deleteError.message);
+      showToast('Failed to delete session', 'error');
       return;
     }
 
     if (success) {
-      // Reload sessions
+      showToast('Session deleted');
       loadSessions();
       loadStats();
     }
@@ -108,8 +110,9 @@ export default function TrainingPage() {
     });
 
     if (repeatError) {
-      alert('Failed to repeat session: ' + repeatError.message);
+      showToast('Failed to repeat session', 'error');
     } else {
+      showToast('Session logged!');
       loadSessions();
       loadStats();
     }
@@ -118,6 +121,8 @@ export default function TrainingPage() {
   return (
     <div className="min-h-screen bg-background p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
+        <h1 className="text-xl font-bold text-white mb-4 md:hidden">Training</h1>
+
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <p className="text-gray-400 text-sm">Track and review your training sessions</p>
@@ -129,30 +134,46 @@ export default function TrainingPage() {
 
         {/* Stats Cards */}
         {stats && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <Card className="p-4">
-              <TrendingUp className="w-5 h-5 text-red-500 mb-2" />
-              <p className="text-2xl font-bold text-white">{stats.totalSessions}</p>
-              <p className="text-sm text-gray-500">total {stats.totalSessions === 1 ? 'session' : 'sessions'}</p>
-            </Card>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div className="bg-[#1a1a24] rounded-xl p-3 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="w-4 h-4 text-red-500" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-white leading-tight">{stats.totalSessions}</p>
+                <p className="text-xs text-gray-500">sessions</p>
+              </div>
+            </div>
 
-            <Card className="p-4">
-              <Clock className="w-5 h-5 text-purple-400 mb-2" />
-              <p className="text-2xl font-bold text-white">{Math.floor(stats.totalMinutes / 60)}h</p>
-              <p className="text-sm text-gray-500">total time</p>
-            </Card>
+            <div className="bg-[#1a1a24] rounded-xl p-3 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+                <Clock className="w-4 h-4 text-purple-400" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-white leading-tight">{Math.floor(stats.totalMinutes / 60)}h</p>
+                <p className="text-xs text-gray-500">total time</p>
+              </div>
+            </div>
 
-            <Card className="p-4">
-              <Flame className="w-5 h-5 text-warning mb-2" />
-              <p className="text-2xl font-bold text-white">{stats.averageIntensity}/10</p>
-              <p className="text-sm text-gray-500">avg intensity</p>
-            </Card>
+            <div className="bg-[#1a1a24] rounded-xl p-3 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                <Flame className="w-4 h-4 text-warning" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-white leading-tight">{stats.averageIntensity}/10</p>
+                <p className="text-xs text-gray-500">avg intensity</p>
+              </div>
+            </div>
 
-            <Card className="p-4">
-              <Flame className="w-5 h-5 text-success mb-2" />
-              <p className="text-2xl font-bold text-white">{stats.currentStreak}</p>
-              <p className="text-sm text-gray-500">{stats.currentStreak === 1 ? 'day' : 'days'} streak</p>
-            </Card>
+            <div className="bg-[#1a1a24] rounded-xl p-3 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                <Flame className="w-4 h-4 text-success" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-white leading-tight">{stats.currentStreak}</p>
+                <p className="text-xs text-gray-500">{stats.currentStreak === 1 ? 'day' : 'days'} streak</p>
+              </div>
+            </div>
           </div>
         )}
 

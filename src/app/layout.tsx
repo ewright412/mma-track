@@ -5,6 +5,7 @@ import { AuthProvider } from "@/lib/contexts/AuthContext";
 import { LayoutWrapper } from "@/components/layout/LayoutWrapper";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
 import { Providers } from "@/components/providers/Providers";
+import { ToastProvider } from "@/components/ui/Toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,7 +44,9 @@ export default function RootLayout({
         <OfflineIndicator />
         <Providers>
           <AuthProvider>
-            <LayoutWrapper>{children}</LayoutWrapper>
+            <ToastProvider>
+              <LayoutWrapper>{children}</LayoutWrapper>
+            </ToastProvider>
           </AuthProvider>
         </Providers>
       </body>

@@ -42,8 +42,8 @@ export function DailyChallengeCard() {
   const { challenge, completed } = todaysChallenge;
 
   return (
-    <div className="bg-[#1a1a24] rounded-xl p-5 mb-4">
-      <div className="flex items-center justify-between mb-3">
+    <div className="bg-[#1a1a24] rounded-xl p-4 mb-3">
+      <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <Flame className="w-4 h-4 text-red-400" />
           <span className="text-xs text-gray-500 uppercase tracking-wide">Daily Challenge</span>
@@ -56,23 +56,23 @@ export function DailyChallengeCard() {
         )}
       </div>
 
-      <h2 className="text-lg font-semibold text-white">{challenge.title}</h2>
-      <p className="text-sm text-gray-400 mt-1 mb-3 line-clamp-2">
+      <h2 className="text-base font-semibold text-white">{challenge.title}</h2>
+      <p className="text-sm text-gray-400 mt-1 mb-2 line-clamp-2">
         {challenge.description}
       </p>
 
-      <div className="flex flex-wrap gap-1.5 mb-4">
-        <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-gray-400">
+      <div className="flex flex-wrap gap-1.5 mb-3">
+        <span className="text-xs py-0.5 px-2 rounded-full bg-white/5 text-gray-400">
           {challenge.category}
         </span>
-        <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-gray-400">
+        <span className="text-xs py-0.5 px-2 rounded-full bg-white/5 text-gray-400">
           {challenge.difficulty}
         </span>
-        <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-gray-400 flex items-center gap-1">
+        <span className="text-xs py-0.5 px-2 rounded-full bg-white/5 text-gray-400 flex items-center gap-1">
           <Clock className="w-3 h-3" />
           {formatDuration(challenge.duration_minutes)}
         </span>
-        <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-gray-400 flex items-center gap-1">
+        <span className="text-xs py-0.5 px-2 rounded-full bg-white/5 text-gray-400 flex items-center gap-1">
           <Trophy className="w-3 h-3" />
           {challenge.points} pts
         </span>
@@ -80,7 +80,9 @@ export function DailyChallengeCard() {
 
       <Link
         href="/challenge"
-        className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors"
+        className={`flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors active:scale-[0.97] ${
+          !completed ? 'animate-pulse-attention' : ''
+        }`}
       >
         {completed ? 'View Challenge' : 'Start Challenge'}
         <ArrowRight className="w-4 h-4" />

@@ -133,11 +133,15 @@ export default function CoachPage() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
-        const errorMsg = errorData?.error || 'Failed to get response';
+        const errorMsg = response.status === 429
+          ? 'Daily message limit reached. Try again tomorrow.'
+          : response.status === 401
+          ? 'Session expired. Please sign out and sign back in.'
+          : errorData?.error || 'Coach is unavailable right now. Please try again.';
 
         const errorMessage: ChatMessage = {
           role: 'assistant',
-          content: `Sorry, I couldn't respond right now. ${errorMsg}`,
+          content: errorMsg,
           timestamp: new Date().toISOString(),
         };
         const withError = [...updatedMessages, errorMessage];

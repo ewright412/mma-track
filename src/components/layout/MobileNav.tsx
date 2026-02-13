@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   LayoutDashboard,
   Dumbbell,
@@ -17,6 +17,7 @@ import {
   Brain,
   X,
   Flame,
+  Timer,
 } from "lucide-react";
 
 const mainItems = [
@@ -39,8 +40,15 @@ const moreItems = [
 export function MobileNav() {
   const pathname = usePathname();
   const [showMore, setShowMore] = useState(false);
+  const [bouncedTab, setBouncedTab] = useState<string | null>(null);
 
   const isMoreActive = moreItems.some((item) => pathname === item.href || pathname.startsWith(item.href + "/"));
+
+  const handleTabClick = (href: string) => {
+    setBouncedTab(href);
+    setShowMore(false);
+    setTimeout(() => setBouncedTab(null), 250);
+  };
 
   return (
     <>
@@ -48,19 +56,19 @@ export function MobileNav() {
       {showMore && (
         <>
           <div
-            className="md:hidden fixed inset-0 bg-black/60 z-40"
+            className="md:hidden fixed inset-0 bg-black/50 z-40 animate-overlay"
             onClick={() => setShowMore(false)}
           />
-          <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#1a1a24] border-t border-white/[0.08] z-40 rounded-t-2xl pb-safe">
+          <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#1a1a24] border-t border-white/[0.08] z-40 rounded-t-2xl pb-safe animate-slide-up">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-white">More</h3>
                 <button
                   onClick={() => setShowMore(false)}
-                  className="p-2 -mr-2 text-gray-400 hover:text-white transition-colors"
+                  className="w-10 h-10 flex items-center justify-center -mr-2 text-gray-400 hover:text-white active:bg-white/10 rounded-full transition-colors"
                   aria-label="Close menu"
                 >
-                  <X size={20} />
+                  <X size={22} />
                 </button>
               </div>
               <div className="grid grid-cols-3 gap-4">
@@ -72,7 +80,7 @@ export function MobileNav() {
                       key={item.href}
                       href={item.href}
                       onClick={() => setShowMore(false)}
-                      className={`flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-150 ${
+                      className={`flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-150 active:scale-[0.97] ${
                         isActive
                           ? "bg-red-500/10 text-red-400"
                           : "text-gray-400 hover:bg-white/5 active:bg-white/10"
@@ -102,12 +110,16 @@ export function MobileNav() {
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
                 aria-label={item.label}
-                onClick={() => setShowMore(false)}
+                onClick={() => handleTabClick(item.href)}
                 className={`flex flex-col items-center justify-center flex-1 h-full gap-1 transition-default ${
                   isActive ? "text-red-500" : "text-gray-500"
                 }`}
               >
-                <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                <Icon
+                  size={22}
+                  strokeWidth={isActive ? 2.5 : 2}
+                  className={bouncedTab === item.href ? "animate-tab-bounce" : ""}
+                />
                 <span className="text-[10px] font-medium">{item.label}</span>
               </Link>
             );

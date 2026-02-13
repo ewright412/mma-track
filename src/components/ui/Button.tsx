@@ -1,4 +1,5 @@
 import React from "react";
+import { hapticLight } from "@/lib/utils/haptics";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "ghost" | "danger";
@@ -28,11 +29,17 @@ export function Button({
     lg: "px-6 py-3 text-lg min-h-[48px]",
   };
 
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    hapticLight();
+    props.onClick?.(e);
+  };
+
   return (
     <button
+      {...props}
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
       style={{ touchAction: 'manipulation' }}
-      {...props}
+      onClick={handleClick}
     >
       {children}
     </button>

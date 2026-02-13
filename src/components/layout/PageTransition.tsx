@@ -1,32 +1,24 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [displayChildren, setDisplayChildren] = useState(children);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [animKey, setAnimKey] = useState(0);
+  const prevPathRef = useRef(pathname);
 
   useEffect(() => {
-    // Start fade out
-    setIsTransitioning(true);
-
-    const timeout = setTimeout(() => {
-      // Update content and fade in
-      setDisplayChildren(children);
-      setIsTransitioning(false);
-    }, 150);
-
-    return () => clearTimeout(timeout);
+    if (prevPathRef.current !== pathname) {
+      prevPathRef.current = pathname;
+      setAnimKey((k) => k + 1);
+    }
+    setDisplayChildren(children);
   }, [pathname, children]);
 
   return (
-    <div
-      className={`transition-opacity duration-150 ease-out ${
-        isTransitioning ? 'opacity-0' : 'opacity-100'
-      }`}
-    >
+    <div key={animKey} className="animate-fade-in">
       {displayChildren}
     </div>
   );
