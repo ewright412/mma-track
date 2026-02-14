@@ -40,10 +40,10 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
                 id="main-content"
                 role="main"
                 aria-label="Main content"
-                className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 pb-24 md:pb-8"
+                className="flex-1 overflow-y-auto bg-[#0f0f13] md:p-6 lg:p-8"
                 style={{
-                  paddingTop: 'max(1rem, env(safe-area-inset-top))',
-                  paddingBottom: 'max(6rem, calc(6rem + var(--safe-area-inset-bottom)))',
+                  paddingTop: 'max(0.75rem, env(safe-area-inset-top))',
+                  paddingBottom: 'max(7rem, calc(7rem + env(safe-area-inset-bottom, 0px)))',
                 }}
               >
                 <PageTransition>{children}</PageTransition>

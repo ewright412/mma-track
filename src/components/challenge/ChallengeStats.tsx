@@ -30,7 +30,7 @@ export function ChallengeStats() {
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="bg-[#1a1a24] rounded-lg border border-white/[0.08] p-4 animate-pulse"
+              className="bg-[#1a1a24] rounded-xl border border-white/[0.08] p-4 animate-pulse"
             >
               <div className="h-4 w-16 bg-white/5 rounded mb-2" />
               <div className="h-8 w-12 bg-white/5 rounded" />
@@ -85,7 +85,7 @@ export function ChallengeStats() {
         {statCards.map((stat, index) => (
           <div
             key={index}
-            className="bg-[#1a1a24] rounded-lg border border-white/[0.08] p-4"
+            className="bg-[#1a1a24] rounded-xl border border-white/[0.08] p-4"
           >
             <div className="flex items-center gap-2 mb-2">
               <div className={`p-1.5 ${stat.bgColor} rounded`}>
@@ -100,7 +100,7 @@ export function ChallengeStats() {
 
       {/* Calendar View */}
       {stats.completed_dates.length > 0 && (
-        <div className="bg-[#1a1a24] rounded-lg border border-white/[0.08] p-4">
+        <div className="bg-[#1a1a24] rounded-xl border border-white/[0.08] p-4">
           <h3 className="text-sm font-medium text-white mb-3">Activity Calendar</h3>
           <div className="grid grid-cols-7 gap-2">
             {getLast30Days().map((date, index) => {

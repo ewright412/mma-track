@@ -301,7 +301,7 @@ export default function NewStrengthLogPage() {
 
         {/* PR Celebration */}
         {prResults.length > 0 && (
-          <div className="mb-6 p-5 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+          <div className="mb-6 p-5 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
             <h2 className="text-lg font-bold text-yellow-400 mb-2">New PR{prResults.length > 1 ? 's' : ''}!</h2>
             {prResults.map((pr, idx) => (
               <div key={idx} className="text-white mb-1 text-sm">
@@ -318,7 +318,7 @@ export default function NewStrengthLogPage() {
         )}
 
         {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
             <p className="text-red-400 text-sm">{error}</p>
           </div>
         )}
@@ -359,7 +359,7 @@ export default function NewStrengthLogPage() {
             <h2 className="text-lg font-semibold text-white border-b border-white/5 pb-2 mb-4">Exercises</h2>
             <div className="space-y-4">
               {exercises.map((exercise, exerciseIndex) => (
-                <div key={exercise.id} className="bg-[#1a1a24] border border-white/10 rounded-lg p-4">
+                <div key={exercise.id} className="bg-[#1a1a24] border border-white/10 rounded-xl p-4">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1 mr-3">
                       <label className="block text-sm font-medium text-gray-300 mb-1.5">
@@ -444,7 +444,7 @@ export default function NewStrengthLogPage() {
                   <button
                     type="button"
                     onClick={() => addSet(exercise.id)}
-                    className="w-full py-2 border border-dashed border-white/20 rounded-lg text-sm text-gray-400 hover:text-white hover:border-white/40 transition-colors flex items-center justify-center gap-1.5"
+                    className="w-full py-2 border border-dashed border-white/20 rounded-xl text-sm text-gray-400 hover:text-white hover:border-white/40 transition-colors flex items-center justify-center gap-1.5"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Add Set
@@ -464,7 +464,7 @@ export default function NewStrengthLogPage() {
               <button
                 type="button"
                 onClick={addExercise}
-                className="w-full py-3 border border-dashed border-white/20 rounded-lg text-sm text-gray-400 hover:text-white hover:border-white/40 transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3 border border-dashed border-white/20 rounded-xl text-sm text-gray-400 hover:text-white hover:border-white/40 transition-colors flex items-center justify-center gap-2"
               >
                 <Plus className="w-4 h-4" />
                 Add Exercise
@@ -476,7 +476,7 @@ export default function NewStrengthLogPage() {
           <div>
             <h2 className="text-lg font-semibold text-white border-b border-white/5 pb-2 mb-4">Notes</h2>
             <textarea
-              className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
               rows={3}
               value={notes}
               onChange={e => setNotes(e.target.value)}
@@ -510,7 +510,7 @@ export default function NewStrengthLogPage() {
           </div>
 
           {/* Total Volume Bar + Submit */}
-          <div className="bg-[#1a1a24] border border-white/10 rounded-lg p-4">
+          <div className="bg-[#1a1a24] border border-white/10 rounded-xl p-4">
             {exercises.length > 0 && (
               <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/5">
                 <span className="text-sm text-gray-400">Total Volume</span>
@@ -540,7 +540,7 @@ export default function NewStrengthLogPage() {
 
       {/* Badge Toast */}
       {badgeToast && (
-        <div className="fixed bottom-6 right-6 bg-[#f59e0b] text-black px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 animate-pulse">
+        <div className="fixed bottom-6 right-6 bg-[#f59e0b] text-black px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 z-50 animate-pulse">
           <span className="text-lg">🏆</span>
           <span className="text-sm font-medium">Achievement Unlocked: {badgeToast}!</span>
         </div>

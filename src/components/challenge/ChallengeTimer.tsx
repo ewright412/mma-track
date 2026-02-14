@@ -84,7 +84,7 @@ export function ChallengeTimer({
   if (completed) {
     return (
       <div className="text-center py-6">
-        <div className="inline-flex items-center gap-2 px-6 py-3 bg-green-500/20 border border-green-500/30 rounded-lg">
+        <div className="inline-flex items-center gap-2 px-6 py-3 bg-green-500/20 border border-green-500/30 rounded-xl">
           <CheckCircle className="w-5 h-5 text-green-400" />
           <span className="text-green-400 font-medium">
             Challenge Completed! +{challenge.points} points
@@ -124,14 +124,14 @@ export function ChallengeTimer({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="How did the challenge feel? What did you learn?"
-              className="w-full px-4 py-3 bg-[#0f0f13] border border-white/[0.08] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-500/50 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-[#0f0f13] border border-white/[0.08] rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-red-500/50 transition-colors resize-none"
               rows={4}
             />
 
             <button
               onClick={handleComplete}
               disabled={submitting}
-              className="w-full px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {submitting ? (
                 <>
@@ -164,13 +164,13 @@ export function ChallengeTimer({
         <div className="flex gap-3">
           <button
             onClick={() => setTimerActive(false)}
-            className="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors"
+            className="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-xl transition-colors"
           >
             Pause
           </button>
           <button
             onClick={handleManualComplete}
-            className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors"
+            className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-xl transition-colors"
           >
             Mark Complete
           </button>
@@ -195,14 +195,14 @@ export function ChallengeTimer({
       <div className="flex gap-3">
         <button
           onClick={handleStart}
-          className="flex-1 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+          className="flex-1 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-xl transition-colors flex items-center justify-center gap-2"
         >
           <Play className="w-5 h-5" />
           Start Challenge
         </button>
         <button
           onClick={handleManualComplete}
-          className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors"
+          className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-xl transition-colors"
         >
           Skip Timer & Complete
         </button>

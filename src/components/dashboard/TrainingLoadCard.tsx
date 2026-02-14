@@ -68,7 +68,7 @@ export function TrainingLoadCard({ loadThisWeek, load4WeekAvg }: TrainingLoadCar
   return (
     <Card className="p-5">
       <div className="flex items-center gap-3 mb-3">
-        <div className={`p-2 rounded-lg ${config.bgColor}`}>
+        <div className={`p-2 rounded-xl ${config.bgColor}`}>
           <Gauge className={`w-5 h-5 ${config.color}`} />
         </div>
         <div>

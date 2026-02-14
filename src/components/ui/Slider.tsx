@@ -27,7 +27,7 @@ export function Slider({ label, showValue = true, className = "", ...props }: Sl
       )}
       <input
         type="range"
-        className={`w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-accent ${className}`}
+        className={`w-full h-2 bg-white/10 rounded-xl appearance-none cursor-pointer accent-accent ${className}`}
         value={value}
         onChange={handleChange}
         {...props}

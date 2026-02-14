@@ -151,7 +151,7 @@ export default function ReviewPage() {
                   reviewed
                 </p>
 
-                <div className="inline-flex items-center gap-2 px-6 py-3 bg-yellow-500/10 text-yellow-400 rounded-lg border border-yellow-500/20 mb-6">
+                <div className="inline-flex items-center gap-2 px-6 py-3 bg-yellow-500/10 text-yellow-400 rounded-xl border border-yellow-500/20 mb-6">
                   <Trophy className="w-5 h-5" />
                   <span className="font-bold">+{totalXP} XP Earned</span>
                 </div>
@@ -173,7 +173,7 @@ export default function ReviewPage() {
 
             <Link
               href="/learn"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all font-semibold"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all font-semibold"
             >
               Back to Skill Tree
             </Link>
@@ -233,7 +233,7 @@ export default function ReviewPage() {
             {/* Discipline Badge */}
             <div className="flex justify-center mb-6">
               <span
-                className="px-4 py-2 rounded-lg text-sm font-medium border"
+                className="px-4 py-2 rounded-xl text-sm font-medium border"
                 style={{
                   backgroundColor: `${getDisciplineColor(currentReview.node.discipline)}20`,
                   borderColor: `${getDisciplineColor(currentReview.node.discipline)}40`,
@@ -260,7 +260,7 @@ export default function ReviewPage() {
             {!showingAnswer ? (
               <button
                 onClick={() => setShowingAnswer(true)}
-                className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all font-semibold text-lg"
+                className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all font-semibold text-lg"
               >
                 <Eye className="w-5 h-5" />
                 Show Answer
@@ -293,7 +293,7 @@ export default function ReviewPage() {
                   <button
                     onClick={() => handleSubmitReview(0)}
                     disabled={submitting}
-                    className="w-full flex items-center justify-between px-6 py-4 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 border border-red-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-between px-6 py-4 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 border border-red-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <div className="flex items-center gap-3">
                       <Frown className="w-6 h-6" />
@@ -310,7 +310,7 @@ export default function ReviewPage() {
                   <button
                     onClick={() => handleSubmitReview(3)}
                     disabled={submitting}
-                    className="w-full flex items-center justify-between px-6 py-4 bg-yellow-500/10 text-yellow-400 rounded-lg hover:bg-yellow-500/20 border border-yellow-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-between px-6 py-4 bg-yellow-500/10 text-yellow-400 rounded-xl hover:bg-yellow-500/20 border border-yellow-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <div className="flex items-center gap-3">
                       <Meh className="w-6 h-6" />
@@ -327,7 +327,7 @@ export default function ReviewPage() {
                   <button
                     onClick={() => handleSubmitReview(4)}
                     disabled={submitting}
-                    className="w-full flex items-center justify-between px-6 py-4 bg-green-500/10 text-green-400 rounded-lg hover:bg-green-500/20 border border-green-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-between px-6 py-4 bg-green-500/10 text-green-400 rounded-xl hover:bg-green-500/20 border border-green-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <div className="flex items-center gap-3">
                       <ThumbsUp className="w-6 h-6" />
@@ -345,7 +345,7 @@ export default function ReviewPage() {
                   <button
                     onClick={() => handleSubmitReview(5)}
                     disabled={submitting}
-                    className="w-full flex items-center justify-between px-6 py-4 bg-blue-500/10 text-blue-400 rounded-lg hover:bg-blue-500/20 border border-blue-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-between px-6 py-4 bg-blue-500/10 text-blue-400 rounded-xl hover:bg-blue-500/20 border border-blue-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <div className="flex items-center gap-3">
                       <Flame className="w-6 h-6" />

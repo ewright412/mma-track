@@ -542,9 +542,9 @@ export default function ProfilePage() {
     return (
       <div className="space-y-6">
         <div className="h-8 w-48 bg-white/5 rounded animate-pulse" />
-        <div className="h-48 bg-[#1a1a24] rounded-lg animate-pulse" />
+        <div className="h-48 bg-[#1a1a24] rounded-xl animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />)}
+          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#1a1a24] rounded-xl animate-pulse" />)}
         </div>
       </div>
     );
@@ -566,7 +566,9 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="px-4 pt-3 space-y-6">
+      <h1 className="text-xl font-bold text-white">Profile</h1>
+
       {/* Fighter Profile Card */}
       <Card className="p-6">
         <div className="flex items-start justify-between">
@@ -789,7 +791,7 @@ export default function ProfilePage() {
             return (
               <div
                 key={badge.key}
-                className={`flex flex-col items-center text-center p-3 rounded-lg border transition-all duration-150 ${
+                className={`flex flex-col items-center text-center p-3 rounded-xl border transition-all duration-150 ${
                   earned
                     ? 'border-white/[0.08] bg-white/5'
                     : 'border-white/[0.04] bg-white/[0.02] opacity-40'
@@ -852,7 +854,7 @@ export default function ProfilePage() {
               return (
                 <div
                   key={comp.id}
-                  className={`flex items-center justify-between p-3 rounded-lg border ${
+                  className={`flex items-center justify-between p-3 rounded-xl border ${
                     isPast ? 'border-white/[0.05] bg-white/[0.02] opacity-60' : 'border-white/[0.08] bg-white/5'
                   }`}
                 >

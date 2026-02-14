@@ -170,7 +170,7 @@ export default function SkillTreePage() {
               <button
                 key={discipline}
                 onClick={() => setSelectedDiscipline(discipline)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                   selectedDiscipline === discipline
                     ? 'bg-red-500 text-white'
                     : 'bg-white/5 text-gray-400 hover:bg-white/10'

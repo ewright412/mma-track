@@ -41,10 +41,10 @@ export default function ChallengePage() {
   if (loading) {
     return (
       <AuthGuard>
-        <div className="p-6 max-w-[900px] mx-auto">
+        <div className="px-4 pt-3 max-w-[900px] mx-auto">
           <div className="animate-pulse">
             <div className="h-8 w-48 bg-white/5 rounded mb-4" />
-            <div className="h-64 bg-white/5 rounded-lg" />
+            <div className="h-64 bg-white/5 rounded-xl" />
           </div>
         </div>
       </AuthGuard>
@@ -54,7 +54,7 @@ export default function ChallengePage() {
   if (!todaysChallenge) {
     return (
       <AuthGuard>
-        <div className="p-6 max-w-[900px] mx-auto">
+        <div className="px-4 pt-3 max-w-[900px] mx-auto">
           <div className="text-center text-gray-400">
             <p>No challenge available today. Check back tomorrow!</p>
           </div>
@@ -67,11 +67,11 @@ export default function ChallengePage() {
 
   return (
     <AuthGuard>
-      <div className="p-6 max-w-[900px] mx-auto">
+      <div className="px-4 pt-3 max-w-[900px] mx-auto">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-red-500/10 rounded-lg">
+            <div className="p-2 bg-red-500/10 rounded-xl">
               <Flame className="w-6 h-6 text-red-400" />
             </div>
             <h1 className="text-2xl font-bold text-white">Daily Challenge</h1>
@@ -82,7 +82,7 @@ export default function ChallengePage() {
         </div>
 
         {/* Today's Challenge Card */}
-        <div className="bg-[#1a1a24] rounded-lg border border-white/[0.08] overflow-hidden mb-6">
+        <div className="bg-[#1a1a24] rounded-xl border border-white/[0.08] overflow-hidden mb-6">
           {/* Challenge Header */}
           <div className="p-6 border-b border-white/[0.08]">
             <div className="flex items-start justify-between gap-4 mb-4">

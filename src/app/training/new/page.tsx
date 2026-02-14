@@ -206,7 +206,7 @@ export default function NewTrainingSessionPage() {
                   <button
                     type="button"
                     onClick={() => setBjjType('gi')}
-                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all min-h-[44px] active:scale-[0.97] ${
+                    className={`flex-1 py-3 rounded-xl text-sm font-medium transition-all min-h-[44px] active:scale-[0.97] ${
                       bjjType === 'gi'
                         ? 'bg-red-500/20 border border-red-500 text-red-400'
                         : 'bg-[#1a1a24] border border-white/5 text-gray-400 hover:text-white'
@@ -218,7 +218,7 @@ export default function NewTrainingSessionPage() {
                   <button
                     type="button"
                     onClick={() => setBjjType('nogi')}
-                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all min-h-[44px] active:scale-[0.97] ${
+                    className={`flex-1 py-3 rounded-xl text-sm font-medium transition-all min-h-[44px] active:scale-[0.97] ${
                       bjjType === 'nogi'
                         ? 'bg-red-500/20 border border-red-500 text-red-400'
                         : 'bg-[#1a1a24] border border-white/5 text-gray-400 hover:text-white'
@@ -241,7 +241,7 @@ export default function NewTrainingSessionPage() {
                   key={preset}
                   type="button"
                   onClick={() => setDurationMinutes(preset)}
-                  className={`px-4 py-2 rounded-lg text-sm transition-all min-h-[40px] active:scale-[0.97] ${
+                  className={`px-4 py-2 rounded-xl text-sm transition-all min-h-[40px] active:scale-[0.97] ${
                     durationMinutes === preset
                       ? 'bg-red-500/20 border border-red-500 text-red-400 font-medium'
                       : 'bg-[#1a1a24] border border-white/5 text-gray-400 hover:text-white'
@@ -288,7 +288,7 @@ export default function NewTrainingSessionPage() {
               max="10"
               value={intensity}
               onChange={(e) => setIntensity(Number(e.target.value))}
-              className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+              className="w-full h-2 rounded-xl appearance-none cursor-pointer"
               style={{
                 background: `linear-gradient(to right, #22c55e, #22c55e 22%, #f59e0b 33%, #f59e0b 55%, #ef4444 66%, #ef4444 88%, #991b1b 100%)`,
               }}
@@ -309,7 +309,7 @@ export default function NewTrainingSessionPage() {
               onChange={(e) => setNotes(e.target.value)}
               placeholder="How did the session go?"
               rows={3}
-              className="w-full px-4 py-3 bg-[#252530] border border-white/5 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/20 transition-default resize-none"
+              className="w-full px-4 py-3 bg-[#252530] border border-white/5 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/20 transition-default resize-none"
               style={{ touchAction: 'manipulation' }}
             />
           </div>
@@ -415,7 +415,7 @@ export default function NewTrainingSessionPage() {
                 placeholder="Quick takeaway — a technique tip, something to drill next time..."
                 rows={3}
                 autoFocus
-                className="w-full px-4 py-3 bg-[#252530] border border-white/5 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/20 transition-default resize-none text-sm"
+                className="w-full px-4 py-3 bg-[#252530] border border-white/5 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/20 transition-default resize-none text-sm"
                 style={{ touchAction: 'manipulation' }}
               />
               <div className="flex gap-3 mt-3">
@@ -437,7 +437,7 @@ export default function NewTrainingSessionPage() {
 
       {/* Badge Toast */}
       {badgeToast && (
-        <div className="fixed bottom-6 right-6 bg-[#f59e0b] text-black px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 animate-pulse">
+        <div className="fixed bottom-6 right-6 bg-[#f59e0b] text-black px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 z-50 animate-pulse">
           <span className="text-lg">🏆</span>
           <span className="text-sm font-medium">Achievement Unlocked: {badgeToast}!</span>
         </div>

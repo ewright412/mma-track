@@ -128,7 +128,7 @@ export function CardioLogCard({ log, onEdit, onDelete }: CardioLogCardProps) {
           {/* Detailed metrics */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {log.distance_km && (
-              <div className="bg-background border border-border rounded-lg p-3">
+              <div className="bg-background border border-border rounded-xl p-3">
                 <div className="flex items-center gap-2 mb-1">
                   <Route className="w-4 h-4 text-blue-400" />
                   <p className="text-xs text-white/60">Distance</p>
@@ -141,7 +141,7 @@ export function CardioLogCard({ log, onEdit, onDelete }: CardioLogCardProps) {
             )}
 
             {log.average_heart_rate && (
-              <div className="bg-background border border-border rounded-lg p-3">
+              <div className="bg-background border border-border rounded-xl p-3">
                 <div className="flex items-center gap-2 mb-1">
                   <Heart className="w-4 h-4 text-red-400" />
                   <p className="text-xs text-white/60">Avg HR</p>
@@ -154,7 +154,7 @@ export function CardioLogCard({ log, onEdit, onDelete }: CardioLogCardProps) {
             )}
 
             {log.calories_estimate && (
-              <div className="bg-background border border-border rounded-lg p-3">
+              <div className="bg-background border border-border rounded-xl p-3">
                 <div className="flex items-center gap-2 mb-1">
                   <Flame className="w-4 h-4 text-orange-400" />
                   <p className="text-xs text-white/60">Calories</p>
@@ -169,7 +169,7 @@ export function CardioLogCard({ log, onEdit, onDelete }: CardioLogCardProps) {
 
           {/* Interval description */}
           {log.intervals && log.interval_description && (
-            <div className="bg-background border border-border rounded-lg p-3">
+            <div className="bg-background border border-border rounded-xl p-3">
               <div className="flex items-center gap-2 mb-2">
                 <Zap className="w-4 h-4 text-purple-400" />
                 <p className="text-sm font-medium text-white">Interval Details</p>
@@ -180,7 +180,7 @@ export function CardioLogCard({ log, onEdit, onDelete }: CardioLogCardProps) {
 
           {/* Notes */}
           {log.notes && (
-            <div className="bg-background border border-border rounded-lg p-3">
+            <div className="bg-background border border-border rounded-xl p-3">
               <div className="flex items-center gap-2 mb-2">
                 <StickyNote className="w-4 h-4 text-accent-blue" />
                 <p className="text-sm font-medium text-white">Notes</p>

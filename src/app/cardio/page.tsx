@@ -105,11 +105,11 @@ export default function CardioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6">
+    <div className="px-4 pt-3">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-white/60">Track and analyze your conditioning work</p>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-xl font-bold text-white">Cardio</h1>
           <Button onClick={() => router.push('/cardio/new')} className="px-4 py-2 text-sm font-medium">
             <Plus className="w-4 h-4 mr-2" />
             Log Session

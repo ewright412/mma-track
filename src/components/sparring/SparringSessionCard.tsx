@@ -145,7 +145,7 @@ export function SparringSessionCard({ session, onEdit, onDelete }: SparringSessi
                 const avg = avgRatings[cat.key];
                 if (avg === undefined) return null;
                 return (
-                  <div key={cat.key} className="bg-background border border-border rounded-lg p-3">
+                  <div key={cat.key} className="bg-background border border-border rounded-xl p-3">
                     <div className="flex items-center gap-2 mb-1">
                       <div
                         className="w-2 h-2 rounded-full"

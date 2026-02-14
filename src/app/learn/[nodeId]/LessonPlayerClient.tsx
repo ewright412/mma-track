@@ -151,7 +151,7 @@ export default function LessonPlayerPage() {
             <p className="text-gray-400 mb-4">Lesson not found</p>
             <Link
               href="/learn"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 transition-all"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Skill Tree
@@ -173,7 +173,7 @@ export default function LessonPlayerPage() {
             <p className="text-lg text-gray-300 mb-4">
               You&apos;ve completed all 3 lessons for <span className="text-red-400">{node.name}</span>!
             </p>
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-yellow-500/10 text-yellow-400 rounded-lg border border-yellow-500/20 mb-4">
+            <div className="inline-flex items-center gap-2 px-6 py-3 bg-yellow-500/10 text-yellow-400 rounded-xl border border-yellow-500/20 mb-4">
               <Trophy className="w-5 h-5" />
               <span className="font-bold">+{node.xp_reward} XP Earned</span>
             </div>
@@ -203,7 +203,7 @@ export default function LessonPlayerPage() {
         <div className="bg-[#1a1a24] border border-white/5 rounded-xl p-6 mb-6">
           <div className="flex flex-wrap items-center gap-2 mb-3">
             <span
-              className="px-3 py-1 rounded-lg text-sm font-medium border"
+              className="px-3 py-1 rounded-xl text-sm font-medium border"
               style={{
                 backgroundColor: `${getDisciplineColor(node.discipline)}20`,
                 borderColor: `${getDisciplineColor(node.discipline)}40`,
@@ -213,7 +213,7 @@ export default function LessonPlayerPage() {
               {node.discipline}
             </span>
             <span
-              className={`px-3 py-1 rounded-lg text-sm font-medium border ${
+              className={`px-3 py-1 rounded-xl text-sm font-medium border ${
                 difficultyColors[node.difficulty]
               }`}
             >
@@ -291,7 +291,7 @@ export default function LessonPlayerPage() {
                 {currentLesson.content.checklist_items?.map((item, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10"
+                    className="flex items-start gap-3 p-3 bg-white/5 rounded-xl border border-white/10"
                   >
                     <ListChecks className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
                     <p className="text-gray-300 flex-1">{item.text}</p>
@@ -307,14 +307,14 @@ export default function LessonPlayerPage() {
           <button
             onClick={() => setCurrentLessonIndex(currentLessonIndex - 1)}
             disabled={currentLessonIndex === 0}
-            className="flex items-center gap-2 px-4 py-2 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 bg-white/5 text-gray-400 rounded-xl hover:bg-white/10 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="w-4 h-4" />
             Previous
           </button>
 
           {isLessonCompleted ? (
-            <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 text-green-400 rounded-lg border border-green-500/20">
+            <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 text-green-400 rounded-xl border border-green-500/20">
               <CheckCircle2 className="w-5 h-5" />
               Completed
             </div>
@@ -322,7 +322,7 @@ export default function LessonPlayerPage() {
             <button
               onClick={handleCompleteLesson}
               disabled={completing || completionSuccess}
-              className="flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+              className="flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
             >
               {completing ? (
                 <>
@@ -346,7 +346,7 @@ export default function LessonPlayerPage() {
           <button
             onClick={() => setCurrentLessonIndex(currentLessonIndex + 1)}
             disabled={currentLessonIndex === lessons.length - 1}
-            className="flex items-center gap-2 px-4 py-2 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 bg-white/5 text-gray-400 rounded-xl hover:bg-white/10 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
           >
             Next
             <ChevronRight className="w-4 h-4" />

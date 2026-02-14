@@ -177,19 +177,19 @@ export function GoalCard({
             {/* Progress Details */}
             {goal.target_value && goal.status === 'active' && (
               <div className="grid grid-cols-3 gap-3">
-                <div className="bg-white/5 rounded-lg p-3 text-center">
+                <div className="bg-white/5 rounded-xl p-3 text-center">
                   <div className="text-xs text-white/50 mb-1">Current</div>
                   <div className="text-lg font-bold text-white">
                     {goal.current_value ?? 0} <span className="text-xs text-white/50">{goal.unit}</span>
                   </div>
                 </div>
-                <div className="bg-white/5 rounded-lg p-3 text-center">
+                <div className="bg-white/5 rounded-xl p-3 text-center">
                   <div className="text-xs text-white/50 mb-1">Target</div>
                   <div className="text-lg font-bold text-blue-400">
                     {goal.target_value} <span className="text-xs text-white/50">{goal.unit}</span>
                   </div>
                 </div>
-                <div className="bg-white/5 rounded-lg p-3 text-center">
+                <div className="bg-white/5 rounded-xl p-3 text-center">
                   <div className="text-xs text-white/50 mb-1">
                     {daysRemaining !== null && daysRemaining >= 0 ? 'Days Left' : 'Status'}
                   </div>

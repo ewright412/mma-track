@@ -69,7 +69,7 @@ export function WeeklySummaryCard({
     <>
       <button
         onClick={handleGenerate}
-        className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-400 border border-white/[0.08] rounded-lg hover:text-white hover:border-white/20 transition-all duration-150"
+        className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-400 border border-white/[0.08] rounded-xl hover:text-white hover:border-white/20 transition-all duration-150"
       >
         <Share2 className="w-3.5 h-3.5" />
         Share Week
@@ -313,14 +313,14 @@ export function WeeklySummaryCard({
               <button
                 onClick={handleDownload}
                 disabled={generating}
-                className="flex items-center gap-2 px-5 py-2.5 bg-[#ef4444] text-white text-sm font-medium rounded-lg hover:bg-[#dc2626] transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-5 py-2.5 bg-[#ef4444] text-white text-sm font-medium rounded-xl hover:bg-[#dc2626] transition-colors disabled:opacity-50"
               >
                 <Download className="w-4 h-4" />
                 {generating ? 'Generating...' : 'Download Image'}
               </button>
               <button
                 onClick={() => setShowPreview(false)}
-                className="flex items-center gap-2 px-5 py-2.5 bg-white/10 text-white text-sm font-medium rounded-lg border border-white/[0.08] hover:bg-white/20 transition-colors"
+                className="flex items-center gap-2 px-5 py-2.5 bg-white/10 text-white text-sm font-medium rounded-xl border border-white/[0.08] hover:bg-white/20 transition-colors"
               >
                 <X className="w-4 h-4" />
                 Close

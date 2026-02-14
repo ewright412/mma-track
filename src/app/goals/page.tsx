@@ -105,7 +105,7 @@ export default function GoalsPage() {
       <div className="space-y-6">
         <div className="h-8 w-48 bg-white/5 rounded animate-pulse" />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />)}
+          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-[#1a1a24] rounded-xl animate-pulse" />)}
         </div>
       </div>
     );
@@ -127,10 +127,10 @@ export default function GoalsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="px-4 pt-3 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <p className="text-white/60">Set targets and track your progress</p>
+        <h1 className="text-xl font-bold text-white">Goals</h1>
         <Link href="/goals/new">
           <Button className="px-4 py-2 text-sm font-medium">
             <Plus className="w-4 h-4 mr-2" />

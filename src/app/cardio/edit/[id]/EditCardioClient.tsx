@@ -151,7 +151,7 @@ export default function EditCardioLogPage() {
                 key={template.name}
                 type="button"
                 onClick={() => handleTemplateSelect(template)}
-                className="text-left p-3 bg-background border border-border rounded-lg hover:border-accent transition-default group"
+                className="text-left p-3 bg-background border border-border rounded-xl hover:border-accent transition-default group"
               >
                 <div className="flex items-center gap-2 mb-1">
                   {template.intervals && <Zap className="w-3 h-3 text-purple-400" />}
@@ -311,7 +311,7 @@ export default function EditCardioLogPage() {
 
           {/* Error message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
               <p className="text-red-400 text-sm">{error}</p>
             </div>
           )}

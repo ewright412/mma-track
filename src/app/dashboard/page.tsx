@@ -108,7 +108,7 @@ export default function DashboardPage() {
           <p className="text-gray-400 text-sm mb-4">Something went wrong loading your data.</p>
           <button
             onClick={loadDashboardData}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-xl transition-colors"
           >
             Try Again
           </button>
@@ -128,7 +128,7 @@ export default function DashboardPage() {
         <h1 className="text-xl font-bold text-white md:hidden">Dashboard</h1>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
           <button
             onClick={() => router.push('/training/new')}
             className="flex items-center gap-3 bg-[#1a1a24] rounded-xl h-14 px-4 hover:bg-[#1f1f2a] active:scale-[0.97] active:bg-white/5 transition-all duration-150"
@@ -144,8 +144,8 @@ export default function DashboardPage() {
             className="flex items-center gap-3 bg-[#1a1a24] rounded-xl h-14 px-4 hover:bg-[#1f1f2a] active:scale-[0.97] active:bg-white/5 transition-all duration-150"
             style={{ touchAction: 'manipulation' }}
           >
-            <div className="w-9 h-9 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
-              <Dumbbell className="w-4 h-4 text-red-400" />
+            <div className="w-9 h-9 rounded-full bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+              <Dumbbell className="w-4 h-4 text-orange-400" />
             </div>
             <span className="text-sm font-medium text-white">Log Workout</span>
           </button>
@@ -184,7 +184,7 @@ export default function DashboardPage() {
         <TodaysPlanCard entries={data.todaysSchedule} />
 
         {/* Key Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
           <div className="bg-[#1a1a24] rounded-xl p-3">
             <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center mb-2">
               <Calendar className="w-4 h-4 text-blue-400" />
@@ -352,7 +352,7 @@ export default function DashboardPage() {
                   {data.recentPRs.slice(0, 3).map((pr) => (
                     <div
                       key={pr.id}
-                      className="flex items-center justify-between p-2 bg-yellow-500/5 border border-yellow-500/10 rounded-lg"
+                      className="flex items-center justify-between p-2 bg-yellow-500/5 border border-yellow-500/10 rounded-xl"
                     >
                       <div className="flex items-center gap-2">
                         <Award className="w-4 h-4 text-yellow-400" />
@@ -428,7 +428,7 @@ export default function DashboardPage() {
                     .map((trend, i) => (
                       <div
                         key={i}
-                        className="flex items-center justify-between p-2 bg-white/5 rounded-lg"
+                        className="flex items-center justify-between p-2 bg-white/5 rounded-xl"
                       >
                         <div className="text-sm text-white">
                           {new Date(trend.date).toLocaleDateString('en-US', {

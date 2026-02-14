@@ -146,20 +146,20 @@ export default function SchedulePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0f0f13] p-4">
+      <div className="px-4 pt-3">
         <div className="max-w-7xl mx-auto">
           <div className="h-8 w-48 bg-white/5 rounded animate-pulse mb-6" />
           <div className="grid grid-cols-3 gap-3 mb-6">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />
+              <div key={i} className="h-24 bg-[#1a1a24] rounded-xl animate-pulse" />
             ))}
           </div>
           <div className="hidden md:grid md:grid-cols-7 gap-2">
             {[...Array(7)].map((_, i) => (
-              <div key={i} className="h-48 bg-[#1a1a24] rounded-lg animate-pulse" />
+              <div key={i} className="h-48 bg-[#1a1a24] rounded-xl animate-pulse" />
             ))}
           </div>
-          <div className="md:hidden h-48 bg-[#1a1a24] rounded-lg animate-pulse" />
+          <div className="md:hidden h-48 bg-[#1a1a24] rounded-xl animate-pulse" />
         </div>
       </div>
     );
@@ -167,7 +167,7 @@ export default function SchedulePage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#0f0f13] p-4 flex items-center justify-center">
+      <div className="px-4 pt-3 flex items-center justify-center min-h-[50vh]">
         <div className="text-center">
           <CalendarDays className="w-12 h-12 text-red-400/40 mx-auto mb-3" />
           <p className="text-red-400 mb-1">Failed to load schedule</p>
@@ -181,11 +181,11 @@ export default function SchedulePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f13] p-4">
+    <div className="px-4 pt-3">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div />
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-xl font-bold text-white">Schedule</h1>
           {templates.length > 0 && (
             <TemplateSwitcher
               templates={templates}

@@ -95,9 +95,9 @@ export default function SparringPage() {
 
   const getRatingStyle = (area: FocusArea) => {
     const rating = area.averageRating;
-    if (rating >= 7) return { border: 'border-l-success', label: 'Strong', labelColor: 'text-success' };
-    if (rating >= 4) return { border: 'border-l-warning', label: 'Developing', labelColor: 'text-warning' };
-    return { border: 'border-l-red-500', label: 'Needs Work', labelColor: 'text-red-500' };
+    if (rating >= 7) return { label: 'Strong', labelColor: 'text-success' };
+    if (rating >= 4) return { label: 'Developing', labelColor: 'text-warning' };
+    return { label: 'Needs Work', labelColor: 'text-red-500' };
   };
 
   const getTrendLabel = (trend: 'improving' | 'declining' | 'stable') => {
@@ -132,13 +132,10 @@ export default function SparringPage() {
   }));
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6">
+    <div className="px-4 pt-3">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-xl font-bold text-white mb-4 md:hidden">Sparring</h1>
-
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-400 text-sm">Track and analyze your sparring performance</p>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-xl font-bold text-white">Sparring</h1>
           <Button onClick={() => router.push('/sparring/new')}>
             <Plus className="w-4 h-4 mr-2" />
             Log Session

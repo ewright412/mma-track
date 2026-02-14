@@ -54,7 +54,7 @@ export function ReviewReminderCard() {
 
   if (loading) {
     return (
-      <div className="mb-6 bg-[#1a1a24] border border-white/[0.08] rounded-lg p-6 animate-pulse">
+      <div className="mb-6 bg-[#1a1a24] border border-white/[0.08] rounded-xl p-6 animate-pulse">
         <div className="h-6 w-32 bg-white/5 rounded mb-2" />
         <div className="h-4 w-48 bg-white/5 rounded" />
       </div>
@@ -71,12 +71,12 @@ export function ReviewReminderCard() {
     return (
       <Link
         href="/learn/review"
-        className="block mb-6 bg-gradient-to-r from-orange-500/10 to-red-500/10 border-2 border-orange-500/30 rounded-lg p-6 hover:border-orange-500/50 transition-all group"
+        className="block mb-6 bg-gradient-to-r from-orange-500/10 to-red-500/10 border-2 border-orange-500/30 rounded-xl p-6 hover:border-orange-500/50 transition-all group"
       >
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-orange-500/20 rounded-lg">
+              <div className="p-2 bg-orange-500/20 rounded-xl">
                 <Trophy className="w-6 h-6 text-orange-400" />
               </div>
               <div>
@@ -105,11 +105,11 @@ export function ReviewReminderCard() {
 
   // No reviews due, show next review date
   return (
-    <div className="mb-6 bg-[#1a1a24] border border-green-500/20 rounded-lg p-6">
+    <div className="mb-6 bg-[#1a1a24] border border-green-500/20 rounded-xl p-6">
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-green-500/20 rounded-lg">
+            <div className="p-2 bg-green-500/20 rounded-xl">
               <CheckCircle2 className="w-6 h-6 text-green-400" />
             </div>
             <div>
@@ -128,7 +128,7 @@ export function ReviewReminderCard() {
 
         <Link
           href="/learn"
-          className="flex items-center gap-2 px-4 py-2 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-all text-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-white/5 text-gray-400 rounded-xl hover:bg-white/10 transition-all text-sm"
         >
           <Trophy className="w-4 h-4" />
           Skill Tree

@@ -61,7 +61,7 @@ export function RecentChallenges() {
           {[1, 2, 3, 4, 5].map((i) => (
             <div
               key={i}
-              className="bg-[#1a1a24] rounded-lg border border-white/[0.08] p-4 animate-pulse"
+              className="bg-[#1a1a24] rounded-xl border border-white/[0.08] p-4 animate-pulse"
             >
               <div className="h-4 w-32 bg-white/5 rounded" />
             </div>
@@ -82,7 +82,7 @@ export function RecentChallenges() {
         {recentChallenges.map((item, index) => (
           <div
             key={index}
-            className="bg-[#1a1a24] rounded-lg border border-white/[0.08] p-4 flex items-center justify-between gap-4"
+            className="bg-[#1a1a24] rounded-xl border border-white/[0.08] p-4 flex items-center justify-between gap-4"
           >
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-1">

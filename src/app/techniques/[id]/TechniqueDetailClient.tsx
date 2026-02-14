@@ -149,7 +149,7 @@ export default function TechniqueDetailPage() {
             <p className="text-gray-400 mb-4">Technique not found</p>
             <Link
               href="/techniques"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 transition-all"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Library
@@ -177,7 +177,7 @@ export default function TechniqueDetailPage() {
           {/* Badges Row */}
           <div className="flex flex-wrap items-center gap-2 mb-4">
             <span
-              className="px-3 py-1 rounded-lg text-sm font-medium border"
+              className="px-3 py-1 rounded-xl text-sm font-medium border"
               style={{
                 backgroundColor: `${getDisciplineColor(technique.discipline)}20`,
                 borderColor: `${getDisciplineColor(technique.discipline)}40`,
@@ -186,16 +186,16 @@ export default function TechniqueDetailPage() {
             >
               {technique.discipline}
             </span>
-            <span className="px-3 py-1 rounded-lg text-sm font-medium bg-white/5 text-gray-400 border border-white/10">
+            <span className="px-3 py-1 rounded-xl text-sm font-medium bg-white/5 text-gray-400 border border-white/10">
               {technique.category}
             </span>
             {technique.position && (
-              <span className="px-3 py-1 rounded-lg text-sm font-medium bg-white/5 text-gray-400 border border-white/10">
+              <span className="px-3 py-1 rounded-xl text-sm font-medium bg-white/5 text-gray-400 border border-white/10">
                 {technique.position}
               </span>
             )}
             <span
-              className={`px-3 py-1 rounded-lg text-sm font-medium border ${
+              className={`px-3 py-1 rounded-xl text-sm font-medium border ${
                 difficultyColors[technique.difficulty]
               }`}
             >
@@ -224,7 +224,7 @@ export default function TechniqueDetailPage() {
             <button
               onClick={handleAddToNotebook}
               disabled={savingToNotebook || notebookSuccess}
-              className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-red-500/20"
+              className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-red-500/20"
             >
               {savingToNotebook ? (
                 <>
@@ -247,7 +247,7 @@ export default function TechniqueDetailPage() {
             <button
               onClick={handleMarkAsPracticed}
               disabled={markingPracticed || practicedSuccess}
-              className="flex items-center gap-2 px-4 py-2 bg-green-500/10 text-green-400 rounded-lg hover:bg-green-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-green-500/20"
+              className="flex items-center gap-2 px-4 py-2 bg-green-500/10 text-green-400 rounded-xl hover:bg-green-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-green-500/20"
             >
               {markingPracticed ? (
                 <>
@@ -272,7 +272,7 @@ export default function TechniqueDetailPage() {
         {/* Key Points Section */}
         <div className="bg-[#1a1a24] border border-white/5 rounded-xl p-6 mb-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-green-500/10 rounded-lg">
+            <div className="p-2 bg-green-500/10 rounded-xl">
               <CheckCircle2 className="w-5 h-5 text-green-400" />
             </div>
             <h2 className="text-xl font-bold text-white">Key Points</h2>
@@ -294,7 +294,7 @@ export default function TechniqueDetailPage() {
         {/* Common Mistakes Section */}
         <div className="bg-[#1a1a24] border border-white/5 rounded-xl p-6 mb-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-red-500/10 rounded-lg">
+            <div className="p-2 bg-red-500/10 rounded-xl">
               <XCircle className="w-5 h-5 text-red-400" />
             </div>
             <h2 className="text-xl font-bold text-white">Common Mistakes</h2>
@@ -315,7 +315,7 @@ export default function TechniqueDetailPage() {
         {technique.related_techniques && technique.related_techniques.length > 0 && (
           <div className="bg-[#1a1a24] border border-white/5 rounded-xl p-6">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-blue-500/10 rounded-lg">
+              <div className="p-2 bg-blue-500/10 rounded-xl">
                 <BookOpen className="w-5 h-5 text-blue-400" />
               </div>
               <h2 className="text-xl font-bold text-white">Related Techniques</h2>
@@ -324,7 +324,7 @@ export default function TechniqueDetailPage() {
               {technique.related_techniques.map((relatedName, index) => (
                 <span
                   key={index}
-                  className="px-3 py-2 bg-white/5 text-gray-300 rounded-lg border border-white/10 hover:border-red-500/30 hover:text-white transition-all cursor-pointer text-sm"
+                  className="px-3 py-2 bg-white/5 text-gray-300 rounded-xl border border-white/10 hover:border-red-500/30 hover:text-white transition-all cursor-pointer text-sm"
                 >
                   {relatedName}
                 </span>

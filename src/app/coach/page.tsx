@@ -228,7 +228,7 @@ export default function CoachPage() {
     return (
       <div className="min-h-screen bg-[#0f0f13] flex flex-col">
         <div className="p-4 border-b border-white/[0.08] flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-white/5 animate-pulse" />
+          <div className="w-8 h-8 rounded-xl bg-white/5 animate-pulse" />
           <div className="h-5 w-24 bg-white/5 rounded animate-pulse" />
         </div>
         <div className="flex-1 p-4 space-y-4">
@@ -247,7 +247,7 @@ export default function CoachPage() {
   return (
     <div className="min-h-screen bg-[#0f0f13] flex flex-col">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-[#0f0f13]/95 backdrop-blur-sm border-b border-white/[0.08]">
+      <div className="sticky top-0 z-10 bg-[#0f0f13]/95 backdrop-blur-sm border-b border-white/5">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
             <Link
@@ -257,13 +257,13 @@ export default function CoachPage() {
               <ArrowLeft size={20} />
             </Link>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-red-500/20 flex items-center justify-center">
                 <Brain size={16} className="text-red-400" />
               </div>
               <div>
                 <h1 className="text-white font-semibold text-sm">AI Coach</h1>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
                   <span className="text-[11px] text-gray-500">Online</span>
                 </div>
               </div>
@@ -280,7 +280,7 @@ export default function CoachPage() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 pb-32 md:pb-4">
+      <div className="flex-1 overflow-y-auto px-4 py-4 pb-36 md:pb-4">
         {messages.length === 0 ? (
           <EmptyState onSend={sendMessage} />
         ) : (
@@ -297,7 +297,7 @@ export default function CoachPage() {
       </div>
 
       {/* Input Bar */}
-      <div className="sticky bottom-16 md:bottom-0 bg-[#0f0f13] border-t border-white/[0.08] px-4 py-3">
+      <div className="sticky bottom-20 md:bottom-0 bg-[#0f0f13] border-t border-white/5 px-4 py-3">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-end gap-2">
             <div className="flex-1 relative">

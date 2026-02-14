@@ -15,7 +15,7 @@ export function AdherenceSummary({ weeklySummary, streak, monthlyTrend }: Adhere
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
       {/* Weekly Progress */}
-      <div className="bg-[#1a1a24] border border-white/[0.08] rounded-lg p-4">
+      <div className="bg-[#1a1a24] border border-white/[0.08] rounded-xl p-4">
         <div className="flex items-center gap-2 mb-2">
           <CheckCircle className="w-4 h-4 text-green-400" />
           <span className="text-sm font-medium text-white/80">This Week</span>
@@ -54,7 +54,7 @@ export function AdherenceSummary({ weeklySummary, streak, monthlyTrend }: Adhere
       </div>
 
       {/* Streak */}
-      <div className="bg-[#1a1a24] border border-white/[0.08] rounded-lg p-4">
+      <div className="bg-[#1a1a24] border border-white/[0.08] rounded-xl p-4">
         <div className="flex items-center gap-2 mb-2">
           <Flame className="w-4 h-4 text-orange-400" />
           <span className="text-sm font-medium text-white/80">Streak</span>
@@ -76,7 +76,7 @@ export function AdherenceSummary({ weeklySummary, streak, monthlyTrend }: Adhere
 
       {/* Monthly Trend */}
       {monthlyTrend && monthlyTrend.length > 0 && (
-        <div className="bg-[#1a1a24] border border-white/[0.08] rounded-lg p-4">
+        <div className="bg-[#1a1a24] border border-white/[0.08] rounded-xl p-4">
           <div className="text-sm font-medium text-white/80 mb-2">Monthly Trend</div>
           <div className="flex items-end gap-2 h-12">
             {monthlyTrend.map((month, i) => (

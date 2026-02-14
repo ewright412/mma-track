@@ -123,7 +123,7 @@ export function TrainingInsights({ insights }: TrainingInsightsProps) {
           return (
             <div
               key={insight.id}
-              className={`flex items-start gap-3 p-3 rounded-lg border ${style.borderColor} ${style.bgColor}`}
+              className={`flex items-start gap-3 p-3 rounded-xl border ${style.borderColor} ${style.bgColor}`}
             >
               <Icon
                 className={`w-4 h-4 mt-0.5 flex-shrink-0 ${style.iconColor}`}

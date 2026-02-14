@@ -119,13 +119,10 @@ export default function TrainingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6">
+    <div className="px-4 pt-3">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-xl font-bold text-white mb-4 md:hidden">Training</h1>
-
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-400 text-sm">Track and review your training sessions</p>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-xl font-bold text-white">Training</h1>
           <Button onClick={() => router.push('/training/new')}>
             <Plus className="w-4 h-4 mr-2" />
             Log Session
@@ -178,7 +175,7 @@ export default function TrainingPage() {
         )}
 
         {/* Heat Map */}
-        <div className="mb-6">
+        <div className="mb-6 overflow-x-auto">
           <TrainingHeatMap />
         </div>
 
@@ -216,7 +213,7 @@ export default function TrainingPage() {
                   placeholder="1"
                   value={intensityMinFilter}
                   onChange={(e) => setIntensityMinFilter(e.target.value)}
-                  className="w-full bg-[#252530] border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/20 transition-default min-h-[44px]"
+                  className="w-full bg-[#252530] border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/20 transition-default min-h-[44px]"
                   style={{ touchAction: 'manipulation' }}
                 />
               </div>
@@ -232,7 +229,7 @@ export default function TrainingPage() {
                   placeholder="10"
                   value={intensityMaxFilter}
                   onChange={(e) => setIntensityMaxFilter(e.target.value)}
-                  className="w-full bg-[#252530] border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/20 transition-default min-h-[44px]"
+                  className="w-full bg-[#252530] border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/20 transition-default min-h-[44px]"
                   style={{ touchAction: 'manipulation' }}
                 />
               </div>

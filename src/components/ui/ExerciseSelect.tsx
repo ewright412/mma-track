@@ -99,7 +99,7 @@ export function ExerciseSelect({ value, onChange, required }: ExerciseSelectProp
         </button>
 
         {isOpen && (
-          <div className="absolute z-50 w-full mt-1 bg-[#1a1a24] border border-white/[0.12] rounded-lg shadow-xl max-h-80 flex flex-col">
+          <div className="absolute z-50 w-full mt-1 bg-[#1a1a24] border border-white/[0.12] rounded-xl shadow-xl max-h-80 flex flex-col">
             {/* Search input */}
             <div className="p-2 border-b border-white/[0.08]">
               <div className="relative">

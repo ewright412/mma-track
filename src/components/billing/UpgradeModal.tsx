@@ -77,7 +77,7 @@ export function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
         {/* Plans comparison */}
         <div className="grid grid-cols-2 gap-4">
           {/* Free */}
-          <div className="p-4 rounded-lg border border-white/[0.08] bg-white/[0.02]">
+          <div className="p-4 rounded-xl border border-white/[0.08] bg-white/[0.02]">
             <h3 className="text-sm font-semibold text-gray-400 mb-1">Free</h3>
             <div className="text-2xl font-bold text-white mb-4">$0</div>
             <ul className="space-y-2">
@@ -91,7 +91,7 @@ export function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
           </div>
 
           {/* Pro */}
-          <div className="p-4 rounded-lg border border-red-500/30 bg-red-500/5">
+          <div className="p-4 rounded-xl border border-red-500/30 bg-red-500/5">
             <div className="flex items-center gap-2 mb-1">
               <h3 className="text-sm font-semibold text-white">Pro</h3>
               <Zap className="w-3.5 h-3.5 text-red-400" />
@@ -114,7 +114,7 @@ export function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
 
         {/* Error */}
         {error && (
-          <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+          <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
             <X className="w-4 h-4 text-red-400 flex-shrink-0" />
             <p className="text-sm text-red-400">{error}</p>
           </div>

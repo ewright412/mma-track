@@ -67,7 +67,7 @@ export default function ForceOnboardCompletePage() {
             <p className="text-gray-400 text-sm mb-4">{message}</p>
             <button
               onClick={() => router.push('/dashboard')}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all"
+              className="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all"
             >
               Go to Dashboard Anyway
             </button>

@@ -176,7 +176,7 @@ export default function NewNotePage() {
               <button
                 type="button"
                 onClick={() => setDiscipline('none')}
-                className={`p-3 rounded-lg text-sm font-medium transition-all text-left ${
+                className={`p-3 rounded-xl text-sm font-medium transition-all text-left ${
                   discipline === 'none'
                     ? 'bg-white/10 border border-white/30 text-white'
                     : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
@@ -192,7 +192,7 @@ export default function NewNotePage() {
                     key={d}
                     type="button"
                     onClick={() => setDiscipline(d)}
-                    className={`p-3 rounded-lg text-sm font-medium transition-all text-left ${
+                    className={`p-3 rounded-xl text-sm font-medium transition-all text-left ${
                       isSelected
                         ? 'text-white'
                         : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
@@ -224,7 +224,7 @@ export default function NewNotePage() {
                 autoGrow();
               }}
               placeholder="What did you work on today?"
-              className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
               style={{ minHeight: '200px' }}
             />
           </div>
@@ -261,10 +261,10 @@ export default function NewNotePage() {
                 }}
                 onFocus={() => setShowTagSuggestions(true)}
                 onKeyDown={handleTagKeyDown}
-                className="w-full bg-[#1a1a24] border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors"
+                className="w-full bg-[#1a1a24] border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors"
               />
               {showTagSuggestions && tagInput && filteredSuggestions.length > 0 && (
-                <div className="absolute z-50 w-full mt-1 bg-[#1a1a24] border border-white/[0.12] rounded-lg shadow-xl max-h-40 overflow-y-auto">
+                <div className="absolute z-50 w-full mt-1 bg-[#1a1a24] border border-white/[0.12] rounded-xl shadow-xl max-h-40 overflow-y-auto">
                   {filteredSuggestions.map((suggestion) => (
                     <button
                       key={suggestion}
@@ -301,7 +301,7 @@ export default function NewNotePage() {
 
           {/* Error */}
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
               <p className="text-red-400 text-sm">{error}</p>
             </div>
           )}

@@ -121,28 +121,28 @@ export function QuickLogModal({ isOpen, onClose, onSaved }: QuickLogModalProps) 
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => handleSelectType('training')}
-              className="flex flex-col items-center gap-2 p-4 bg-[#0f0f13] border border-white/[0.08] rounded-lg hover:border-[#ef4444]/40 hover:bg-[#ef4444]/5 transition-all duration-150"
+              className="flex flex-col items-center gap-2 p-4 bg-[#0f0f13] border border-white/[0.08] rounded-xl hover:border-[#ef4444]/40 hover:bg-[#ef4444]/5 transition-all duration-150"
             >
               <Target className="w-8 h-8 text-[#ef4444]" />
               <span className="text-sm font-medium text-white">Training</span>
             </button>
             <button
               onClick={() => handleSelectType('strength')}
-              className="flex flex-col items-center gap-2 p-4 bg-[#0f0f13] border border-white/[0.08] rounded-lg hover:border-red-400/40 hover:bg-red-400/5 transition-all duration-150"
+              className="flex flex-col items-center gap-2 p-4 bg-[#0f0f13] border border-white/[0.08] rounded-xl hover:border-red-400/40 hover:bg-red-400/5 transition-all duration-150"
             >
               <Dumbbell className="w-8 h-8 text-red-400" />
               <span className="text-sm font-medium text-white">Strength</span>
             </button>
             <button
               onClick={() => handleSelectType('cardio')}
-              className="flex flex-col items-center gap-2 p-4 bg-[#0f0f13] border border-white/[0.08] rounded-lg hover:border-[#22c55e]/40 hover:bg-[#22c55e]/5 transition-all duration-150"
+              className="flex flex-col items-center gap-2 p-4 bg-[#0f0f13] border border-white/[0.08] rounded-xl hover:border-[#22c55e]/40 hover:bg-[#22c55e]/5 transition-all duration-150"
             >
               <Heart className="w-8 h-8 text-[#22c55e]" />
               <span className="text-sm font-medium text-white">Cardio</span>
             </button>
             <button
               onClick={() => handleSelectType('note')}
-              className="flex flex-col items-center gap-2 p-4 bg-[#0f0f13] border border-white/[0.08] rounded-lg hover:border-[#f59e0b]/40 hover:bg-[#f59e0b]/5 transition-all duration-150"
+              className="flex flex-col items-center gap-2 p-4 bg-[#0f0f13] border border-white/[0.08] rounded-xl hover:border-[#f59e0b]/40 hover:bg-[#f59e0b]/5 transition-all duration-150"
             >
               <BookOpen className="w-8 h-8 text-[#f59e0b]" />
               <span className="text-sm font-medium text-white">Note</span>
@@ -212,7 +212,7 @@ export function QuickLogModal({ isOpen, onClose, onSaved }: QuickLogModalProps) 
                 max="10"
                 value={intensity}
                 onChange={(e) => setIntensity(Number(e.target.value))}
-                className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+                className="w-full h-2 rounded-xl appearance-none cursor-pointer"
                 style={{
                   background: 'linear-gradient(to right, rgb(34, 197, 94), rgb(234, 179, 8), rgb(239, 68, 68))',
                 }}

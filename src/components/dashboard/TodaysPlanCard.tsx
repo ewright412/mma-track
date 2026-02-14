@@ -51,7 +51,7 @@ export function TodaysPlanCard({ entries }: TodaysPlanCardProps) {
       </div>
 
       {isRestDay && trainingEntries.length === 0 ? (
-        <div className="flex items-center gap-3 p-3 bg-green-500/5 border border-green-500/10 rounded-lg">
+        <div className="flex items-center gap-3 p-3 bg-green-500/5 border border-green-500/10 rounded-xl">
           <Coffee className="w-5 h-5 text-green-400/70" />
           <div>
             <p className="text-sm font-medium text-white/70">Rest Day</p>
@@ -70,7 +70,7 @@ export function TodaysPlanCard({ entries }: TodaysPlanCardProps) {
             return (
               <div
                 key={entry.id}
-                className={`flex items-center gap-3 p-2.5 rounded-lg transition-all ${
+                className={`flex items-center gap-3 p-2.5 rounded-xl transition-all ${
                   isCompleted
                     ? 'bg-green-500/5 border border-green-500/10'
                     : isPartial

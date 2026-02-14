@@ -170,20 +170,20 @@ export default function StrengthPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0f0f13] p-4">
+      <div className="px-4 pt-3">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <div className="h-5 w-64 bg-white/5 rounded animate-pulse" />
-            <div className="h-9 w-32 bg-[#1a1a24] rounded-lg animate-pulse" />
+            <div className="h-9 w-32 bg-[#1a1a24] rounded-xl animate-pulse" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-24 bg-[#1a1a24] rounded-lg animate-pulse" />
+              <div key={i} className="h-24 bg-[#1a1a24] rounded-xl animate-pulse" />
             ))}
           </div>
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-20 bg-[#1a1a24] rounded-lg animate-pulse" />
+              <div key={i} className="h-20 bg-[#1a1a24] rounded-xl animate-pulse" />
             ))}
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function StrengthPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#0f0f13] p-4 flex items-center justify-center">
+      <div className="px-4 pt-3 flex items-center justify-center min-h-[50vh]">
         <div className="text-center">
           <Dumbbell className="w-12 h-12 text-red-400/40 mx-auto mb-3" />
           <p className="text-red-400 mb-1">Failed to load workouts</p>
@@ -207,11 +207,11 @@ export default function StrengthPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f13] p-4">
+    <div className="px-4 pt-3">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-white/60">Track your lifts and personal records</p>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-xl font-bold text-white">Strength</h1>
           <Button onClick={() => router.push('/strength/new')} className="px-4 py-2 text-sm font-medium">
             <Plus className="w-4 h-4 mr-2" />
             Log Workout
@@ -253,7 +253,7 @@ export default function StrengthPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {recentPRs.slice(0, 6).map(pr => (
-                <div key={pr.id} className="flex items-center justify-between p-3 bg-[#0f0f13] border border-white/[0.08] rounded-lg">
+                <div key={pr.id} className="flex items-center justify-between p-3 bg-[#0f0f13] border border-white/[0.08] rounded-xl">
                   <div>
                     <div className="text-white font-medium">{pr.exercise_name}</div>
                     <div className="text-xs text-gray-400">

@@ -268,7 +268,7 @@ export default function EditTrainingSessionPage() {
                 max="10"
                 value={intensity}
                 onChange={(e) => setIntensity(Number(e.target.value))}
-                className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+                className="w-full h-2 rounded-xl appearance-none cursor-pointer"
                 style={{
                   background: `linear-gradient(to right, rgb(34, 197, 94), rgb(234, 179, 8), rgb(239, 68, 68))`,
                 }}
@@ -318,7 +318,7 @@ export default function EditTrainingSessionPage() {
                 {techniques.map((technique) => (
                   <div
                     key={technique.id}
-                    className="bg-background border border-border rounded-lg p-3"
+                    className="bg-background border border-border rounded-xl p-3"
                   >
                     <div className="flex gap-2 mb-2">
                       <Input
@@ -350,7 +350,7 @@ export default function EditTrainingSessionPage() {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-4 p-4 bg-red-500/10 border border-red-500 rounded-lg text-red-500">
+            <div className="mb-4 p-4 bg-red-500/10 border border-red-500 rounded-xl text-red-500">
               {error}
             </div>
           )}

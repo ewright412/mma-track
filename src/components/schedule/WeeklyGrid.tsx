@@ -56,7 +56,7 @@ export function WeeklyGrid({
             <div key={dayIndex} className="min-h-[200px]">
               {/* Day header */}
               <div
-                className={`text-center py-2 mb-2 rounded-lg text-sm font-medium ${
+                className={`text-center py-2 mb-2 rounded-xl text-sm font-medium ${
                   isToday
                     ? 'bg-accent/20 text-accent'
                     : 'bg-white/5 text-white/60'
@@ -80,7 +80,7 @@ export function WeeklyGrid({
                 <button
                   type="button"
                   onClick={() => onAddEntry(dayIndex)}
-                  className="w-full p-2 border border-dashed border-white/10 rounded-lg text-white/30 hover:text-white/60 hover:border-white/20 transition-all duration-150 flex items-center justify-center gap-1 text-xs"
+                  className="w-full p-2 border border-dashed border-white/10 rounded-xl text-white/30 hover:text-white/60 hover:border-white/20 transition-all duration-150 flex items-center justify-center gap-1 text-xs"
                 >
                   <Plus className="w-3 h-3" />
                   Add
@@ -106,7 +106,7 @@ export function WeeklyGrid({
                 key={dayIndex}
                 type="button"
                 onClick={() => onSelectDay(dayIndex)}
-                className={`flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 relative ${
+                className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 relative ${
                   isSelected
                     ? 'bg-accent text-white'
                     : isToday
@@ -153,7 +153,7 @@ export function WeeklyGrid({
                   <button
                     type="button"
                     onClick={() => onAddEntry(selectedDay)}
-                    className="w-full p-3 border border-dashed border-white/10 rounded-lg text-white/40 hover:text-white/60 hover:border-white/20 transition-all duration-150 flex items-center justify-center gap-2 text-sm"
+                    className="w-full p-3 border border-dashed border-white/10 rounded-xl text-white/40 hover:text-white/60 hover:border-white/20 transition-all duration-150 flex items-center justify-center gap-2 text-sm"
                   >
                     <Plus className="w-4 h-4" />
                     Add Session

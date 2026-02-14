@@ -73,7 +73,7 @@ export function Sidebar() {
               aria-current={isActive ? "page" : undefined}
               className={`flex items-center space-x-3 px-4 py-3 rounded-button transition-default relative ${
                 isActive
-                  ? "bg-[rgba(239,68,68,0.15)] border-l-[3px] border-red-500 text-white"
+                  ? "bg-[rgba(239,68,68,0.15)] text-white"
                   : "text-gray-400 hover:text-white hover:bg-white/5"
               }`}
             >

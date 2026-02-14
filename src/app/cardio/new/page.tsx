@@ -107,7 +107,7 @@ export default function NewCardioLogPage() {
                 key={template.name}
                 type="button"
                 onClick={() => handleTemplateSelect(template)}
-                className="text-left p-3 bg-[#1a1a24] border border-white/10 rounded-lg hover:border-red-500/30 transition-colors group flex flex-col justify-between min-h-[60px]"
+                className="text-left p-3 bg-[#1a1a24] border border-white/10 rounded-xl hover:border-red-500/30 transition-colors group flex flex-col justify-between min-h-[60px]"
               >
                 <p className="text-sm font-medium text-white group-hover:text-red-400 transition-colors">
                   {template.name}
@@ -151,7 +151,7 @@ export default function NewCardioLogPage() {
                     key={preset}
                     type="button"
                     onClick={() => setDurationMinutes(preset)}
-                    className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                    className={`px-3 py-1.5 rounded-xl text-sm transition-colors ${
                       durationMinutes === preset
                         ? 'bg-red-500/20 border border-red-500 text-red-400 font-medium'
                         : 'bg-[#1a1a24] border border-white/10 text-gray-400 hover:text-white'
@@ -241,14 +241,14 @@ export default function NewCardioLogPage() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
-              className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-[#1a1a24] border border-white/10 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-colors resize-none"
               placeholder="How did it feel? Any observations?"
             />
           </div>
 
           {/* Error */}
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
               <p className="text-red-400 text-sm">{error}</p>
             </div>
           )}
@@ -274,7 +274,7 @@ export default function NewCardioLogPage() {
 
       {/* Badge Toast */}
       {badgeToast && (
-        <div className="fixed bottom-6 right-6 bg-[#f59e0b] text-black px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 animate-pulse">
+        <div className="fixed bottom-6 right-6 bg-[#f59e0b] text-black px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 z-50 animate-pulse">
           <span className="text-lg">🏆</span>
           <span className="text-sm font-medium">Achievement Unlocked: {badgeToast}!</span>
         </div>
