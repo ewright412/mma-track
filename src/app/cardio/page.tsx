@@ -246,7 +246,7 @@ export default function CardioPage() {
           ) : logs.length === 0 ? (
             <Card className="p-8">
               <div className="text-center">
-                <Activity className="w-12 h-12 text-white/20 mx-auto mb-3" />
+                <Activity className="w-12 h-12 text-white/20 mx-auto mb-3 animate-float" />
                 <p className="text-white/60 mb-2">No cardio logs yet</p>
                 <p className="text-white/40 text-sm mb-4">
                   Start tracking your conditioning work to see insights and progress

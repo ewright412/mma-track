@@ -20,6 +20,7 @@ import {
   Settings,
   X,
 } from "lucide-react";
+import { hapticLight } from "@/lib/utils/haptics";
 
 const mainItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -87,7 +88,7 @@ export function MobileNav() {
                     <Link
                       key={`${item.href}-${index}`}
                       href={item.href}
-                      onClick={() => setShowMore(false)}
+                      onClick={() => { hapticLight(); setShowMore(false); }}
                       className="flex flex-col items-center gap-2 py-3 active:scale-[0.97] transition-transform"
                     >
                       <div
@@ -134,6 +135,7 @@ export function MobileNav() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => hapticLight()}
                 aria-current={isActive ? "page" : undefined}
                 aria-label={item.label}
                 className={`flex flex-col items-center justify-center flex-1 h-full gap-1 transition-all duration-150 ${
@@ -149,7 +151,7 @@ export function MobileNav() {
             );
           })}
           <button
-            onClick={() => setShowMore(!showMore)}
+            onClick={() => { hapticLight(); setShowMore(!showMore); }}
             aria-label="More"
             className={`flex flex-col items-center justify-center flex-1 h-full gap-1 transition-all duration-150 ${
               isMoreActive || showMore ? "text-red-500" : "text-gray-500"

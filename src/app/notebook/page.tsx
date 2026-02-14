@@ -240,7 +240,7 @@ export default function NotebookPage() {
               </Card>
             ) : notes.length === 0 ? (
               <Card className="p-12 text-center">
-                <BookOpen className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+                <BookOpen className="w-12 h-12 text-gray-600 mx-auto mb-4 animate-float" />
                 <h3 className="text-lg text-gray-400 mb-2">No notes yet</h3>
                 <p className="text-sm text-gray-500 mb-6">
                   Jot down what you learned after your next session.
@@ -256,7 +256,7 @@ export default function NotebookPage() {
                   <button
                     key={note.id}
                     onClick={() => router.push(`/notebook/edit/${note.id}`)}
-                    className="w-full text-left bg-[#1a1a24] border border-white/[0.08] rounded-xl p-4 hover:border-white/20 transition-colors"
+                    className="w-full text-left bg-[#1a1a24] border border-white/[0.08] rounded-xl p-4 hover:border-white/20 active:bg-white/5 transition-all duration-100"
                   >
                     <div className="flex items-start justify-between gap-3 mb-1">
                       <h3 className="font-medium text-white truncate">
@@ -304,7 +304,7 @@ export default function NotebookPage() {
           <>
             {orderedDisciplines.length === 0 ? (
               <Card className="p-12 text-center">
-                <Tag className="w-16 h-16 text-white/20 mx-auto mb-4" />
+                <Tag className="w-16 h-16 text-white/20 mx-auto mb-4 animate-float" />
                 <h3 className="text-xl font-semibold text-white mb-2">No techniques yet</h3>
                 <p className="text-white/60">
                   Your technique library builds automatically as you tag notes.
@@ -334,7 +334,7 @@ export default function NotebookPage() {
                           <button
                             key={`${disc}-${t.tag_name}`}
                             onClick={() => handleTagClick(t.tag_name)}
-                            className="bg-[#1a1a24] border border-white/[0.08] rounded-xl px-3 py-2 hover:border-white/20 transition-colors text-left"
+                            className="bg-[#1a1a24] border border-white/[0.08] rounded-xl px-3 py-2 hover:border-white/20 active:bg-white/5 transition-all duration-100 text-left"
                           >
                             <span className="text-sm text-white font-medium">{t.tag_name}</span>
                             <span className="text-xs text-white/40 ml-2">

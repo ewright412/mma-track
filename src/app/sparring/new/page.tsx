@@ -16,6 +16,8 @@ import { checkAndAwardBadges } from '@/lib/supabase/badgeQueries';
 import { BADGE_MAP } from '@/lib/constants/badges';
 import { supabase } from '@/lib/supabase/client';
 import { CreateSparringSessionInput, OpponentSkillLevel, SparringType } from '@/lib/types/sparring';
+import { useToast } from '@/components/ui/Toast';
+import { hapticMedium } from '@/lib/utils/haptics';
 import { Plus, Minus } from 'lucide-react';
 
 interface RoundRating {
@@ -35,6 +37,7 @@ function makeDefaultRound(roundNumber: number, sparringType: SparringType): Roun
 
 export default function NewSparringSessionPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [badgeToast, setBadgeToast] = useState<string | null>(null);
@@ -132,11 +135,14 @@ export default function NewSparringSessionPage() {
 
       if (submitError) {
         setError(submitError.message);
+        showToast('Failed to save session', 'error');
         setIsSubmitting(false);
         return;
       }
 
       if (data) {
+        hapticMedium();
+        showToast('Sparring session logged!');
         // Check badges in background
         const { data: { user: authUser } } = await supabase.auth.getUser();
         if (authUser) {
@@ -155,6 +161,7 @@ export default function NewSparringSessionPage() {
       }
     } catch (err) {
       setError('An unexpected error occurred');
+      showToast('An unexpected error occurred', 'error');
       setIsSubmitting(false);
     }
   };

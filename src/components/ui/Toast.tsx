@@ -1,17 +1,17 @@
 'use client';
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { CheckCircle, XCircle, X } from 'lucide-react';
+import { CheckCircle, XCircle, Info, X } from 'lucide-react';
 
 interface Toast {
   id: string;
   message: string;
-  type: 'success' | 'error';
+  type: 'success' | 'error' | 'info';
   exiting?: boolean;
 }
 
 interface ToastContextValue {
-  showToast: (message: string, type?: 'success' | 'error') => void;
+  showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
 }
 
 const ToastContext = createContext<ToastContextValue>({ showToast: () => {} });
@@ -23,7 +23,7 @@ export function useToast() {
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const showToast = useCallback((message: string, type: 'success' | 'error' = 'success') => {
+  const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' = 'success') => {
     const id = Date.now().toString();
     setToasts((prev) => [...prev, { id, message, type }]);
 
@@ -55,16 +55,20 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`pointer-events-auto mx-4 mb-2 flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg ${
+            className={`pointer-events-auto mx-4 mb-2 flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-white ${
               toast.type === 'success'
-                ? 'bg-green-500/90 text-white'
-                : 'bg-red-500/90 text-white'
+                ? 'bg-green-500/90'
+                : toast.type === 'error'
+                ? 'bg-red-500/90'
+                : 'bg-blue-500/90'
             } ${toast.exiting ? 'animate-toast-out' : 'animate-toast-in'}`}
           >
             {toast.type === 'success' ? (
               <CheckCircle size={18} />
-            ) : (
+            ) : toast.type === 'error' ? (
               <XCircle size={18} />
+            ) : (
+              <Info size={18} />
             )}
             <span className="text-sm font-medium flex-1">{toast.message}</span>
             <button

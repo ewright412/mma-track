@@ -17,6 +17,8 @@ import { checkAndAwardBadges } from '@/lib/supabase/badgeQueries';
 import { BADGE_MAP } from '@/lib/constants/badges';
 import { WorkoutTemplate } from '@/lib/types/strength';
 import { StrengthSet } from '@/lib/types/strength';
+import { useToast } from '@/components/ui/Toast';
+import { hapticMedium } from '@/lib/utils/haptics';
 
 interface ExerciseEntry {
   id: string;
@@ -27,6 +29,7 @@ interface ExerciseEntry {
 
 export default function NewStrengthLogPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [workoutDate, setWorkoutDate] = useState(new Date().toISOString().split('T')[0]);
   const [exercises, setExercises] = useState<ExerciseEntry[]>([]);
   const [notes, setNotes] = useState('');
@@ -271,19 +274,23 @@ export default function NewStrengthLogPage() {
         }
       });
 
+      hapticMedium();
       if (newPRs.length > 0) {
+        showToast(`Workout saved! ${newPRs.length} new PR${newPRs.length > 1 ? 's' : ''}!`);
         setPrResults(newPRs);
         setTimeout(() => {
           router.push('/strength');
           router.refresh();
         }, 3000);
       } else {
+        showToast('Workout saved!');
         router.push('/strength');
         router.refresh();
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to save workout';
       setError(message);
+      showToast(message, 'error');
       setLoading(false);
     }
   }

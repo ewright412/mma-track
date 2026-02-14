@@ -11,11 +11,14 @@ import { getTrainingSessions } from '@/lib/supabase/queries';
 import { MMADiscipline, TrainingSession } from '@/lib/types/training';
 import { MMA_DISCIPLINES, DISCIPLINE_HEX_COLORS } from '@/lib/constants/disciplines';
 import { supabase } from '@/lib/supabase/client';
+import { useToast } from '@/components/ui/Toast';
+import { hapticMedium } from '@/lib/utils/haptics';
 import { X, Trash2 } from 'lucide-react';
 
 export default function EditNotePage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
+  const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -157,10 +160,13 @@ export default function EditNotePage() {
 
     if (submitError) {
       setError(submitError.message);
+      showToast('Failed to update note', 'error');
       setIsSubmitting(false);
       return;
     }
 
+    hapticMedium();
+    showToast('Note updated!');
     router.push('/notebook');
   };
 
@@ -170,11 +176,13 @@ export default function EditNotePage() {
 
     if (deleteError) {
       setError(deleteError.message);
+      showToast('Failed to delete note', 'error');
       setIsSubmitting(false);
       setShowDeleteConfirm(false);
       return;
     }
 
+    showToast('Note deleted');
     router.push('/notebook');
   };
 

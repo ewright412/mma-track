@@ -8,6 +8,8 @@ import { Select } from '@/components/ui/Select';
 import { Card } from '@/components/ui/Card';
 import { MMA_DISCIPLINES, DURATION_PRESETS, getIntensityColor } from '@/lib/constants/disciplines';
 import { getTrainingSessionById, updateTrainingSession, updateSessionTechniques } from '@/lib/supabase/queries';
+import { useToast } from '@/components/ui/Toast';
+import { hapticMedium } from '@/lib/utils/haptics';
 import { X, Plus } from 'lucide-react';
 
 interface Technique {
@@ -19,6 +21,7 @@ interface Technique {
 export default function EditTrainingSessionPage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
+  const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -123,9 +126,12 @@ export default function EditTrainingSessionPage() {
       }
 
       // Success - redirect to training history
+      hapticMedium();
+      showToast('Session updated!');
       router.push('/training');
     } catch (err) {
       setError('An unexpected error occurred');
+      showToast('An unexpected error occurred', 'error');
       setIsSubmitting(false);
     }
   };

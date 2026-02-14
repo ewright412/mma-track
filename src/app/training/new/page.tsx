@@ -12,6 +12,8 @@ import { BADGE_MAP } from '@/lib/constants/badges';
 import { supabase } from '@/lib/supabase/client';
 import { CreateTrainingSessionInput, MMADiscipline } from '@/lib/types/training';
 import { trackEvent } from '@/lib/analytics/posthog';
+import { useToast } from '@/components/ui/Toast';
+import { hapticMedium } from '@/lib/utils/haptics';
 import { X, Plus, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Technique {
@@ -22,6 +24,7 @@ interface Technique {
 
 export default function NewTrainingSessionPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -87,11 +90,14 @@ export default function NewTrainingSessionPage() {
 
       if (submitError) {
         setError(submitError.message);
+        showToast('Failed to save session', 'error');
         setIsSubmitting(false);
         return;
       }
 
       if (data) {
+        hapticMedium();
+        showToast('Session logged!');
         trackEvent('session_logged', {
           discipline,
           duration_minutes: durationMinutes,
@@ -116,6 +122,7 @@ export default function NewTrainingSessionPage() {
       }
     } catch (err) {
       setError('An unexpected error occurred');
+      showToast('An unexpected error occurred', 'error');
       setIsSubmitting(false);
     }
   };

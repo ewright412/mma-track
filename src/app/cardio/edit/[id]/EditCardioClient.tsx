@@ -10,11 +10,14 @@ import { Badge } from '@/components/ui/Badge';
 import { CARDIO_TYPES, CARDIO_TEMPLATES, CARDIO_DURATION_PRESETS } from '@/lib/constants/cardio';
 import { getCardioLogById, updateCardioLog } from '@/lib/supabase/cardioQueries';
 import { CardioType, CardioTemplate, UpdateCardioLogInput } from '@/lib/types/cardio';
+import { useToast } from '@/components/ui/Toast';
+import { hapticMedium } from '@/lib/utils/haptics';
 import { Zap, Save, ArrowLeft } from 'lucide-react';
 
 export default function EditCardioLogPage() {
   const router = useRouter();
   const params = useParams();
+  const { showToast } = useToast();
   const logId = params.id as string;
 
   const [isLoading, setIsLoading] = useState(true);
@@ -91,15 +94,19 @@ export default function EditCardioLogPage() {
 
       if (submitError) {
         setError(submitError.message);
+        showToast('Failed to update session', 'error');
         setIsSubmitting(false);
         return;
       }
 
       if (data) {
+        hapticMedium();
+        showToast('Cardio session updated!');
         router.push('/cardio');
       }
     } catch (err) {
       setError('An unexpected error occurred');
+      showToast('An unexpected error occurred', 'error');
       setIsSubmitting(false);
     }
   };

@@ -327,7 +327,7 @@ export default function StrengthPage() {
         <div className="space-y-6">
           {dates.length === 0 ? (
             <Card className="p-12 text-center">
-              <Dumbbell className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+              <Dumbbell className="w-16 h-16 text-gray-600 mx-auto mb-4 animate-float" />
               <h3 className="text-lg font-medium text-white mb-2">No workouts yet</h3>
               <p className="text-gray-400 mb-4">Start logging your strength training sessions</p>
               <Button onClick={() => router.push('/strength/new')}>

@@ -10,7 +10,7 @@ interface CountUpProps {
   decimals?: number;
 }
 
-export function CountUp({ end, duration = 500, suffix = '', prefix = '', decimals = 0 }: CountUpProps) {
+export function CountUp({ end, duration = 600, suffix = '', prefix = '', decimals = 0 }: CountUpProps) {
   const [value, setValue] = useState(0);
   const startTimeRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);

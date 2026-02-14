@@ -17,6 +17,7 @@ import { Target, Calendar, TrendingUp, Type, FileText, Tag, Hash } from 'lucide-
 import { trackEvent } from '@/lib/analytics/posthog';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useToast } from '@/components/ui/Toast';
+import { hapticMedium } from '@/lib/utils/haptics';
 
 export default function NewGoalPage() {
   const router = useRouter();
@@ -59,6 +60,8 @@ export default function NewGoalPage() {
     try {
       const { error } = await createGoal(formData);
       if (!error) {
+        hapticMedium();
+        showToast('Goal created!');
         trackEvent('goal_created', {
           category: formData.category,
           has_target_date: !!formData.target_date,

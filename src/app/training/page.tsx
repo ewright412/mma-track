@@ -10,7 +10,7 @@ import { TrainingHeatMap } from '@/components/training/TrainingHeatMap';
 import { getTrainingSessions, deleteTrainingSession, getTrainingStats, createTrainingSession } from '@/lib/supabase/queries';
 import { TrainingSessionWithTechniques, TrainingSessionFilters, TrainingStats } from '@/lib/types/training';
 import { MMA_DISCIPLINES } from '@/lib/constants/disciplines';
-import { Plus, Filter, Flame, Clock, TrendingUp } from 'lucide-react';
+import { Plus, Filter, Flame, Clock, TrendingUp, RefreshCw } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 
 export default function TrainingPage() {
@@ -21,6 +21,12 @@ export default function TrainingPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  function handleRefresh() {
+    setRefreshing(true);
+    Promise.all([loadSessions(), loadStats()]).finally(() => setRefreshing(false));
+  }
 
   // Filter state
   const [disciplineFilter, setDisciplineFilter] = useState<string>('all');
@@ -122,7 +128,17 @@ export default function TrainingPage() {
     <div className="px-4 pt-3">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl font-bold text-white">Training</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-white">Training</h1>
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="p-2 text-gray-500 hover:text-white transition-colors rounded-lg active:scale-[0.97]"
+              aria-label="Refresh"
+            >
+              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
           <Button onClick={() => router.push('/training/new')}>
             <Plus className="w-4 h-4 mr-2" />
             Log Session
@@ -257,7 +273,7 @@ export default function TrainingPage() {
           </Card>
         ) : sessions.length === 0 ? (
           <Card className="p-12 text-center">
-            <TrendingUp className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+            <TrendingUp className="w-12 h-12 text-gray-600 mx-auto mb-4 animate-float" />
             <h3 className="text-lg text-gray-400 mb-2">No sessions yet</h3>
             <p className="text-sm text-gray-500 mb-6">
               Start tracking your training by logging your first session
