@@ -36,7 +36,7 @@ const moreItems = [
   { href: "/goals", label: "Goals", icon: Target },
   { href: "/schedule", label: "Schedule", icon: CalendarDays },
   { href: "/coach", label: "AI Coach", icon: Brain },
-  { href: "/challenge", label: "Timer", icon: Timer },
+  { href: "/timer", label: "Timer", icon: Timer },
   { href: "/challenge", label: "Challenge", icon: Flame },
   { href: "/profile", label: "Settings", icon: Settings },
 ];

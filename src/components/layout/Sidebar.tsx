@@ -16,6 +16,7 @@ import {
   Brain,
   Library,
   Flame,
+  Timer,
 } from "lucide-react";
 import { getTodaysChallenge } from "@/lib/utils/dailyChallenge";
 
@@ -26,6 +27,7 @@ const navItems = [
   { href: "/schedule", label: "Schedule", icon: CalendarDays },
   { href: "/techniques", label: "Techniques", icon: Library },
   { href: "/challenge", label: "Challenge", icon: Flame, hasIndicator: true },
+  { href: "/timer", label: "Timer", icon: Timer },
   { href: "/notebook", label: "Notebook", icon: BookOpen },
   { href: "/sparring", label: "Sparring", icon: SwordsIcon },
   { href: "/cardio", label: "Cardio", icon: HeartPulse },

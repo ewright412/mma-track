@@ -1244,7 +1244,37 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Upgrade Modal — hidden during early access */}
+      {/* Sign Out */}
+      <button
+        onClick={async () => {
+          await supabase.auth.signOut();
+          window.location.href = '/signin';
+        }}
+        className="w-full py-3 text-red-500 hover:text-red-400 text-sm font-medium transition-colors"
+      >
+        Sign Out
+      </button>
+
+      {/* Danger Zone */}
+      <Card className="p-6 border-red-500/20">
+        <h3 className="text-sm font-medium text-gray-400 mb-3">Danger Zone</h3>
+        <button
+          onClick={async () => {
+            const confirmed = confirm(
+              'Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently lost.'
+            );
+            if (!confirmed) return;
+            const doubleConfirm = confirm(
+              'This is irreversible. Type OK in the next prompt to confirm.'
+            );
+            if (!doubleConfirm) return;
+            showToast('Please contact support to delete your account.', 'error');
+          }}
+          className="text-sm text-gray-500 hover:text-red-400 transition-colors"
+        >
+          Delete Account
+        </button>
+      </Card>
     </div>
   );
 }

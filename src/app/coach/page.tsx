@@ -15,10 +15,10 @@ import {
 import { CoachMarkdown } from '@/components/coach/CoachMarkdown';
 
 const SUGGESTED_PROMPTS = [
-  { text: 'What should I focus on this week?', icon: '🎯' },
-  { text: 'Build me a training plan', icon: '📋' },
-  { text: 'Analyze my sparring performance', icon: '🥊' },
-  { text: 'How do I improve my weakest area?', icon: '📈' },
+  { text: 'What should I work on this week?', icon: '🎯' },
+  { text: 'Give me a 3-round heavy bag drill', icon: '🥊' },
+  { text: 'How do I defend against takedowns?', icon: '🤼' },
+  { text: 'Rate my training this week', icon: '📈' },
 ];
 
 const MAX_DAILY = 30;
@@ -394,6 +394,11 @@ function MessageBubble({ message }: { message: ChatMessage }) {
           ) : (
             <div className="text-gray-300">
               <CoachMarkdown content={message.content} />
+            </div>
+          )}
+          {message.timestamp && (
+            <div className={`text-[10px] text-gray-600 mt-1 ${isUser ? 'text-right' : 'text-left'}`}>
+              {new Date(message.timestamp).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
             </div>
           )}
         </div>
